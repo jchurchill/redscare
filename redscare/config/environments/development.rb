@@ -40,4 +40,8 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # Remove the Rack::Lock middleware for websocket-rails
+  # See https://github.com/websocket-rails/websocket-rails/wiki/Installation-and-Setup
+  config.middleware.delete Rack::Lock
 end

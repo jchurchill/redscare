@@ -27,6 +27,11 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # https://github.com/plataformatec/devise
 gem 'devise'
 
+# JC websockets gem
+# http://websocket-rails.github.io/
+gem 'faye-websocket', '0.10.0' # faye-websocket 0.10.2 has issues, use 0.10.0
+gem 'websocket-rails'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
