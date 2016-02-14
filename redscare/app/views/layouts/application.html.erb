@@ -8,6 +8,11 @@
 </head>
 <body>
 
+<%-# Add flash messages to all pages (provides info from devise user auth gem) -%>
+<% flash.each do |name, msg| %>
+	<%= content_tag(:div, msg, class: "alert alert-#{name}") %>
+<% end %>
+
 <%= yield %>
 
 </body>
