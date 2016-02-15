@@ -1,0 +1,176 @@
+===========================
+======= Nominations =======
+===========================
+
+Nominations table
+  Id                int not null (PK, identity)
+  Round             int not null (belongs_to -> Round)
+  NominationNumber  int not null (1 - 5)
+  Leader            int not null (belongs_to -> User)
+  State             int not null (enum: [Nominating, Voting, Complete])
+  Outcome           int null (initally null, populated when State = Complete; enum: [Accepted, Rejected])
+  
+  (other associations)
+  has_many: Nominees through: Nominees 
+  has_many: NominationVotes
+
+  (indexes)
+  Round, NominationNumber; unique
+
+Nominees table
+  Nomination        int not null (belongs_to -> Nomination)
+  User              int not null (belongs_to -> User)
+
+  (indexes)
+  Nomination, User; unique
+
+NominationVotes table
+  Nomination        int not null (belongs_to -> Nomination)
+  User              int not null (belongs_to -> User)
+  Vote              bool not null
+
+  (indexes)
+  Nomination, User; unique
+
+===========================
+========= Rounds ==========
+===========================
+
+Rounds table
+  Id                int not null (PK, identity)
+  Game              int not null (belongs_to -> Game)
+  RoundNumber       int not null (1 - 5)
+  State             int not null (enum: [Nomination, Mission, Complete])
+  Outcome           int null (initally null, populated when State = Complete; enum: [Passed, Failed, OutOfNominations])
+  
+  (other associations)
+  has_many: MissionOperatives
+
+  (indexes)
+  Game, RoundNumber; unique
+
+MissionOperatives table
+  Round             int not null (belongs_to -> Round)
+  User              int not null (belongs_to -> User)
+  Vote              bool null (initially null; updated when vote is cast)
+
+  (indexes)
+  Round, User; unique
+
+===========================
+========== Games ==========
+===========================
+
+Games table
+  Id                        int not null (PK, identity)
+  DateCreated               date not null
+  Creator                   int not null (belongs_to -> User)
+  PlayerCount               int not null
+  IncludesSeer              bool not null (If Merlin / Assassin game feature relevant)
+  IncludesEvilMaster        bool not null (If Mordred game feature relevant) (check: !IncludesEvilMaster || IncludesSeer)
+  IncludesSeerDistraction   bool not null (If Percival / Morgana game feature relevant) (check: !IncludesSeerDistraction || IncludesSeer)
+  IncludesRogueEvil         bool not null (If Oberon game feature relevant)
+  State                     int not null (enum: [Created, RoundsInProgress, Assassination, Complete, Cancelled])
+  Outcome                   int null (initally null, populated when State = Complete;
+                                      enum: [GoodWinsNormally, EvilWinsNormally, EvilWinsFromAssassination, EvilWinsFromNominationFailure])
+  AssassinatedPlayer        int null (initially null, populated during Assassination phase, if one exists)
+
+  (other associations)
+  has_many: Players through: GamePlayers
+  has_many: Rounds
+
+GamePlayers table
+  Game                      int not null (belongs_to -> Game)
+  Player                    int not null (belongs_to -> User)
+  Role                      int null (initially null, populated when Game's State becomes RoundsInProgress;
+                                      enum: [GoodNormal, EvilNormal, Merlin, Percival, Morgana, Oberon, Mordred, Assassin])
+
+===================================================
+===== Example derivations from the data model =====
+===================================================
+
+Games that the current user is a part of
+  Game.joins(:players).where(players: { player: current_user })
+
+Who owns an individual role within any game
+  game.players.find_by!(role: Role.merlin)
+
+Game's current round in progress
+  game.rounds.order(:round_number).last!
+
+Number of passed / failed rounds
+  game.rounds.select({ |r| r.outcome == RoundOutcome.passed }).count # passed
+  game.rounds.select({ |r| r.outcome == RoundOutcome.failed }).count # failed
+
+===================================
+===== Notes about concurrency =====
+===================================
+There will be some cases where an update can only happen if certain conditions are met. As an example,
+consider starting the game: in order to correctly start the game, a number of players equal to the size of
+the game must have joined. However, players can freely join / rejoin during this phase, so the player count is changing.
+
+A race condition could arise with the code that might exist to handle these operations:
+
+# (1) Add a player
+game.players.create(player: current_user)
+
+# (2) Remove a player
+game.players.find_by(player: current_user).destroy
+
+# (3) Start a game
+if game.player_count == game.players.count
+  game.begin() # assigns roles, sets state to in-progress
+end
+
+Suppose the room is full and the leader decides to start the game, and at the same time a player chooses to leave the room.
+Suppose these actions end up getting interleaved like this:
+- if-statement in (3) - evaluates to true
+- player removal in (2)
+- game.begin in (3)
+
+The game is now in an invalid state.
+
+This conflict can be generalized to anything that you might call a "non-final submission". By choosing to make operations irrevocable, we can avoid this in most cases.
+
+Avoid issue by requiring finality:
+- Nomination selection process (once a person is nominated for a mission, it cannot be changed)
+- Submitting upvote / downvote in nomination voting (once a vote is cast for a nomination, it cannot be changed)
+- Submitting pass / fail in mission voting (once a pass/fail is cast for a mission, it cannot be changed)
+
+After thinking through it, it looks like the only operation that's essential to have be non-final is game joining / leaving.
+We can handle the concurrency issue of transitioning to the next state with code that locks on the game record like the following:
+http://guides.rubyonrails.org/active_record_querying.html#pessimistic-locking
+
+# ** When starting a game **
+Game.transaction do
+  game = Game.lock.find(<game_id>)
+  if game.player_count == game.players.count
+    game.state = GameState.rounds_in_progress
+    game.save!
+  end
+end
+# If state now RoundsInProgress, continue with game.begin()
+
+
+# ** When adding a player **
+Game.transaction do
+  game = Game.lock.find(<game_id>)
+  has_player = game.players.any?(player: current_user)
+  has_available_spot = game.player_count > game.players.count
+  if !has_player and has_available_spot
+    game.players.create({ player: current_user })
+    game.players.save!
+  end
+end
+
+
+# ** When removing a player **
+Game.transaction do
+  game = Game.lock.find(<game_id>)
+  has_player = game.players.any?(player: current_user)
+  game_started = game.state != GameState.created
+  if has_player and !game_started
+    game.players.find_by(player: current_user).destroy
+    game.players.save!
+  end
+end
