@@ -4,7 +4,9 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-<% (1..10).each do |n| %>
-user_<%= n %>:
-  email: "user_<%= n %>@gmail.com"
+<% (1..6).each do |n| %>
+vanilla_6_player_<%= n %>:
+  game: vanilla_6
+  user: user_<%= n %>
+  role: <%= n <= 4 ? GamePlayer.roles[:good_normal] : GamePlayer.roles[:evil_normal] %>
 <% end %>

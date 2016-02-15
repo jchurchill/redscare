@@ -4,7 +4,12 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-<% (1..10).each do |n| %>
-user_<%= n %>:
-  email: "user_<%= n %>@gmail.com"
-<% end %>
+vanilla_6_round_1_op_1:
+  round: vanilla_6_round_1
+  operative: user_1
+  pass: true
+
+vanilla_6_round_1_op_2:
+  round: vanilla_6_round_1
+  operative: user_2
+  pass: true

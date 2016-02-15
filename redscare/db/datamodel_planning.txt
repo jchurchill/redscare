@@ -41,18 +41,18 @@ Rounds table
   Game              int not null (belongs_to -> Game)
   RoundNumber       int not null (1 - 5)
   State             int not null (enum: [Nomination, Mission, Complete])
-  Outcome           int null (initally null, populated when State = Complete; enum: [Passed, Failed, OutOfNominations])
+  Outcome           int null (initally null, populated when State = Complete; enum: [Success, Failure, OutOfNominations])
   
   (other associations)
-  has_many: MissionOperatives
+  has_many: RoundOperatives
 
   (indexes)
   Game, RoundNumber; unique
 
-MissionOperatives table
+RoundOperatives table
   Round             int not null (belongs_to -> Round)
-  User              int not null (belongs_to -> User)
-  Vote              bool null (initially null; updated when vote is cast)
+  Player            int not null (belongs_to -> User)
+  Pass              bool null (initially null; updated when vote is cast)
 
   (indexes)
   Round, User; unique
@@ -68,7 +68,7 @@ Games table
   PlayerCount               int not null
   IncludesSeer              bool not null (If Merlin / Assassin game feature relevant)
   IncludesEvilMaster        bool not null (If Mordred game feature relevant) (check: !IncludesEvilMaster || IncludesSeer)
-  IncludesSeerDistraction   bool not null (If Percival / Morgana game feature relevant) (check: !IncludesSeerDistraction || IncludesSeer)
+  IncludesSeerDeception     bool not null (If Percival / Morgana game feature relevant) (check: !IncludesSeerDeception || IncludesSeer)
   IncludesRogueEvil         bool not null (If Oberon game feature relevant)
   State                     int not null (enum: [Created, RoundsInProgress, Assassination, Complete, Cancelled])
   Outcome                   int null (initally null, populated when State = Complete;

@@ -3,8 +3,12 @@
 # This model initially had no columns defined.  If you add columns to the
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
-#
-<% (1..10).each do |n| %>
-user_<%= n %>:
-  email: "user_<%= n %>@gmail.com"
-<% end %>
+
+vanilla_6:
+  name: "My vanilla 6-player game"
+  player_count: 6
+  creator: user_1
+  includes_seer: false
+  includes_seer_deception: false
+  includes_evil_master: false
+  includes_rogue_evil: false

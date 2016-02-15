@@ -4,7 +4,14 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-<% (1..10).each do |n| %>
-user_<%= n %>:
-  email: "user_<%= n %>@gmail.com"
-<% end %>
+vanilla_6_round_1:
+  game: vanilla_6
+  round_number: 1
+  state: <%= Round.states[:complete] %>
+  outcome: <%= Round.outcomes[:success] %>
+
+vanilla_6_round_2:
+  game: vanilla_6
+  round_number: 2
+  state: <%= Round.states[:mission] %>
+  outcome: nil

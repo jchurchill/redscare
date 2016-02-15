@@ -11,7 +11,57 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160214165410) do
+ActiveRecord::Schema.define(version: 20160215223225) do
+
+  create_table "game_players", force: :cascade do |t|
+    t.integer  "game_id",    null: false
+    t.integer  "user_id",    null: false
+    t.integer  "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "game_players", ["game_id"], name: "index_game_players_on_game_id"
+  add_index "game_players", ["user_id"], name: "index_game_players_on_user_id"
+
+  create_table "games", force: :cascade do |t|
+    t.string   "name",                                null: false
+    t.integer  "player_count",                        null: false
+    t.integer  "creator_id",                          null: false
+    t.boolean  "includes_seer",                       null: false
+    t.boolean  "includes_seer_deception",             null: false
+    t.boolean  "includes_evil_master",                null: false
+    t.boolean  "includes_rogue_evil",                 null: false
+    t.integer  "state",                   default: 1, null: false
+    t.integer  "outcome"
+    t.integer  "assassinated_player_id"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+  end
+
+  add_index "games", ["creator_id"], name: "index_games_on_creator_id"
+
+  create_table "round_operatives", force: :cascade do |t|
+    t.integer  "round_id",     null: false
+    t.integer  "operative_id", null: false
+    t.boolean  "pass"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "round_operatives", ["round_id"], name: "index_round_operatives_on_round_id"
+
+  create_table "rounds", force: :cascade do |t|
+    t.integer  "game_id",      null: false
+    t.integer  "round_number", null: false
+    t.integer  "state",        null: false
+    t.integer  "outcome"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "rounds", ["game_id", "round_number"], name: "index_rounds_on_game_id_and_round_number", unique: true
+  add_index "rounds", ["game_id"], name: "index_rounds_on_game_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
