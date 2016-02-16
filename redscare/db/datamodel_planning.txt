@@ -7,7 +7,7 @@ Nominations table
   Round             int not null (belongs_to -> Round)
   NominationNumber  int not null (1 - 5)
   Leader            int not null (belongs_to -> User)
-  State             int not null (enum: [Nominating, Voting, Complete])
+  State             int not null (enum: [Selecting, Voting, Complete])
   Outcome           int null (initally null, populated when State = Complete; enum: [Accepted, Rejected])
   
   (other associations)
@@ -27,7 +27,7 @@ Nominees table
 NominationVotes table
   Nomination        int not null (belongs_to -> Nomination)
   User              int not null (belongs_to -> User)
-  Vote              bool not null
+  Upvote            bool not null
 
   (indexes)
   Nomination, User; unique

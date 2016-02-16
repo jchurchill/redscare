@@ -19,4 +19,5 @@ class Round < ActiveRecord::Base
 
   belongs_to :game, inverse_of: :rounds
   has_many :operatives, class_name: "RoundOperative", inverse_of: :round
+  has_many :nominations, inverse_of: :round
 end

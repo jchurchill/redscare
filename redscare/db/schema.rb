@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160215223225) do
+ActiveRecord::Schema.define(version: 20160216014026) do
 
   create_table "game_players", force: :cascade do |t|
     t.integer  "game_id",    null: false
@@ -40,6 +40,40 @@ ActiveRecord::Schema.define(version: 20160215223225) do
   end
 
   add_index "games", ["creator_id"], name: "index_games_on_creator_id"
+
+  create_table "nomination_votes", force: :cascade do |t|
+    t.integer  "nomination_id", null: false
+    t.integer  "user_id",       null: false
+    t.boolean  "upvote",        null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "nomination_votes", ["nomination_id", "user_id"], name: "index_nomination_votes_on_nomination_id_and_user_id", unique: true
+  add_index "nomination_votes", ["nomination_id"], name: "index_nomination_votes_on_nomination_id"
+
+  create_table "nominations", force: :cascade do |t|
+    t.integer  "round_id",          null: false
+    t.integer  "leader_id",         null: false
+    t.integer  "nomination_number", null: false
+    t.integer  "state",             null: false
+    t.integer  "outcome"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "nominations", ["round_id", "nomination_number"], name: "index_nominations_on_round_id_and_nomination_number", unique: true
+  add_index "nominations", ["round_id"], name: "index_nominations_on_round_id"
+
+  create_table "nominees", force: :cascade do |t|
+    t.integer  "nomination_id", null: false
+    t.integer  "user_id",       null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "nominees", ["nomination_id", "user_id"], name: "index_nominees_on_nomination_id_and_user_id", unique: true
+  add_index "nominees", ["nomination_id"], name: "index_nominees_on_nomination_id"
 
   create_table "round_operatives", force: :cascade do |t|
     t.integer  "round_id",     null: false
