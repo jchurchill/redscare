@@ -1,4 +1,15 @@
 class Round < ActiveRecord::Base
+
+  # ===== Schema =====
+  # :game (:game_id) => Game
+  # :round_number => int
+  # :state => int (Round.states)
+  # :outcome => int (nil) (Round.outcomes)
+  # :created_at => datetime
+  # :updated_at => datetime
+  # :operatives => collection of RoundOperative
+  # :nominations => collection of Nomination
+
   enum state: {
     # Nomination + voting phases are occurring to decide who goes on the mission
     nomination: 1,

@@ -1,4 +1,12 @@
 class GamePlayer < ActiveRecord::Base
+
+  # ===== Schema =====
+  # :game (:game_id) => Game
+  # :user (:user_id) => User
+  # :role => int (nil) (GamePlayer.roles)
+  # :created_at => datetime
+  # :updated_at => datetime
+
   enum role: {
     # A good guy with no special information
     good_normal:  1,

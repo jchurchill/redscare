@@ -1,4 +1,21 @@
 class Game < ActiveRecord::Base
+
+  # ===== Schema =====
+  # :name => string
+  # :player_count => int
+  # :creator (:creator_id) => User
+  # :includes_seer => boolean
+  # :includes_seer_deception => boolean
+  # :includes_evil_master => boolean
+  # :includes_rogue_evil => boolean
+  # :state => int (Game.states)
+  # :outcome => int (nil) (Game.outcomes)
+  # :assassinated_player (:assassinated_player_id) => User (nil)
+  # :created_at => datetime
+  # :updated_at => datetime
+  # :players => collection of GamePlayer
+  # :rounds => collection of Round
+
   enum state: {
     # Game is created and looking for players
     created: 1,
