@@ -1,6 +1,22 @@
 require 'test_helper'
 
 class GameTest < ActiveSupport::TestCase
+
+  test "expected game properties" do
+    game = games(:vanilla_6)
+
+    [:name, :player_count, :creator, :creator_id,
+      :includes_seer, :includes_seer_deception,
+      :includes_rogue_evil, :includes_evil_master,
+      :state, :outcome,
+      :assassinated_player, :assassinated_player_id,
+      :created_at, :updated_at,
+      :players, :rounds
+      ].each do |sym|
+      assert_respond_to game, sym
+    end
+  end
+
   test "creating a game" do
     properties = {
       name: "My newly-created game",
@@ -23,6 +39,9 @@ class GameTest < ActiveSupport::TestCase
     assert_equal properties[:includes_seer_deception],  game.includes_seer_deception, "includes_seer_deception did not save correctly"
     assert_equal properties[:includes_evil_master],     game.includes_evil_master, "includes_evil_master did not save correctly"
     assert_equal properties[:includes_rogue_evil],      game.includes_rogue_evil, "includes_rogue_evil did not save correctly"
+
+    assert_not_nil game.created_at, "created_at should have a value"
+    assert_not_nil game.updated_at, "updated_at should have a value"
   end
 
   test "game creator association" do
@@ -40,10 +59,21 @@ class GameTest < ActiveSupport::TestCase
     players = game.players
 
     assert_equal 6, players.count, "the number of players in the game was incorrect"
-    # just check a couple of the players that's supposed to be there are there
-    [:vanilla_6_player_1, :vanilla_6_player_6].each do |id|
+    [:vanilla_6_player_1, :vanilla_6_player_2, :vanilla_6_player_3,
+      :vanilla_6_player_4, :vanilla_6_player_5, :vanilla_6_player_6].each do |id|
       exp_game_player = game_players(id)
       assert_includes players, exp_game_player, "expected player was not in the game"
-    end 
+    end
+  end
+
+  test "game rounds association" do
+    game = Game.find(games(:vanilla_6).id)
+    rounds = game.rounds
+
+    assert_equal 2, rounds.count, "the number of rounds in the game was incorrect"
+    [:vanilla_6_round_1, :vanilla_6_round_2].each do |id|
+      exp_round = rounds(id)
+      assert_includes rounds, exp_round, "expected round was not in the game"
+    end
   end
 end
