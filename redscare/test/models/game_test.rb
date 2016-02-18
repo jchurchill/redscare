@@ -2,18 +2,16 @@ require 'test_helper'
 
 class GameTest < ActiveSupport::TestCase
 
-  test "expected game properties" do
+  test "game properties" do
     game = games(:vanilla_6)
 
-    [:name, :player_count, :creator, :creator_id,
-      :includes_seer, :includes_seer_deception,
-      :includes_rogue_evil, :includes_evil_master,
-      :state, :outcome,
-      :assassinated_player, :assassinated_player_id,
-      :created_at, :updated_at,
-      :players, :rounds
-      ].each do |sym|
-      assert_respond_to game, sym
+    %w(name player_count creator
+      includes_seer includes_seer_deception includes_rogue_evil includes_evil_master
+      includes_seer? includes_seer_deception? includes_rogue_evil? includes_evil_master?
+      state outcome assassinated_player assassinated_player_id
+      created_at updated_at players rounds)
+    .each do |prop|
+      assert_respond_to game, prop
     end
 
     # test state enum - every state should create a method <state>? and <state>!
