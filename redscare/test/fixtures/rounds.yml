@@ -13,5 +13,5 @@ vanilla_6_round_1:
 vanilla_6_round_2:
   game: vanilla_6
   round_number: 2
-  state: <%= Round.states[:mission] %>
+  state: <%= Round.states[:nomination] %>
   outcome: nil

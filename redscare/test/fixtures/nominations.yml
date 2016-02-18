@@ -4,3 +4,19 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
+
+vanilla_6_round_1_nom_1:
+  round: vanilla_6_round_1
+  leader: user_1
+  nomination_number: 1
+  state: <%= Nomination.states[:complete] %>
+  outcome: <%= Nomination.outcomes[:rejected] %>
+  nominees: user_1, user_2
+
+vanilla_6_round_1_nom_2:
+  round: vanilla_6_round_1
+  leader: user_2
+  nomination_number: 2
+  state: <%= Nomination.states[:complete] %>
+  outcome: <%= Nomination.outcomes[:accepted] %>
+  nominees: user_1, user_2

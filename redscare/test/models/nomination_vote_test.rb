@@ -1,7 +1,11 @@
 require 'test_helper'
 
 class NominationVoteTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test "expected nomination_vote properties" do
+    nomination_vote = nomination_votes(:vanilla_6_round_1_nom_1_vote_1)
+
+    [:nomination, :user, :upvote, :created_at, :updated_at].each do |sym|
+      assert_respond_to nomination_vote, sym
+    end
+  end
 end

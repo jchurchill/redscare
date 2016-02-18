@@ -4,3 +4,16 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
+<% (1..6).each do |n| %>
+vanilla_6_round_1_nom_1_vote_<%= n %>:
+  nomination: vanilla_6_round_1_nom_1
+  user: user_<%= n %>
+  upvote: false
+<% end %>
+
+<% (1..6).each do |n| %>
+vanilla_6_round_1_nom_2_vote_<%= n %>:
+  nomination: vanilla_6_round_1_nom_2
+  user: user_<%= n %>
+  upvote: true
+<% end %>
