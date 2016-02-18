@@ -15,6 +15,19 @@ class GameTest < ActiveSupport::TestCase
       ].each do |sym|
       assert_respond_to game, sym
     end
+
+    # test state enum - every state should create a method <state>? and <state>!
+    %w(created rounds_in_progress assassination complete cancelled)
+      .product(["!", "?"])
+      .collect { |state, s| :"#{state}#{s}" }.each do |sym|
+        assert_respond_to game, sym
+      end
+    # same for the outcomes enum
+    %w(good_wins_normally evil_wins_normally evil_wins_from_assassination evil_wins_from_nomination_failure)
+      .product(["!", "?"])
+      .collect { |outcome, s| :"#{outcome}#{s}" }.each do |sym|
+        assert_respond_to game, sym
+      end
   end
 
   test "creating a game" do
