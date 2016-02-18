@@ -65,15 +65,13 @@ ActiveRecord::Schema.define(version: 20160216014026) do
   add_index "nominations", ["round_id", "nomination_number"], name: "index_nominations_on_round_id_and_nomination_number", unique: true
   add_index "nominations", ["round_id"], name: "index_nominations_on_round_id"
 
-  create_table "nominees", force: :cascade do |t|
-    t.integer  "nomination_id", null: false
-    t.integer  "user_id",       null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+  create_table "nominations_users", force: :cascade do |t|
+    t.integer "nomination_id", null: false
+    t.integer "user_id",       null: false
   end
 
-  add_index "nominees", ["nomination_id", "user_id"], name: "index_nominees_on_nomination_id_and_user_id", unique: true
-  add_index "nominees", ["nomination_id"], name: "index_nominees_on_nomination_id"
+  add_index "nominations_users", ["nomination_id", "user_id"], name: "index_nominations_users_on_nomination_id_and_user_id", unique: true
+  add_index "nominations_users", ["nomination_id"], name: "index_nominations_users_on_nomination_id"
 
   create_table "round_operatives", force: :cascade do |t|
     t.integer  "round_id",     null: false

@@ -3,7 +3,6 @@ class Nomination < ActiveRecord::Base
   # ===== Schema =====
   # :round (:round_id) => Round
   # :leader (:leader_id) => User
-  # :creator (:creator_id) => User
   # :nomination_number => int
   # :state => int (Nomination.states)
   # :outcome => int (nil) (Nomination.outcomes)
@@ -30,6 +29,6 @@ class Nomination < ActiveRecord::Base
 
   belongs_to :round, inverse_of: :nominations
   belongs_to :leader, class_name: "User"
-  has_many :nominees, through: :nominees, source: :user
+  has_and_belongs_to_many :nominees, class_name: "User"
   has_many :votes, class_name: "NominationVote"
 end

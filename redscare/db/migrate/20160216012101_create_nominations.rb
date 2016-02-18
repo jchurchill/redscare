@@ -13,5 +13,13 @@ class CreateNominations < ActiveRecord::Migration
     end
 
     add_foreign_key :nominations, :rounds
+
+    # create join table for many-many association for nominations to nominees
+    create_table :nominations_users do |t|
+      t.integer :nomination_id, null: false, index: true
+      t.integer :user_id, null: false, index: false
+
+      t.index [:nomination_id, :user_id], unique: true
+    end
   end
 end
