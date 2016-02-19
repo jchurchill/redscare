@@ -13,5 +13,5 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//# Put websocket capabilities on every page (todo: probably change this)
 //= require websocket_rails/main
-//= require_tree .
