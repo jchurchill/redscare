@@ -16,9 +16,9 @@ $( document ).ready(function() {
     console.log('Websocket connection error: ', data);
   });
 
-  var displayNewMessage = function(msg) {
+  var displayNewMessage = function(msgHtml) {
     var chat = $('#chat_room');
-    chat.append($('<div>' + msg + '</div>'));
+    chat.append($('<div>' + msgHtml + '</div>'));
     chat.scrollTop(chat[0].scrollHeight);
   };
 
@@ -26,14 +26,14 @@ $( document ).ready(function() {
   // client_connection route in events.rb causes ChatController.client_connection to be invoked,
   // which sends a message 'new_connection'
   dispatcher.bind('new_connection', function(data) {
-    var msg = data.email + ' has connected to the chat';
+    var msg = `<span style="font-style: italic">${data.email} has connected to the chat</span>`;
     displayNewMessage(msg);
   });
 
   // listen for new chat messages
   // corresponds to new_message route in events.rb
   dispatcher.bind('new_message', function(data) {
-    var msg = data.email + ': ' + data.message_body;
+    var msg = `<span style="font-weight: bold">${data.email}</span>: ${data.message_body}`;
     displayNewMessage(msg);
   });
 
