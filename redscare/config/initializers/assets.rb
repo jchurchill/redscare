@@ -13,9 +13,11 @@ Rails.application.config.assets.version = '1.0'
 # Since we removed the require_tree directive in application.js, need to specify precompiled assets here manually.
 # I've only done js files for now since there are no css assets yet.
 # For more reading, see: http://theflyingdeveloper.com/controller-specific-assets-with-rails-4/
-%w(home chat).each do |controller|
-  Rails.application.config.assets.precompile += ["#{controller}.js"]
-end# Add client/assets/ folders to asset pipeline's search path.
+%w(home chat).each do |jsfile|
+  Rails.application.config.assets.precompile += ["#{jsfile}.js"]
+end
+
+# Add client/assets/ folders to asset pipeline's search path.
 # If you do not want to move existing images and fonts from your Rails app
 # you could also consider creating symlinks there that point to the original
 # rails directories. In that case, you would not add these paths here.

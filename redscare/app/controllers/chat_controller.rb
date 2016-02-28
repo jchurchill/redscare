@@ -4,5 +4,6 @@ class ChatController < ApplicationController
   before_filter :authenticate_user!
 
   def chat
+	@javascripts << "chat"
   end
 end
