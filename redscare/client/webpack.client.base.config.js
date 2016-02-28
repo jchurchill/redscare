@@ -21,6 +21,7 @@ module.exports = {
     // webpack.rails.config
     app: [
       './app/bundles/HelloWorld/startup/clientRegistration',
+      './app/bundles/GameCreator/startup/clientRegistration',
     ],
   },
   resolve: {
