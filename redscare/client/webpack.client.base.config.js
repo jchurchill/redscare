@@ -14,8 +14,7 @@ module.exports = {
 
     // See use of 'vendor' in the CommonsChunkPlugin inclusion below.
     vendor: [
-      'babel-polyfill',
-      'jquery',
+      'babel-polyfill'
     ],
 
     // This will contain the app entry points defined by webpack.hot.config and
@@ -55,11 +54,6 @@ module.exports = {
   ],
   module: {
     loaders: [
-
-      // Not all apps require jQuery. Many Rails apps do, such as those using TurboLinks or
-      // bootstrap js
-      { test: require.resolve('jquery'), loader: 'expose?jQuery' },
-      { test: require.resolve('jquery'), loader: 'expose?$' },
     ],
   },
 };

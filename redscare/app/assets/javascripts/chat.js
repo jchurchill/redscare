@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+document.addEventListener("DOMContentLoaded", function() { 
 
   // Setup dispatcher and channel
   var dispatcher = new WebSocketRails('localhost:3000/websocket');
@@ -17,9 +17,11 @@ $( document ).ready(function() {
   });
 
   var displayNewMessage = function(msgHtml) {
-    var chat = $('#chat_room');
-    chat.append($('<div>' + msgHtml + '</div>'));
-    chat.scrollTop(chat[0].scrollHeight);
+    var chat = document.getElementById('chat_room'),
+      msgDiv = document.createElement('div');
+    msgDiv.innerHTML = msgHtml;
+    chat.appendChild(msgDiv);
+    chat.scrollTop = chat.scrollHeight;
   };
 
   // listen for new user connections
@@ -38,20 +40,20 @@ $( document ).ready(function() {
   });
 
   var sendMessage = function() {
-    var textarea = $("#input_box"),
-      text = textarea.val();
+    var textarea = document.getElementById("input_box"),
+      text = textarea.value;
     if (text.length === 0) {
       return;
     }
     dispatcher.trigger('new_message', {
       'message_body': text
     });
-    textarea.val(""); // clear text
+    textarea.value = ""; // clear text
     textarea.focus(); // place focus back on textarea
   };
 
   // when enter is pressed in the textbox (without shift), send message
-  $('#input_box').keypress(function(e) {
+  document.getElementById('input_box').addEventListener('keypress', function(e) {
     if (!e.shiftKey && e.which === 13 /* enter key */) {
       sendMessage();
       e.preventDefault();
