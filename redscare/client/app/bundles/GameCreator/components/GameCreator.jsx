@@ -3,10 +3,10 @@ import _ from 'lodash';
 
 // Default role state when coming to page or resetting number of players
 const defaultRoleState = {
-  seer: { include: false, allow: true },
-  seerDeception: { include: false, allow: false },
-  evilMaster: { include: false, allow: false },
-  rogueEvil: { include: false, allow: true }
+  seer: { include: false },
+  seerDeception: { include: false },
+  evilMaster: { include: false },
+  rogueEvil: { include: false }
 },
 roleSet = Object.keys(defaultRoleState);
 
@@ -18,24 +18,17 @@ export default class GameCreator extends React.Component {
 
   onCheckboxChange(key, e) {
     // For the changed checkbox, update its role's include state
-    const checkedRoleState = Object.assign({}, this.state[key], { include: e.target.checked });
-    this.setState(
-      { [key]: checkedRoleState },
-      () =>
-        // Update what roles are allowed given the new current set of included roles.
-        // Also, included is set to false if not allowed, else take current state
-        this.setState(roleSet.reduce(
-          (rolesState, roleKey) => {
-            const curState = this.state[roleKey],
-              allow = this.getIsAllowed(roleKey),
-              include = allow && curState.include;
-            return Object.assign(rolesState, { [roleKey]: { include, allow } });
-          }, {})));
+    this.setState({ [key]: { include: e.target.checked } });
   }
 
   onPlayersChange(e) {
-    // Set state for number of players, and reset roles completely
-    const newState = Object.assign({ numPlayers: parseInt(e.target.value, 10) }, defaultRoleState);
+    // Set state for number of players
+    const numPlayers = parseInt(e.target.value, 10);
+    var newState = { numPlayers };
+    // If number of evil roles has decreased, reset role selection to default too
+    if (this.getEvilRoleCount(numPlayers) < this.getEvilRoleCount(this.state.numPlayers)) {
+      newState = Object.assign(newState, defaultRoleState);
+    }
     this.setState(newState);
   }
 
@@ -91,14 +84,10 @@ export default class GameCreator extends React.Component {
     const { numPlayers } = this.state;
 
     const roleOptions = [
-      { inputName: "include-seer", key: "seer",
-        text: "Seer & assassin" },
-      { inputName: "include-seer-deception", key: "seerDeception",
-        text: "Seer imposter & seer helper" },
-      { inputName: "include-evil-master", key: "evilMaster",
-        text: "Evil master" },
-      { inputName: "include-rogue-evil", key: "rogueEvil",
-        text: "Renegade / unknown evil" }
+      { key: "seer", inputName: "include-seer",  text: "Seer & assassin" },
+      { key: "seerDeception", inputName: "include-seer-deception", text: "Seer imposter & seer helper" },
+      { key: "evilMaster", inputName: "include-evil-master", text: "Evil master" },
+      { key: "rogueEvil", inputName: "include-rogue-evil", text: "Renegade / unknown evil" }
     ];
 
     return (
@@ -124,7 +113,7 @@ export default class GameCreator extends React.Component {
                         type="checkbox"
                         name={inputName}
                         checked={roleState.include}
-                        disabled={!roleState.allow}
+                        disabled={!this.getIsAllowed(key)}
                         onChange={onChange}
                       />
                       {text}
