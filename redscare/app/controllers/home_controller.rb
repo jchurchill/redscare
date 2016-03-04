@@ -5,6 +5,6 @@ class HomeController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-	@javascripts << "home"
+    @game_index_props = { :chatPath => chat_path }
   end
 end

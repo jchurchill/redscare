@@ -22,6 +22,7 @@ module.exports = {
     app: [
       './app/bundles/HelloWorld/startup/clientRegistration',
       './app/bundles/GameCreator/startup/clientRegistration',
+      './app/bundles/GameIndex/startup/clientRegistration',
     ],
   },
   resolve: {
