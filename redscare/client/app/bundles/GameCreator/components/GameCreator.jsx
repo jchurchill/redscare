@@ -82,21 +82,22 @@ export default class GameCreator extends React.Component {
 
   render() {
     const { numPlayers } = this.state;
-    const { createPath } = this.props;
+    const { createPath, authenticity } = this.props;
     const roleOptions = [
-      { key: "seer", inputName: "include-seer",  text: "Seer & assassin" },
-      { key: "seerDeception", inputName: "include-seer-deception", text: "Seer imposter & seer helper" },
-      { key: "evilMaster", inputName: "include-evil-master", text: "Evil master" },
-      { key: "rogueEvil", inputName: "include-rogue-evil", text: "Renegade / unknown evil" }
+      { key: "seer", inputName: "includes_seer",  text: "Seer & assassin" },
+      { key: "seerDeception", inputName: "includes_seer_deception", text: "Seer imposter & seer helper" },
+      { key: "evilMaster", inputName: "includes_evil_master", text: "Evil master" },
+      { key: "rogueEvil", inputName: "includes_rogue_evil", text: "Renegade / unknown evil" }
     ];
 
     return (
       <div className="container">
         <form action={createPath} method="post">
-          <input type="text" placeholder="Title for your game" name="game-name" />
+          <input type="hidden" name={authenticity.name} value={authenticity.value} />
+          <input type="text" placeholder="Title for your game" name="name" />
           <div>
             Number of players:
-            <select name="num-players" value={numPlayers} onChange={this.onPlayersChange.bind(this)}>
+            <select name="player_count" value={numPlayers} onChange={this.onPlayersChange.bind(this)}>
               {_.range(5,11).map(num => <option key={num} value={num}>{num}</option>)}
             </select>
           </div>
@@ -104,7 +105,8 @@ export default class GameCreator extends React.Component {
             Select additional optional roles to include:
             {
               roleOptions.map(({ inputName, text, key }) => {
-                const { include } = this.state[key];
+                const { include } = this.state[key],
+                  disabled = !this.getIsAllowed(key);
                 return (
                   <div key={inputName}>
                     <label>
@@ -112,9 +114,11 @@ export default class GameCreator extends React.Component {
                         type="checkbox"
                         name={inputName}
                         checked={include}
-                        disabled={!this.getIsAllowed(key)}
+                        disabled={disabled}
                         onChange={this.onCheckboxChange.bind(this, key)}
                       />
+                      {/* http://stackoverflow.com/questions/4727974/how-to-post-submit-an-input-checkbox-that-is-disabled */}
+                      <input type="hidden" name={inputName} value={include} />
                       {text}
                     </label>
                   </div>
