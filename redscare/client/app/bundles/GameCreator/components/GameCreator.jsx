@@ -104,17 +104,16 @@ export default class GameCreator extends React.Component {
             Select additional optional roles to include:
             {
               roleOptions.map(({ inputName, text, key }) => {
-                const onChange = this.onCheckboxChange.bind(this, key),
-                  roleState = this.state[key];
+                const { include } = this.state[key];
                 return (
                   <div key={inputName}>
                     <label>
                       <input
                         type="checkbox"
                         name={inputName}
-                        checked={roleState.include}
+                        checked={include}
                         disabled={!this.getIsAllowed(key)}
-                        onChange={onChange}
+                        onChange={this.onCheckboxChange.bind(this, key)}
                       />
                       {text}
                     </label>
