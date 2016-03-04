@@ -8,11 +8,16 @@ export default class GameIndex extends React.Component {
   }
 
   render() {
-    const { chatPath } = this.props
+    const { chatPath, newGamePath } = this.props
     return (
       <div className="container">
         <h1>Home#index</h1>
-        <a href={chatPath}>Chat</a>
+        <div>
+          <a href={newGamePath}>Start a new game</a>
+        </div>
+        <div>
+          <a href={chatPath}>Chat</a>
+        </div>
       </div>
     );
   }
