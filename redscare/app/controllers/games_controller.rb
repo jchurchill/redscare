@@ -6,6 +6,9 @@ class GamesController < ApplicationController
   end
 
   def new
+    @game_creator_props = {
+      :createPath => games_path 
+    }
   end
 
   def create

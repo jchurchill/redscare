@@ -82,7 +82,7 @@ export default class GameCreator extends React.Component {
 
   render() {
     const { numPlayers } = this.state;
-
+    const { createPath } = this.props;
     const roleOptions = [
       { key: "seer", inputName: "include-seer",  text: "Seer & assassin" },
       { key: "seerDeception", inputName: "include-seer-deception", text: "Seer imposter & seer helper" },
@@ -92,7 +92,7 @@ export default class GameCreator extends React.Component {
 
     return (
       <div className="container">
-        <form action="/games" method="post">
+        <form action={createPath} method="post">
           <input type="text" placeholder="Title for your game" name="game-name" />
           <div>
             Number of players:
