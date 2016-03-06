@@ -28,19 +28,23 @@ class GamesController < ApplicationController
   end
 
   def create
-    game = Game.new(game_params.merge({
+    game_params = 
+      params.permit(
+        :name,
+        :player_count,
+        :includes_seer,
+        :includes_seer_deception,
+        :includes_evil_master,
+        :includes_rogue_evil)
+      .merge({
         :creator => current_user,
         :state => Game.states[:created],
         :players => [GamePlayer.new(user: current_user)]
-      }))
+      })
 
+    game = Game.new(game_params)
     game.save!
 
     redirect_to game
   end
-
-  private
-    def game_params
-      params.permit(:name, :player_count, :includes_seer, :includes_seer_deception, :includes_evil_master, :includes_rogue_evil)
-    end
 end
