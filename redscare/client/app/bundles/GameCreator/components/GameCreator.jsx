@@ -13,7 +13,7 @@ roleSet = Object.keys(defaultRoleState);
 export default class GameCreator extends React.Component {
   constructor(props) {
     super(props);
-    this.state = Object.assign({ numPlayers: 5 }, defaultRoleState);
+    this.state = { numPlayers: 5, ...defaultRoleState };
   }
 
   onCheckboxChange(key, e) {
@@ -27,7 +27,7 @@ export default class GameCreator extends React.Component {
     var newState = { numPlayers };
     // If number of evil roles has decreased, reset role selection to default too
     if (this.getEvilRoleCount(numPlayers) < this.getEvilRoleCount(this.state.numPlayers)) {
-      newState = Object.assign(newState, defaultRoleState);
+      newState = { ...newState, ...defaultRoleState };
     }
     this.setState(newState);
   }
@@ -55,9 +55,9 @@ export default class GameCreator extends React.Component {
     }
 
     // The number of total evil roles allowed in this game 
-    const totalEvilRoleCount = this.getEvilRoleCount(this.state.numPlayers),
-      // Each included option adds one evil role to the game
-      currentEvilRoleCount = roleSet.reduce((sum, key) => sum + (this.state[key].include ? 1 : 0), 0);
+    const totalEvilRoleCount = this.getEvilRoleCount(this.state.numPlayers);
+    // Each included option adds one evil role to the game
+    const currentEvilRoleCount = roleSet.reduce((sum, key) => sum + (this.state[key].include ? 1 : 0), 0);
     // Only allowed to include any new role if there are remaining evil roles
     // Note this assumes that every role selection includes exactly 1 evil,
     // and that evil players are the only constraining factor to the roles
