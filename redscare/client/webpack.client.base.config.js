@@ -18,9 +18,9 @@ module.exports = {
     // This will contain the app entry points defined by webpack.hot.config and
     // webpack.rails.config
     app: [
-      './app/bundles/HelloWorld/startup/clientRegistration',
       './app/bundles/GameCreator/startup/clientRegistration',
       './app/bundles/GameIndex/startup/clientRegistration',
+      './app/bundles/GameRoom/startup/clientRegistration',
     ],
   },
   resolve: {

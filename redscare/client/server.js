@@ -3,7 +3,6 @@
 /* eslint-disable no-console, func-names, no-var */
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
-var jade = require('jade');
 var config = require('./webpack.client.hot.config');
 
 const PORT = 4000;
@@ -50,16 +49,16 @@ var server = new WebpackDevServer(compiler, {
 //   res.send(JSON.stringify(req.body.name));
 // });
 
-var initialName = 'Stranger';
+// var initialName = 'Stranger';
 
-server.app.use('/', (req, res) => {
-  var locals = {
-    props: JSON.stringify(initialName),
-  };
-  var layout = `${process.cwd()}/index.jade`;
-  var html = jade.compileFile(layout, { pretty: true })(locals);
-  res.send(html);
-});
+// server.app.use('/', (req, res) => {
+//   var locals = {
+//     props: JSON.stringify(initialName),
+//   };
+//   var layout = `${process.cwd()}/index.jade`;
+//   var html = jade.compileFile(layout, { pretty: true })(locals);
+//   res.send(html);
+// });
 
 server.listen(PORT, 'localhost', err => {
   if (err) console.error(err);

@@ -18,6 +18,11 @@ class GamesController < ApplicationController
   end
 
   def show
+    game = Game.find(params[:id])
+    @game_room_props = {
+      :gameIndexPath => games_path,
+      :name => "Justin"
+    }
   end
 
   def new
