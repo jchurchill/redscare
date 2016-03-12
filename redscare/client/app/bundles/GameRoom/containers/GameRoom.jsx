@@ -9,7 +9,9 @@ import connectWebsocket from 'lib/websocket/websocket'
 // Simple example of a React "smart" component
 class GameRoom extends React.Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    actions: PropTypes.shape({
+      updateName: PropTypes.func.isRequired
+    }).isRequired,
     $$gameRoomStore: PropTypes.instanceOf(Immutable.Map).isRequired,
   };
 
