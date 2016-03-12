@@ -1,11 +1,15 @@
 import React, { PropTypes } from 'react';
-import _ from 'lodash';
+import { connect } from 'react-redux';
+import Immutable from 'immutable';
+import { bindActionCreators } from 'redux';
+import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
 
-export default class GameRoomContainer extends React.Component {
+class GameRoomContainer extends React.Component {
   static propTypes = {
-    gameIndexPath: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    updateName: PropTypes.func.isRequired
+    actions: PropTypes.shape({
+      updateName: PropTypes.func.isRequired
+    }).isRequired,
+    $$gameRoomStore: PropTypes.instanceOf(Immutable.Map).isRequired,
   };
 
   constructor(props, context) {
@@ -14,11 +18,13 @@ export default class GameRoomContainer extends React.Component {
 
   handleChange(e) {
     const name = e.target.value;
-    this.props.updateName(name);
+    this.props.actions.updateName(name);
   }
 
   render() {
-    const { gameIndexPath, name } = this.props;
+    const { $$gameRoomStore } = this.props;
+    const name = $$gameRoomStore.get('name');
+    const gameIndexPath = $$gameRoomStore.get('gameIndexPath');
     return (
       <div>
         <h1>Game#show</h1>
@@ -33,3 +39,14 @@ export default class GameRoomContainer extends React.Component {
     );
   }
 }
+
+
+const mapStateToProps = (state) => {
+  return { $$gameRoomStore: state.$$gameRoomStore };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return { actions: bindActionCreators(gameRoomActionCreators, dispatch) };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameRoomContainer);

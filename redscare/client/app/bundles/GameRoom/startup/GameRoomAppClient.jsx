@@ -18,6 +18,7 @@ export default (props) => {
 };
 
 /*
+
 Notes about what's going on here
 
 1. Provider is a very important part of react-redux.
@@ -34,5 +35,12 @@ Notes about what's going on here
 
 3. GameRoom.jsx is where we end up after that, where we begin rendering our GameRoom component
   It has access to dispatch and $$gameRoomStore thanks to connect.
-  
+
+4. From here on out, anything can have access to the store and the dispatcher as long as it connects.
+  This is because GameRoom is the root component of all other components, so everything is ultimately under it, and therefore within the Provider defined here,
+  which allows connect to work (as explained in (1)).
+  The pattern that we should see is that when "smart" components care about some part of global store state, they connect to the store, and in
+  their mapStateToProps function, they select out the section of it that is relevant to them.
+  Same for mapDispatchToProps - they should be binding action creators for the actions that are relevant to them.
+
 */

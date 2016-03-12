@@ -28,13 +28,8 @@ class GameRoom extends React.Component {
   }
 
   render() {
-    const { actions, $$gameRoomStore } = this.props;
-    const { updateName } = actions;
-    const name = $$gameRoomStore.get('name');
-    const gameIndexPath = $$gameRoomStore.get('gameIndexPath');
-
     return (
-      <GameRoomContainer {...{ gameIndexPath, updateName, name }} />
+      <GameRoomContainer />
     );
   }
 }
@@ -43,8 +38,6 @@ const mapStateToProps = (state) => {
   return { $$gameRoomStore: state.$$gameRoomStore };
 }
 
-// Note: this is the default implementation of this function when
-// nothing is passed to connect for this argument, and is only here for demonstration purposes
 const mapDispatchToProps = (dispatch) => {
   // Add a prop called "actions" which is an object containing the action
   // dispatchers for action creators defined in gameRoomActionCreators 
