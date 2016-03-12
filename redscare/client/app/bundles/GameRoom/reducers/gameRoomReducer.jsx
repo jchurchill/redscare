@@ -1,10 +1,8 @@
-import Immutable from 'immutable';
-
 import actionTypes from '../constants/gameRoomConstants';
 
-export const $$initialState = Immutable.fromJS({
+export const initialState = {
   name: '', // this is the default state that would be used if one were not passed into the store
-});
+};
 
 /**
  * This is a reducer, a pure function with (state, action) => state signature.
@@ -18,14 +16,14 @@ export const $$initialState = Immutable.fromJS({
  * follows a different convention (such as function maps) if it makes sense for your
  * project.
  */
-export default function gameRoomReducer($$state = $$initialState, action) {
+export default function gameRoomReducer(state = initialState, action) {
   const { type, name } = action;
 
   switch (type) {
     case actionTypes.GAME_ROOM_NAME_UPDATE_EXAMPLE:
-      return $$state.set('name', name);
+      return { ...state, name };
 
     default:
-      return $$state;
+      return state;
   }
 }

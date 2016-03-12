@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import GameRoomContainer from '../components/GameRoomContainer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Immutable from 'immutable';
 import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
 import connectWebsocket from 'lib/websocket/websocket'
 
@@ -12,7 +11,7 @@ class GameRoom extends React.Component {
     actions: PropTypes.shape({
       updateName: PropTypes.func.isRequired
     }).isRequired,
-    $$gameRoomStore: PropTypes.instanceOf(Immutable.Map).isRequired,
+    gameRoomStore: PropTypes.object.isRequired,
   };
 
   constructor(props, context) {
@@ -35,7 +34,7 @@ class GameRoom extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { $$gameRoomStore: state.$$gameRoomStore };
+  return { gameRoomStore: state.gameRoomStore };
 }
 
 const mapDispatchToProps = (dispatch) => {
