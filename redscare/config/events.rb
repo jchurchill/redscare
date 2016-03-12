@@ -14,4 +14,10 @@ WebsocketRails::EventMap.describe do
 
   subscribe :new_message, to: ChatWebsocketController, with_method: :new_message
   subscribe :client_connected, to: ChatWebsocketController, with_method: :client_connected
+
+  namespace :game_room do
+    [:join_room, :leave_room, :start_game].each do |action|
+      subscribe action, :to => WaitingRoomController, with_method: action
+    end
+  end
 end

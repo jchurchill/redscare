@@ -3,13 +3,12 @@ import GameRoomContainer from '../components/GameRoomContainer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
-import connectWebsocket from 'lib/websocket/websocket'
+import websocket from 'lib/websocket/websocket'
 
-// Simple example of a React "smart" component
 class GameRoom extends React.Component {
   static propTypes = {
     actions: PropTypes.shape({
-      updateName: PropTypes.func.isRequired
+      updateConnectionStatus: PropTypes.func.isRequired
     }).isRequired,
     gameRoomStore: PropTypes.object.isRequired,
   };
@@ -20,15 +19,33 @@ class GameRoom extends React.Component {
 
   // Connect to the websocket once the component is first mounted
   componentDidMount() {
-    connectWebsocket({
+    const { updateConnectionStatus } = this.props.actions
+    websocket.initialize({
       root: "localhost:3000",
-      onOpen: (data) => console.log("Game room websocket connection established", data.connection_id)
+      onOpen: (data, ws) => {
+        console.log("Game room websocket connection established", data.connection_id);
+        updateConnectionStatus(true);
+      },
+      onClose: (data, ws) => {
+        console.log("Game room websocket connection closed", data);
+        updateConnectionStatus(false);
+      },
+      onError: (data, ws) => {
+        console.log("Game room websocket connection encountered error", data);
+        updateConnectionStatus(false);
+      }
     })
   }
 
   render() {
+    const { connected } = this.props.gameRoomStore
     return (
-      <GameRoomContainer />
+      <div>
+        <div>
+          { connected ? "Connected to server!" : "Not connected to server." }
+        </div>
+        <GameRoomContainer />
+      </div>
     );
   }
 }

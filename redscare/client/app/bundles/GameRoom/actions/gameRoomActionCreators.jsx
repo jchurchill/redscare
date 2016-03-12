@@ -1,8 +1,8 @@
 import actionTypes from '../constants/gameRoomConstants';
 
-export function updateName(name) {
+export function updateConnectionStatus(connected) {
   return {
-    type: actionTypes.GAME_ROOM_NAME_UPDATE_EXAMPLE,
-    name,
+    type: actionTypes.CONNECTION_STATUS_UPDATED,
+    connected
   };
 }
