@@ -4,16 +4,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Immutable from 'immutable';
 import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
+import connectWebsocket from 'lib/websocket/websocket'
 
 // Simple example of a React "smart" component
 class GameRoom extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-
-    // This corresponds to the value used in function select above.
-    // We prefix all property and variable names pointing to Immutable.js objects with '$$'.
-    // This allows us to immediately know we don't call $$gameRoomStore['someProperty'], but
-    // instead use the Immutable.js `get` API for Immutable.Map
     $$gameRoomStore: PropTypes.instanceOf(Immutable.Map).isRequired,
   };
 
@@ -21,9 +17,16 @@ class GameRoom extends React.Component {
     super(props, context);
   }
 
+  // Connect to the websocket once the component is first mounted
+  componentDidMount() {
+    connectWebsocket({
+      root: "localhost:3000",
+      onOpen: (data) => console.log("Game room websocket connection established", data.connection_id)
+    })
+  }
+
   render() {
-    const { dispatch, $$gameRoomStore } = this.props;
-    const actions = bindActionCreators(gameRoomActionCreators, dispatch);
+    const { actions, $$gameRoomStore } = this.props;
     const { updateName } = actions;
     const name = $$gameRoomStore.get('name');
     const gameIndexPath = $$gameRoomStore.get('gameIndexPath');
@@ -34,13 +37,19 @@ class GameRoom extends React.Component {
   }
 }
 
-// Don't forget to actually use connect!
-// Note that we don't export GameRoom, but the redux "connected" version of it.
-// See https://github.com/reactjs/react-redux/blob/master/docs/api.md#examples
-export default connect(
-  (state) => {
-    // Which part of the Redux global state does our component want to receive as props?
-    // Note the use of `$$` to prefix the property name because the value is of type Immutable.js
-    return { $$gameRoomStore: state.$$gameRoomStore };
-  })
-  (GameRoom);
+const mapStateToProps = (state) => {
+  return { $$gameRoomStore: state.$$gameRoomStore };
+}
+
+// Note: this is the default implementation of this function when
+// nothing is passed to connect for this argument, and is only here for demonstration purposes
+const mapDispatchToProps = (dispatch) => {
+  // Add a prop called "actions" which is an object containing the action
+  // dispatchers for action creators defined in gameRoomActionCreators 
+  return { actions: bindActionCreators(gameRoomActionCreators, dispatch) };
+}
+
+// Make the store API available to this compnent.
+// Specifically, provide it with props from store state, 
+// and provide it with props based on the store dispatch
+export default connect(mapStateToProps, mapDispatchToProps)(GameRoom);

@@ -10,11 +10,6 @@ export default class GameRoomContainer extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-
-    // Uses lodash to bind all methods to the context of the object instance, otherwise
-    // the methods defined here would not refer to the component's class, not the component
-    // instance itself.
-    _.bindAll(this, 'handleChange');
   }
 
   handleChange(e) {
@@ -30,7 +25,7 @@ export default class GameRoomContainer extends React.Component {
         <p>Find me in app/views/game/show.html.erb</p>
         <div>
           <h2>Hello, {name}!</h2>
-          <input type="text" value={name} onChange={this.handleChange} />
+          <input type="text" value={name} onChange={this.handleChange.bind(this)} />
         </div>
         <hr/>
         <a href={gameIndexPath}>Back to games</a>
