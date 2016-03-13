@@ -17,7 +17,7 @@ WebsocketRails::EventMap.describe do
 
   namespace :game_room do
     [:join_room, :leave_room, :start_game].each do |action|
-      subscribe action, :to => WaitingRoomController, with_method: action
+      subscribe action, to: WaitingRoomController, with_method: action
     end
   end
 end
