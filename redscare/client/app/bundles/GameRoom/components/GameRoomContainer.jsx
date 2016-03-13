@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
 import PlayerWaitingRoom from '../components/PlayerWaitingRoom';
+import { gameStates } from '../constants/gameRoomConstants';
 
 class GameRoomContainer extends React.Component {
   static propTypes = {
@@ -16,13 +17,18 @@ class GameRoomContainer extends React.Component {
   }
 
   render() {
-    const { name, gameIndexPath } = this.props.gameRoomStore
+    const { game, name, gameIndexPath } = this.props.gameRoomStore
     return (
       <div>
         <h1>Game#show</h1>
         <p>Find me in app/views/game/show.html.erb</p>
         <hr/>
-        <PlayerWaitingRoom />
+        {(() => {
+          switch (game.state) {
+            case gameStates.CREATED: return <PlayerWaitingRoom />
+            default: return <div>{`View for game state ${game.state} not yet implemented`}</div>
+          }
+        })()}
         <hr/>
         <a href={gameIndexPath}>Back to games</a>
       </div>

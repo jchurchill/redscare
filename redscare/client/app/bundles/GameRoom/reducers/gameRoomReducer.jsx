@@ -1,6 +1,7 @@
-import { actionTypes } from '../constants/gameRoomConstants';
+import { actionTypes, gameStates } from '../constants/gameRoomConstants';
 
 export const initialState = {
+  game: { state: gameStates.CREATED }
 };
 
 /**
