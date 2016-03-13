@@ -1,6 +1,6 @@
 import mirrorCreator from 'mirror-creator';
 
-const actionTypes = mirrorCreator([
+export const actionTypes = mirrorCreator([
   'CONNECTION_STATUS_UPDATED', // Referring to websocket status
   'JOIN_ROOM', // When user chooses to join
   'LEAVE_ROOM', // When user chooses to leave
@@ -10,4 +10,3 @@ const actionTypes = mirrorCreator([
   'GAME_STARTED', // When server tells us room leader started the game
 ]);
 
-export default actionTypes;

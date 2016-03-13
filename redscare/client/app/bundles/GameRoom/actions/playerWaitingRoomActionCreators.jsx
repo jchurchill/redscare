@@ -1,4 +1,4 @@
-import actionTypes from '../constants/gameRoomConstants';
+import { actionTypes } from '../constants/gameRoomConstants';
 
 export function joinRoom(gameId) {
   return { type: actionTypes.JOIN_ROOM, gameId };
