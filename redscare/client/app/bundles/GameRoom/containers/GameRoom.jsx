@@ -10,7 +10,7 @@ class GameRoom extends React.Component {
     actions: PropTypes.shape({
       updateConnectionStatus: PropTypes.func.isRequired
     }).isRequired,
-    gameRoomStore: PropTypes.object.isRequired,
+    connected: PropTypes.bool.isRequired,
   };
 
   constructor(props, context) {
@@ -38,20 +38,21 @@ class GameRoom extends React.Component {
   }
 
   render() {
-    const { connected } = this.props.gameRoomStore
+    const { connected } = this.props
     return (
       <div>
+        <GameRoomContainer />
         <div>
           { connected ? "Connected to server!" : "Not connected to server." }
         </div>
-        <GameRoomContainer />
       </div>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  return { gameRoomStore: state.gameRoomStore };
+  const { connected } = state.gameRoomStore;
+  return { connected };
 }
 
 const mapDispatchToProps = (dispatch) => {

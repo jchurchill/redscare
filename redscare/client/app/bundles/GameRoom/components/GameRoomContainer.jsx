@@ -9,26 +9,29 @@ class GameRoomContainer extends React.Component {
   static propTypes = {
     actions: PropTypes.shape({
     }).isRequired,
-    gameRoomStore: PropTypes.object.isRequired,
+    game: PropTypes.object.isRequired,
+    gameIndexPath: PropTypes.string.isRequired
   };
 
   constructor(props, context) {
     super(props, context);
   }
 
+  getGameView(game) {
+    switch (game.state) {
+      case gameStates.CREATED: return <PlayerWaitingRoom />
+      default: return <div>{`View for game state '${game.state}' not yet implemented`}</div>
+    }
+  }
+
   render() {
-    const { game, name, gameIndexPath } = this.props.gameRoomStore
+    const { game, gameIndexPath } = this.props
     return (
       <div>
-        <h1>Game#show</h1>
-        <p>Find me in app/views/game/show.html.erb</p>
+        <h1>{game.name}</h1>
+        <div style={{fontStyle:"italic"}}>{game.player_count} players</div>
         <hr/>
-        {(() => {
-          switch (game.state) {
-            case gameStates.CREATED: return <PlayerWaitingRoom />
-            default: return <div>{`View for game state ${game.state} not yet implemented`}</div>
-          }
-        })()}
+          {this.getGameView(game)}
         <hr/>
         <a href={gameIndexPath}>Back to games</a>
       </div>
@@ -38,7 +41,8 @@ class GameRoomContainer extends React.Component {
 
 
 const mapStateToProps = (state) => {
-  return { gameRoomStore: state.gameRoomStore };
+  const { game, gameIndexPath } = state.gameRoomStore
+  return { game, gameIndexPath };
 }
 
 const mapDispatchToProps = (dispatch) => {

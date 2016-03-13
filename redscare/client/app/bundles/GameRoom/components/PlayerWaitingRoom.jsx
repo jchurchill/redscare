@@ -15,7 +15,7 @@ class PlayerWaitingRoom extends React.Component {
     const { name, gameIndexPath } = this.props.gameRoomStore
     return (
       <div>
-        
+        <h2>Waiting for players</h2>
       </div>
     );
   }

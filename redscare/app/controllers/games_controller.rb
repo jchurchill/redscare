@@ -18,10 +18,11 @@ class GamesController < ApplicationController
   end
 
   def show
+    # TODO: remove private information
     game = Game.find(params[:id])
     @game_room_props = {
       :gameIndexPath => games_path,
-      :name => "Justin"
+      :game => game
     }
   end
 

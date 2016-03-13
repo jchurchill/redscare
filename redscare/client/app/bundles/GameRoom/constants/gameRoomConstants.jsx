@@ -12,25 +12,25 @@ export const actionTypes = mirrorCreator([
 
 export const gameStates = Object.freeze({
   // Game is created and looking for players
-  CREATED: 1,
+  CREATED: "created",
   // Game's players and roles finalized; rounds w/ nomination and missions occur; this is the majority of the game
-  ROUNDS_IN_PROGRESS: 2,
+  ROUNDS_IN_PROGRESS: "rounds_in_progress",
   // Good guys have 3 passed missions, but assassin / seer are in the game, and assassin is making his decision on who to kill
-  ASSASSINATION: 3,
+  ASSASSINATION: "assassination",
   // The game is over, and the outcome can be seen in the outcome property
-  COMPLETE: 4,
+  COMPLETE: "complete",
   // The game ended before completion because it was cancelled for some reason (e.g., player left)
-  CANCELLED: -1
+  CANCELLED: "cancelled"
 });
 
 export const gameOutcomes = Object.freeze({
   // Good guys get 3 passed missions (and seer is not killed)
-  GOOD_WINS_NORMALLY: 1,
+  GOOD_WINS_NORMALLY: "good_wins_normally",
   // Bad guys get 3 failed missions
-  EVIL_WINS_NORMALLY: 2,
+  EVIL_WINS_NORMALLY: "evil_wins_normally",
   // Good guys get 3 passed missions, but seer is killed by assassin
-  EVIL_WINS_FROM_ASSASSINATION: 3,
+  EVIL_WINS_FROM_ASSASSINATION: "evil_wins_from_assassination",
   // A round's 5th nomination is rejected, causing the bad guys to instantly win
-  EVIL_WINS_FROM_NOMINATION_FAILURE: 4
+  EVIL_WINS_FROM_NOMINATION_FAILURE: "evil_wins_from_nomination_failure"
 });
 

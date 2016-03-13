@@ -1,7 +1,7 @@
 import { actionTypes, gameStates } from '../constants/gameRoomConstants';
 
 export const initialState = {
-  game: { state: gameStates.CREATED }
+  connected: false
 };
 
 /**
