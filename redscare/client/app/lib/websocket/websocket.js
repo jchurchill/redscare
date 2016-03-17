@@ -22,6 +22,10 @@
   // Listen to messages of a certain type
   dispatcher.bind('comments.new', (comment) => console.log('just received new comment: ' + comment.title));
 
+  // Listen to messages of a certain type, on a specific channel
+  dispatcher.subscribe("my_channel")
+      .bind('comments.new', (comment) => console.log('just received new comment: ' + comment.title));
+
   // Unlisten to messages of a certain type
   dispatcher.unbind('comments.new');
 
@@ -51,7 +55,7 @@ const initialize = ({ root, onOpen, onClose, onError }) => {
 const getDispatcher = () => {
   if (!websocket) {
     // Must call initialize first to setup singleton instance
-    throw "Websocket connection not initialized!"
+    throw { message: "Websocket connection not initialized!" }
   }
 
   return websocket;
