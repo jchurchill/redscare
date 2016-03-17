@@ -17,8 +17,8 @@ class GameRoom extends React.Component {
     super(props, context);
   }
 
-  // Connect to the websocket once the component is first mounted
-  componentDidMount() {
+  // Initialize the websocket as this main component is spinning up
+  componentWillMount() {
     const { updateConnectionStatus } = this.props.actions
     websocket.initialize({
       root: "localhost:3000",

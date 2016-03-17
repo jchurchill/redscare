@@ -1,15 +1,15 @@
 import { actionTypes } from '../constants/gameRoomConstants';
 
-export function joinRoom(gameId) {
-  return { type: actionTypes.JOIN_ROOM, gameId };
+export function joinRoom(user) {
+  return { type: actionTypes.JOIN_ROOM, user };
 }
 
-export function leaveRoom(gameId) {
-  return { type: actionTypes.LEAVE_ROOM, gameId };
+export function leaveRoom(user) {
+  return { type: actionTypes.LEAVE_ROOM, user };
 }
 
-export function startGame(gameId) {
-  return { type: actionTypes.START_GAME, gameId };
+export function startGame() {
+  return { type: actionTypes.START_GAME };
 }
 
 export function playerJoined(gamePlayers) {
