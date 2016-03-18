@@ -6,5 +6,7 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+  def assert_collection_equal (expected, actual)
+    assert_equal expected.sort, actual.sort
+  end
 end

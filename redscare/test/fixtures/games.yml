@@ -12,3 +12,12 @@ vanilla_6:
   includes_seer_deception: false
   includes_evil_master: false
   includes_rogue_evil: false
+
+vanilla_6_ready_to_start:
+  name: "My vanilla 6-player game"
+  player_count: 6
+  creator: user_1
+  includes_seer: true
+  includes_seer_deception: true
+  includes_evil_master: false
+  includes_rogue_evil: false

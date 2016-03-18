@@ -10,3 +10,9 @@ vanilla_6_player_<%= n %>:
   user: user_<%= n %>
   role: <%= n <= 4 ? GamePlayer.roles[:good_normal] : GamePlayer.roles[:evil_normal] %>
 <% end %>
+
+<% (1..6).each do |n| %>
+vanilla_6_ready_to_start_player_<%= n %>:
+  game: vanilla_6_ready_to_start
+  user: user_<%= n %>
+<% end %>

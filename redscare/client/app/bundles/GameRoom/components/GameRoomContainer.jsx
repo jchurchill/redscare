@@ -25,12 +25,32 @@ class GameRoomContainer extends React.Component {
     }
   }
 
+  getEvilCount(playerCount) {
+    return { 5: 2, 6: 2, 7: 3, 8: 3, 9: 4, 10: 4 }[playerCount];
+  }
+
   render() {
     const { game, gameIndexPath } = this.props
+    const playerCount = game.player_count
+    const roleSelections = [
+      { text: "Seer & Assassin", enabled: game.includes_seer },
+      { text: "Seer-knower & False seer", enabled: game.includes_seer_deception },
+      { text: "Rogue evil", enabled: game.includes_rogue_evil },
+      { text: "Evil master", enabled: game.includes_evil_master },
+    ]
     return (
       <div>
         <h1>{game.name}</h1>
-        <div style={{fontStyle:"italic"}}>{game.player_count} players</div>
+        <div style={{fontStyle:"italic"}}>{playerCount} players - {this.getEvilCount(playerCount)} evil</div>
+        <div>
+          <h4>Included special roles</h4>
+          <div>
+            {roleSelections.map((rs, i) => rs.enabled
+              ? <span key={i} style={{ margin: '0 5px', padding: '5px', border: '1px solid black' }}>{rs.text}</span>
+              : <span key={i} style={{ margin: '0 5px', padding: '5px', border: '1px solid gray', color: 'silver' }}>{rs.text}</span>
+            )}
+          </div>
+        </div>
         <hr/>
           {this.getGameView(game)}
         <hr/>

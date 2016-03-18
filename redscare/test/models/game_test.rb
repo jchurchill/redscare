@@ -72,4 +72,22 @@ class GameTest < ActiveSupport::TestCase
       assert_includes game.rounds, rounds(:"vanilla_6_round_#{id}")
     end
   end
+
+  test "game start" do
+    game = games(:vanilla_6_ready_to_start)
+    game.start!
+
+    assert_equal "rounds_in_progress", game.state
+    assert_equal 6, game.players.count
+
+    roles = game.players.map { |gp| gp.role }
+    expected_roles = [:seer, :seer_knower, :assassin, :false_seer, :good_normal, :good_normal].map { |r| r.to_s }
+    assert_collection_equal expected_roles, roles
+    
+    assert_equal 1, game.rounds.count
+    round = game.rounds.first
+    assert_equal 1, round.round_number
+    assert_equal "nomination", round.state
+    assert_nil round.outcome
+  end
 end

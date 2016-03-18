@@ -33,8 +33,7 @@ class WaitingRoomController < WebsocketRails::BaseController
     game = Game.find(game_id)
     # TODO: validation to prevent race conditions
     # TODO: validation that current user is game creator
-    game.rounds_in_progress!
-    game.save!
+    game.start!
 
     # Send back the new entire game state
     game_client(game.id).trigger :game_started, game.get_public_state, :namespace => 'game_room'
