@@ -20,10 +20,7 @@ class GamesController < ApplicationController
   def show
     # TODO: remove private information
     game = Game.find(params[:id]);
-    game_info = game.as_json(include: {
-        # include the list of players, but not their secret role
-        players: { include: :user, only: :user }
-      })
+    game_info = game.get_public_state
 
     @game_room_props = {
       :gameIndexPath => games_path,

@@ -25,6 +25,8 @@ export default function gameRoomReducer(state = initialState, action) {
     case actionTypes.LEAVE_ROOM:
     case actionTypes.PLAYER_JOINED:
     case actionTypes.PLAYER_LEFT:
+    case actionTypes.START_GAME:
+    case actionTypes.GAME_STARTED:
       return { ...state, game: gameReducer(state.game, action) };
 
     default:
@@ -39,6 +41,13 @@ function gameReducer(state, action) {
     case actionTypes.PLAYER_JOINED:
     case actionTypes.PLAYER_LEFT:
       return { ...state, players: gamePlayersReducer(state.players, action) };
+
+    case actionTypes.START_GAME:
+      return { ...state, state: gameStates.ROUNDS_IN_PROGRESS };
+
+    case actionTypes.GAME_STARTED:
+      // Entire game state is received from the server
+      return action.gameState;
 
     default:
       return state;

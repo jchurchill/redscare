@@ -52,6 +52,8 @@ const initialize = ({ root, onOpen, onClose, onError }) => {
   configure(onError, (ws, f) => ws.bind('connection_error', f));
 };
 
+// Gets the base dispatcher that was initialized.
+// Has the full API of websocket-rails (https://github.com/websocket-rails/websocket-rails).
 const getDispatcher = () => {
   if (!websocket) {
     // Must call initialize first to setup singleton instance
@@ -61,4 +63,26 @@ const getDispatcher = () => {
   return websocket;
 }
 
-export default { initialize, getDispatcher }
+// Wraps the API of the websocket to reduce confusion around 
+// how to communicate on the channel.
+const gameClientFactory = (gameId) => {
+    const dispatcher = getDispatcher();
+    const listener = dispatcher.subscribe(`game_room:${gameId}`);
+    // Send messages to the server in the context of this game
+    const trigger = (eventName, data, success, failure) => {
+      // Include game_id in every message to the server
+      dispatcher.trigger(eventName, { game_id: gameId, message: data }, success, failure);
+    }
+    // Listen to messages from the server on the game's channel
+    const bind = (eventName, callback) => {
+      listener.bind(eventName, callback);
+    }
+    // Stop listening to messages from the server on the game's channel
+    const unbind = (eventName) => {
+      listener.unbind(eventName);
+    }
+
+    return { trigger, bind, unbind };
+}
+
+export default { initialize, getDispatcher, gameClientFactory }

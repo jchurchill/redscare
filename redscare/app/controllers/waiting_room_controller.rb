@@ -4,27 +4,53 @@ class WaitingRoomController < WebsocketRails::BaseController
   end
 
   def join_room
-    game = Game.find(message[:game_id])
-    user = User.find(message[:user_id])
+    user_id = message_data[:user_id]
+    
+    game = Game.find(game_id)
+    user = User.find(user_id)
+    # TODO: validation to prevent race conditions
     game.players << GamePlayer.new(user: user)
     game.save!
 
+    # Send back the new list of users
     game_players = game.players.map { |p| p.as_json({ include: :user, only: :user }) }
-    p :"game_#{game.id}"
-    WebsocketRails[:"game_#{game.id}"].trigger :player_joined, game_players, :namespace => 'game_room'
+    game_client(game.id).trigger :player_joined, game_players, :namespace => 'game_room'
   end
 
   def leave_room
-    game = Game.find(message[:game_id])
-    game.players.where(user_id: message[:user_id]).destroy_all
+    user_id = message_data[:user_id]
 
+    game = Game.find(game_id)
+    # TODO: validation to prevent race conditions
+    game.players.where(user_id: user_id).destroy_all
+
+    # Send back the new list of users
     game_players = game.players.map { |p| p.as_json({ include: :user, only: :user }) }
-    p :"game_#{game.id}"
-    WebsocketRails[:"game_#{game.id}"].trigger :player_left, game_players, :namespace => 'game_room'
+    game_client(game.id).trigger :player_left, game_players, :namespace => 'game_room'
   end
 
   def start_game
-    #broadcast_message :game_started, { }
+    game = Game.find(game_id)
+    # TODO: validation to prevent race conditions
+    # TODO: validation that current user is game creator
+    game.rounds_in_progress!
+    game.save!
+
+    # Send back the new entire game state
+    game_client(game.id).trigger :game_started, game.get_public_state, :namespace => 'game_room'
   end
+
+  private
+    def game_client (game_id)
+      WebsocketRails[:"game_room:#{game_id}"]
+    end
+
+    def game_id
+      message[:game_id]
+    end
+
+    def message_data
+      message[:message]
+    end
 
 end

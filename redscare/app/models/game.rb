@@ -46,4 +46,11 @@ class Game < ActiveRecord::Base
   has_many :players, -> { includes :user }, class_name: "GamePlayer"
 
   has_many :rounds, inverse_of: :game
+
+  def get_public_state
+    self.as_json(include: {
+        # include the list of players, but not their secret role
+        players: { include: :user, only: :user }
+      })
+  end
 end
