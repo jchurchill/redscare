@@ -50,7 +50,28 @@ class Game < ActiveRecord::Base
   def get_public_state
     self.as_json(include: {
         # include the list of players, but not their secret role
-        players: { include: :user, only: :user }
+        players: {
+          include: :user,
+          only: :user
+        },
+        rounds: {
+          include: {
+            operatives: {
+              include: :user,
+              # include the list of mission-goers, but not their submission
+              only: :user
+            },
+            nominations: {
+              include: {
+                nominees: {},
+                votes: {
+                  # TODO: don't expose upvote / downvote until nomination complete
+                  include: :user
+                }
+              }
+            }
+          }
+        }
       })
   end
 end
