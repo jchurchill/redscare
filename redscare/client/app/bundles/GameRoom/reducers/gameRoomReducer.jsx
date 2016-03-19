@@ -1,7 +1,7 @@
-import { actionTypes, gameStates } from '../constants/gameRoomConstants';
+import { actionTypes, gameStates, connectionStates } from '../constants/gameRoomConstants';
 
 export const initialState = {
-  connected: false
+  connectionState: connectionStates.CONNECTING
 };
 
 /**
@@ -19,7 +19,7 @@ export const initialState = {
 export default function gameRoomReducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.CONNECTION_STATUS_UPDATED:
-      return { ...state, connected: action.connected };
+      return { ...state, connectionState: action.connectionState };
 
     case actionTypes.JOIN_ROOM:
     case actionTypes.LEAVE_ROOM:

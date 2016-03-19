@@ -13,6 +13,12 @@ export const actionTypes = mirrorCreator([
   //'',
 ]);
 
+export const connectionStates = mirrorCreator([
+  'CONNECTING',
+  'CONNECTED',
+  'DISCONNECTED'
+]);
+
 export const gameStates = Object.freeze({
   // Game is created and looking for players
   CREATED: "created",
