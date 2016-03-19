@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import GameRoundDisplay from './GameRoundDisplay';
 import Game from 'lib/game/gameHelper';
+import Round from 'lib/game/roundHelper';
 
 class GameStateDisplay extends React.Component {
   static propTypes = {
@@ -14,7 +15,7 @@ class GameStateDisplay extends React.Component {
   getAllRoundsInfo() {
     const { game } = this.props
     // dictionary: (round_number) => round info
-    const existingRounds = game.rounds.reduce((rs, r) => { rs[r.round_number] = r; return rs; }, {})
+    const existingRounds = game.rounds.reduce((rs, r) => { rs[r.roundNumber] = r; return rs; }, {})
     return [1,2,3,4,5].map((i) => ({ roundNumber: i, info: existingRounds[i] }));
   }
 
@@ -34,11 +35,11 @@ class GameStateDisplay extends React.Component {
                 if (!r.info) { return { ...sharedStyle, color: 'silver' } }
                 let moreStyle;
                 switch (r.info.outcome) {
-                  case roundOutcomes.SUCCESS:
+                  case Round.outcomes.SUCCESS:
                     moreStyle = { color: 'blue', backgroundColor: 'cyan' }
                     break;
-                  case roundOutcomes.FAILURE:
-                  case roundOutcomes.OUT_OF_NOMINATIONS:
+                  case Round.outcomes.FAILURE:
+                  case Round.outcomes.OUT_OF_NOMINATIONS:
                     moreStyle = { color: 'red', backgroundColor: 'pink' }
                     break;
                   default:
