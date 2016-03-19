@@ -1,4 +1,5 @@
-import { actionTypes, gameStates, connectionStates } from '../constants/gameRoomConstants';
+import { actionTypes, connectionStates } from '../constants/gameRoomConstants';
+import Game from 'lib/game/gameHelper';
 
 export const initialState = {
   connectionState: connectionStates.CONNECTING
@@ -43,7 +44,7 @@ function gameReducer(state, action) {
       return { ...state, players: gamePlayersReducer(state.players, action) };
 
     case actionTypes.START_GAME:
-      return { ...state, state: gameStates.ROUNDS_IN_PROGRESS };
+      return { ...state, state: Game.states.ROUNDS_IN_PROGRESS };
 
     case actionTypes.GAME_STARTED:
       // Entire game state is received from the server
@@ -57,7 +58,7 @@ function gameReducer(state, action) {
 function gamePlayersReducer(state, action) {
   switch(action.type) {
     case actionTypes.JOIN_ROOM:
-      return [ ...state, { user: action.user } ];
+      return [ ...state, { user: action.user.stateObject } ];
 
     case actionTypes.LEAVE_ROOM:
       return state.filter((p) => p.user.id !== action.user.id);

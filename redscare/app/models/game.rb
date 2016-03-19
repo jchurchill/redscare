@@ -119,6 +119,7 @@ class Game < ActiveRecord::Base
 
   def get_public_state
     self.as_json(include: {
+        creator: {},
         # include the list of players, but not their secret role
         players: {
           include: :user,

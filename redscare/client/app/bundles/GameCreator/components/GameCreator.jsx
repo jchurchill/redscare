@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import * as gameRules from 'lib/game/gameRules'
+import * as gameRules from 'lib/game/gameRules.js'
 
 // Default role state when coming to page or resetting number of players
 const defaultRoleState = {

@@ -1,31 +1,27 @@
 import React, { PropTypes } from 'react';
-import { roundOutcomes } from '../constants/gameRoomConstants'
 import GameRoundDisplay from './GameRoundDisplay';
+import Game from 'lib/game/gameHelper';
 
 class GameStateDisplay extends React.Component {
   static propTypes = {
-    game: PropTypes.object.isRequired
+    game: PropTypes.instanceOf(Game).isRequired
   };
 
   constructor(props, context) {
     super(props, context);
   }
 
-  getGameStateInfo() {
+  getAllRoundsInfo() {
     const { game } = this.props
-    const gameRounds = (game.rounds || [])
     // dictionary: (round_number) => round info
-    const existingRounds = gameRounds.reduce((rs, r) => { rs[r.round_number] = r; return rs; }, {})
-    const allRounds = [1,2,3,4,5].map((i) => ({ roundNumber: i, info: existingRounds[i] }));
-    return {
-      currentRoundInfo : existingRounds[gameRounds.length],
-      rounds: allRounds
-    }
+    const existingRounds = game.rounds.reduce((rs, r) => { rs[r.round_number] = r; return rs; }, {})
+    return [1,2,3,4,5].map((i) => ({ roundNumber: i, info: existingRounds[i] }));
   }
 
   render() {
-    const { currentRoundInfo, rounds } = this.getGameStateInfo()
-    if (!currentRoundInfo) {
+    const { game } = this.props
+    const rounds = this.getAllRoundsInfo()
+    if (!game.currentRound) {
       return <div></div>;
     }
     return (
@@ -36,7 +32,7 @@ class GameStateDisplay extends React.Component {
               <div key={r.roundNumber} style={(()=>{
                 const sharedStyle = { display: 'inline-block', margin: '5px', padding: '5px', border: '1px solid black', borderRadius: '3px' }
                 if (!r.info) { return { ...sharedStyle, color: 'silver' } }
-                var moreStyle;
+                let moreStyle;
                 switch (r.info.outcome) {
                   case roundOutcomes.SUCCESS:
                     moreStyle = { color: 'blue', backgroundColor: 'cyan' }
@@ -55,7 +51,7 @@ class GameStateDisplay extends React.Component {
             )
           }
         </div>
-        <GameRoundDisplay round={currentRoundInfo} />
+        <GameRoundDisplay round={game.currentRound} />
       </div>
     );
   }

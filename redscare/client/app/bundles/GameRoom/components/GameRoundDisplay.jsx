@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
-import { roundOutcomes } from '../constants/gameRoomConstants'
+import Round from 'lib/game/roundHelper';
 
 class GameRoundDisplay extends React.Component {
   static propTypes = {
-    round: PropTypes.object.isRequired
+    round: PropTypes.instanceOf(Round).isRequired
   };
 
   constructor(props, context) {

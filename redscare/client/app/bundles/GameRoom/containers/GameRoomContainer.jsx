@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
 import { connectionStates } from '../constants/gameRoomConstants';
+import Game from 'lib/game/gameHelper';
 import websocket from 'lib/websocket/websocket'
 
 class GameRoomContainer extends React.Component {
@@ -12,7 +13,7 @@ class GameRoomContainer extends React.Component {
       updateConnectionStatus: PropTypes.func.isRequired
     }).isRequired,
     connectionState: PropTypes.string.isRequired,
-    game: PropTypes.object.isRequired,
+    game: PropTypes.instanceOf(Game).isRequired,
     links: PropTypes.shape({
       games: PropTypes.string.isRequired,
       host: PropTypes.string.isRequired
@@ -80,7 +81,7 @@ class GameRoomContainer extends React.Component {
 
 const mapStateToProps = (state) => {
   const { connectionState, game } = state.gameRoomStore;
-  return { connectionState, game };
+  return { connectionState, game: new Game(game) };
 }
 
 const mapDispatchToProps = (dispatch) => {

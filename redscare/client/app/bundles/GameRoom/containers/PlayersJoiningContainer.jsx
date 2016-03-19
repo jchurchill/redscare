@@ -3,11 +3,15 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as playerWaitingRoomActionCreators from '../actions/playerWaitingRoomActionCreators';
 import websocket from 'lib/websocket/websocket';
+import Game from 'lib/game/gameHelper';
+import User from 'lib/game/userHelper';
+
+let gameClient;
 
 class PlayersJoiningContainer extends React.Component {
   static propTypes = {
-      game: PropTypes.object.isRequired,
-      user: PropTypes.object.isRequired
+      game: PropTypes.instanceOf(Game).isRequired,
+      user: PropTypes.instanceOf(User).isRequired
   };
 
   constructor(props, context) {
@@ -15,10 +19,10 @@ class PlayersJoiningContainer extends React.Component {
 
     // Bind websocket events once in the constructor.
     // We need props for the game_id to know which channel to listen to.
-    this.gameClient = websocket.gameClientFactory(props.game.id);
-    this.gameClient.bind("game_room.player_joined", this.playerJoined.bind(this));
-    this.gameClient.bind("game_room.player_left", this.playerLeft.bind(this));
-    this.gameClient.bind("game_room.game_started", this.gameStarted.bind(this));
+    gameClient = websocket.gameClientFactory(props.game.id);
+    gameClient.bind("game_room.player_joined", this.playerJoined.bind(this));
+    gameClient.bind("game_room.player_left", this.playerLeft.bind(this));
+    gameClient.bind("game_room.game_started", this.gameStarted.bind(this));
   }
 
   playerJoined(gamePlayers) {
@@ -34,65 +38,56 @@ class PlayersJoiningContainer extends React.Component {
   }
 
   joinGame() {
-    const { game, user, actions } = this.props;
+    const { user, actions } = this.props;
     actions.joinRoom(user);
-    this.gameClient.trigger("game_room.join_room", { user_id: user.id });
+    gameClient.trigger("game_room.join_room", { user_id: user.id });
   }
 
   leaveGame() {
-    const { game, user, actions } = this.props;
+    const { user, actions } = this.props;
     actions.leaveRoom(user);
-    this.gameClient.trigger("game_room.leave_room", { user_id: user.id });
+    gameClient.trigger("game_room.leave_room", { user_id: user.id });
   }
 
   startGame() {
     const { actions } = this.props;
     actions.startGame();
-    this.gameClient.trigger("game_room.start_game");
+    gameClient.trigger("game_room.start_game");
   }
 
   canJoin() {
     const { user, game } = this.props
-    const players = this.getJoinedPlayers()
     // Can join if game still needs players, and you're not currently in the game
-    return players.length < game.player_count 
-        && !players.some((p) => p.id === user.id);
+    return game.players.length < game.playerCount 
+        && !game.players.some((p) => p.id === user.id);
   }
 
   canLeave() {
-    const userId = this.props.user.id
-    const creatorUserId = this.props.game.creator_id
+    const { user, game } = this.props
     // Can leave if you're not the creator and you're currently in the game
-    return !this.isGameCreator() && this.getJoinedPlayers().some((p) => p.id === userId);
+    return !this.isGameCreator() && game.players.some((p) => p.id === user.id);
   }
 
   isGameCreator() {
-    const userId = this.props.user.id
-    const creatorUserId = this.props.game.creator_id
-    return userId === creatorUserId
-  }
-
-  getJoinedPlayers() {
-    const { players } = this.props.game;
-    return players.map((p) => p.user);
+    const { user, game } = this.props
+    return user.id === game.creator.id
   }
 
   isGameReadyToStart() {
     const { game } = this.props;
-    const players = this.getJoinedPlayers();
-    return players.length === game.player_count;
+    return game.players.length === game.playerCount;
   }
 
   render() {
-    const players = this.getJoinedPlayers()
+    const { game } = this.props
     return (
       <div>
         <h2>Waiting for players</h2>
         <h3>Currently in game:</h3>
         <div>
           {
-            players.map((p) => 
-              <div key={p.id} style={{ display: "inline-block", margin: '0 5px', padding: '5px', border: '1px solid black' }}>{p.email}</div>
+            game.players.map((p) => 
+              <div key={p.id} style={{ display: "inline-block", margin: '0 5px', padding: '5px', border: '1px solid black' }}>{p.name}</div>
             )
           }
         </div>
@@ -120,7 +115,10 @@ class PlayersJoiningContainer extends React.Component {
 
 const mapStateToProps = (state) => {
   const { game, user } = state.gameRoomStore;
-  return { game, user };
+  return {
+    game: new Game(game),
+    user: new User(user)
+  };
 }
 
 const mapDispatchToProps = (dispatch) => {

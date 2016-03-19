@@ -1,4 +1,6 @@
 import { compose, createStore, applyMiddleware, combineReducers } from 'redux';
+import Game from 'lib/game/gameHelper';
+import User from 'lib/game/userHelper';
 
 // See
 // https://github.com/gaearon/redux-thunk and http://redux.js.org/docs/advanced/AsyncActions.html
