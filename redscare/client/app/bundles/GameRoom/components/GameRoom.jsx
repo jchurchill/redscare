@@ -37,9 +37,9 @@ class GameRoom extends React.Component {
       <div>
         <h1>{game.name}</h1>
         <div style={{fontStyle:"italic"}}>{playerCount} players - {this.getEvilCount(playerCount)} evil</div>
-        <div>
-          <h4>Included special roles</h4>
-          <div>
+        <div style={{ marginTop: '20px' }}>
+          <div style={{ display: 'inline-block', marginRight: '5px', fontWeight: 'bold' }}>Special roles:</div>
+          <div style={{ display: 'inline-block' }}>
             {roleSelections.map((rs, i) => {
                 const extraStyle = rs.enabled ? { border: '1px solid black' } : { border: '1px solid gray', color: 'silver' };
                 return <div key={i} style={{ display: "inline-block", margin: '0 5px', padding: '5px', ...extraStyle }}>{rs.text}</div>
