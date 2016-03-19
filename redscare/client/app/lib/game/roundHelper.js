@@ -45,6 +45,10 @@ class Round {
         null
       ));
   }
+
+  get currentLeader() {
+    return this.currentNomination.leader;
+  }
 };
 
 Round.states = Object.freeze({

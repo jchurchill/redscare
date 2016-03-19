@@ -23,7 +23,7 @@ class RoundPlayContainer extends React.Component {
 
   isCurrentUserLeader() {
     const { game, user } = this.props
-    return game.currentRound.leader.id == user.id;
+    return game.currentRound.currentLeader.id == user.id;
   }
 
   render() {
@@ -31,6 +31,13 @@ class RoundPlayContainer extends React.Component {
     return (
       <div>
         <h2>Round {game.currentRound.roundNumber}</h2>
+        <div>
+          {
+            this.isCurrentUserLeader()
+            ? <span>You are the round leader.</span>
+            : <span>{game.currentRound.currentLeader.name} is the round leader.</span>
+          }
+        </div>
       </div>
     );
   }

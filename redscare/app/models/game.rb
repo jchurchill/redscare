@@ -134,6 +134,7 @@ class Game < ActiveRecord::Base
             },
             nominations: {
               include: {
+                leader: {},
                 nominees: {},
                 votes: {
                   # TODO: don't expose upvote / downvote until nomination complete
