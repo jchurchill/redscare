@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
-import PlayerWaitingRoom from './PlayerWaitingRoom';
+import PlayersJoiningContainer from '../containers/PlayersJoiningContainer';
+import RoundPlayContainer from '../containers/RoundPlayContainer';
 import GameStateDisplay from './GameStateDisplay';
 import { gameStates } from '../constants/gameRoomConstants';
 import { getEvilRoleCount } from 'lib/game/gameRules';
@@ -16,8 +17,12 @@ class GameRoom extends React.Component {
 
   getGameView(game) {
     switch (game.state) {
-      case gameStates.CREATED: return <PlayerWaitingRoom />
-      default: return <div>{`View for game state '${game.state}' not yet implemented`}</div>
+      case gameStates.CREATED:
+        return <PlayersJoiningContainer />
+      case gameStates.ROUNDS_IN_PROGRESS:
+        return <RoundPlayContainer />
+      default:
+        return <div>{`View for game state '${game.state}' not yet implemented`}</div>
     }
   }
 

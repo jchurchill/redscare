@@ -10,7 +10,8 @@ export const actionTypes = mirrorCreator([
   'PLAYER_LEFT', // When server tells us someone else left
   'GAME_STARTED', // When server tells us room leader started the game
 
-  //'',
+  'NOMINATE', // When user (as round leader) nominates a player
+  'PLAYER_NOMINATED', // When server tells us the round leader nominated a player
 ]);
 
 export const connectionStates = mirrorCreator([

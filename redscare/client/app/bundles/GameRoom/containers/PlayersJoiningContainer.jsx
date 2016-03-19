@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as playerWaitingRoomActionCreators from '../actions/playerWaitingRoomActionCreators';
 import websocket from 'lib/websocket/websocket';
 
-class PlayerWaitingRoom extends React.Component {
+class PlayersJoiningContainer extends React.Component {
   static propTypes = {
       game: PropTypes.object.isRequired,
       user: PropTypes.object.isRequired
@@ -127,4 +127,4 @@ const mapDispatchToProps = (dispatch) => {
   return { actions: bindActionCreators(playerWaitingRoomActionCreators, dispatch) };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlayerWaitingRoom);
+export default connect(mapStateToProps, mapDispatchToProps)(PlayersJoiningContainer);

@@ -67,7 +67,7 @@ class GameRoomContainer extends React.Component {
   render() {
     const { game, links } = this.props
     return (
-      <div>
+      <div style={{ textAlign: 'center' /* center everything! */ }}>
         <GameRoom game={game}/>
         <div>
           <a href={links.games}>Back to games</a>
