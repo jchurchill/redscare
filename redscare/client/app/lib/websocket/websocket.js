@@ -5,8 +5,8 @@
   // Connect a new websocket instance
   import websocket from ...;
   websocket.initialize({
-    // root of the app
-    root: "localhost:3000",
+    // host of the app
+    host: "localhost:3000",
     // optional function to run when connection opens
     onOpen: (data, websocket) => console.log("connection_id", data.connection_id),
     // optional function to run when connection closes
@@ -35,8 +35,8 @@
 let websocket = null;
 
 // Setup our singleton instance
-const initialize = ({ root, onOpen, onClose, onError }) => {
-  websocket = new WebSocketRails(`${root}/websocket`);
+const initialize = ({ host, onOpen, onClose, onError }) => {
+  websocket = new WebSocketRails(`${host}/websocket`);
 
   const configure = (func, configure) => {
     if (typeof(func) === 'function') {

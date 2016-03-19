@@ -2,16 +2,19 @@ import React from 'react';
 import { Provider } from 'react-redux';
 
 import createStore from '../store/gameRoomStore';
-import GameRoom from '../containers/GameRoom';
+import GameRoomContainer from '../containers/GameRoomContainer';
 
 // See documentation for https://github.com/reactjs/react-redux.
 // This is how you get props from the Rails view into the redux store.
 // This code here binds your smart component to the redux store.
 export default (props) => {
-  const store = createStore(props);
+  const { component_props, store_props } = props;
+  // Props from the server: "store_props" goes to the store,
+  // "component_props" goes to the root container
+  const store = createStore(store_props);
   const reactComponent = (
     <Provider store={store}>
-      <GameRoom />
+      <GameRoomContainer { ...component_props } />
     </Provider>
   );
   return reactComponent;

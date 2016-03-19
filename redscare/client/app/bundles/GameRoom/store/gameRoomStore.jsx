@@ -15,9 +15,6 @@ import { initialStates } from '../reducers';
 
 export default props => {
   const { gameRoomState } = initialStates;
-
-  // This is how we get initial props Rails into redux.
-  // TODO: is this how we want to pass them? Do they really need to be part of the store?
   const initialState = {
     gameRoomStore: { ...gameRoomState, ...props },
   };

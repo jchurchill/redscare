@@ -23,9 +23,16 @@ class GamesController < ApplicationController
     game_info = game.get_public_state
 
     @game_room_props = {
-      :gameIndexPath => games_path,
-      :user => current_user,
-      :game => game_info
+      :component_props => {
+        :links => {
+          :games => games_path,
+          :host => request.host_with_port
+        }
+      },
+      :store_props => {
+        :user => current_user,
+        :game => game_info
+      }
     }
   end
 

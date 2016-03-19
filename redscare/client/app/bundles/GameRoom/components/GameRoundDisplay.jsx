@@ -14,7 +14,7 @@ class GameRoundDisplay extends React.Component {
     const { round } = this.props
     return (
       <div style={{ textAlign: 'center' }}>
-        Round {round.round_number}
+        <div>Current status: {round.state}</div>
       </div>
     );
   }

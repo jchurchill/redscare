@@ -1,17 +1,11 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
 import PlayerWaitingRoom from './PlayerWaitingRoom';
 import GameStateDisplay from './GameStateDisplay';
 import { gameStates } from '../constants/gameRoomConstants';
 
-class GameRoomContainer extends React.Component {
+class GameRoom extends React.Component {
   static propTypes = {
-    actions: PropTypes.shape({
-    }).isRequired,
-    game: PropTypes.object.isRequired,
-    gameIndexPath: PropTypes.string.isRequired
+    game: PropTypes.object.isRequired
   };
 
   constructor(props, context) {
@@ -31,7 +25,7 @@ class GameRoomContainer extends React.Component {
   }
 
   render() {
-    const { game, gameIndexPath } = this.props
+    const { game } = this.props
     const playerCount = game.player_count
     const roleSelections = [
       { text: "Seer & Assassin", enabled: game.includes_seer },
@@ -57,20 +51,9 @@ class GameRoomContainer extends React.Component {
         <hr/>
         <GameStateDisplay game={game} />
         <hr/>
-        <a href={gameIndexPath}>Back to games</a>
       </div>
     );
   }
 }
 
-
-const mapStateToProps = (state) => {
-  const { game, gameIndexPath } = state.gameRoomStore
-  return { game, gameIndexPath };
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return { actions: bindActionCreators(gameRoomActionCreators, dispatch) };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(GameRoomContainer);
+export default GameRoom;
