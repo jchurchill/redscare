@@ -26,6 +26,14 @@ class GamePlayer < ActiveRecord::Base
     assassin:     8
   }
 
+  def is_evil?
+    evil_normal? or false_seer? or rogue_evil? or evil_master? or assassin?
+  end
+
+  def is_good?
+    good_normal? or seer? or seer_knower?
+  end
+
   belongs_to :game, inverse_of: :players
   belongs_to :user
 end

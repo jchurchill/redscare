@@ -89,6 +89,10 @@ class Game {
     return this._secrets && gameRules.isRoleEvil(this._secrets.role);
   }
 
+  get roleSecrets() {
+    return this._secrets.role_info;
+  }
+
   getPlayerById(userId) {
     const lookup = memoize("getPlayerById", this,
       () => this.players.reduce((ps, p) => { ps[p.id] = p; return ps; }, {}))
