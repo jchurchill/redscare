@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
+import * as gameRules from 'lib/game/gameRules'
 
 // Default role state when coming to page or resetting number of players
 const defaultRoleState = {
@@ -26,7 +27,7 @@ export default class GameCreator extends React.Component {
     const numPlayers = parseInt(e.target.value, 10);
     var newState = { numPlayers };
     // If number of evil roles has decreased, reset role selection to default too
-    if (this.getEvilRoleCount(numPlayers) < this.getEvilRoleCount(this.state.numPlayers)) {
+    if (gameRules.getEvilRoleCount(numPlayers) < gameRules.getEvilRoleCount(this.state.numPlayers)) {
       newState = { ...newState, ...defaultRoleState };
     }
     this.setState(newState);
@@ -55,29 +56,13 @@ export default class GameCreator extends React.Component {
     }
 
     // The number of total evil roles allowed in this game 
-    const totalEvilRoleCount = this.getEvilRoleCount(this.state.numPlayers);
+    const totalEvilRoleCount = gameRules.getEvilRoleCount(this.state.numPlayers);
     // Each included option adds one evil role to the game
     const currentEvilRoleCount = roleSet.reduce((sum, key) => sum + (this.state[key].include ? 1 : 0), 0);
     // Only allowed to include any new role if there are remaining evil roles
     // Note this assumes that every role selection includes exactly 1 evil,
     // and that evil players are the only constraining factor to the roles
     return currentEvilRoleCount < totalEvilRoleCount;
-  }
-
-  getEvilRoleCount(numPlayers) {
-    switch(numPlayers) {
-      case 5:
-      case 6:
-        return 2;
-      case 7:
-      case 8:
-        return 3;
-      case 9:
-      case 10:
-        return 4;
-      default:
-        throw "invalid player count"
-    }
   }
 
   render() {

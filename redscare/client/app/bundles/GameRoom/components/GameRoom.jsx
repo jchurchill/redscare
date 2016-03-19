@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import PlayerWaitingRoom from './PlayerWaitingRoom';
 import GameStateDisplay from './GameStateDisplay';
 import { gameStates } from '../constants/gameRoomConstants';
+import { getEvilRoleCount } from 'lib/game/gameRules';
 
 class GameRoom extends React.Component {
   static propTypes = {
@@ -20,10 +21,6 @@ class GameRoom extends React.Component {
     }
   }
 
-  getEvilCount(playerCount) {
-    return { 5: 2, 6: 2, 7: 3, 8: 3, 9: 4, 10: 4 }[playerCount];
-  }
-
   render() {
     const { game } = this.props
     const playerCount = game.player_count
@@ -36,7 +33,7 @@ class GameRoom extends React.Component {
     return (
       <div>
         <h1>{game.name}</h1>
-        <div style={{fontStyle:"italic"}}>{playerCount} players - {this.getEvilCount(playerCount)} evil</div>
+        <div style={{fontStyle:"italic"}}>{playerCount} players - {getEvilRoleCount(playerCount)} evil</div>
         <div style={{ marginTop: '20px' }}>
           <div style={{ display: 'inline-block', marginRight: '5px', fontWeight: 'bold' }}>Special roles:</div>
           <div style={{ display: 'inline-block' }}>
