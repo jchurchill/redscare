@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
-import PlayerWaitingRoom from '../components/PlayerWaitingRoom';
+import PlayerWaitingRoom from './PlayerWaitingRoom';
+import GameStateDisplay from './GameStateDisplay';
 import { gameStates } from '../constants/gameRoomConstants';
 
 class GameRoomContainer extends React.Component {
@@ -45,14 +46,16 @@ class GameRoomContainer extends React.Component {
         <div>
           <h4>Included special roles</h4>
           <div>
-            {roleSelections.map((rs, i) => rs.enabled
-              ? <span key={i} style={{ margin: '0 5px', padding: '5px', border: '1px solid black' }}>{rs.text}</span>
-              : <span key={i} style={{ margin: '0 5px', padding: '5px', border: '1px solid gray', color: 'silver' }}>{rs.text}</span>
-            )}
+            {roleSelections.map((rs, i) => {
+                const extraStyle = rs.enabled ? { border: '1px solid black' } : { border: '1px solid gray', color: 'silver' };
+                return <div key={i} style={{ display: "inline-block", margin: '0 5px', padding: '5px', ...extraStyle }}>{rs.text}</div>
+            })}
           </div>
         </div>
         <hr/>
-          {this.getGameView(game)}
+        {this.getGameView(game)}
+        <hr/>
+        <GameStateDisplay game={game} />
         <hr/>
         <a href={gameIndexPath}>Back to games</a>
       </div>

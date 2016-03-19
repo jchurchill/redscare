@@ -92,7 +92,7 @@ class PlayerWaitingRoom extends React.Component {
         <div>
           {
             players.map((p) => 
-              <span key={p.id} style={{ margin: '0 5px', padding: '5px', border: '1px solid black' }}>{p.email}</span>
+              <div key={p.id} style={{ display: "inline-block", margin: '0 5px', padding: '5px', border: '1px solid black' }}>{p.email}</div>
             )
           }
         </div>
@@ -104,12 +104,12 @@ class PlayerWaitingRoom extends React.Component {
           {
             this.isGameReadyToStart()
               ? this.isGameCreator()
-                ? <span>
+                ? <div>
                     <button onClick={this.startGame.bind(this)}>Start</button>
-                    <span style={{ marginLeft: '15px' }}>All set! Press start to begin the game.</span>
-                  </span>
-                : <span>All set! Waiting for the leader to begin.</span>
-              : <span>Waiting for players to join...</span>
+                    <div style={{ display:"inline-block", marginLeft: '15px' }}>All set! Press start to begin the game.</div>
+                  </div>
+                : <div>All set! Waiting for the leader to begin.</div>
+              : <div>Waiting for players to join...</div>
           }
         </div>
       </div>

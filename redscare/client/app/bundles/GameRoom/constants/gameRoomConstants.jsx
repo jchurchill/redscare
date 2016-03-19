@@ -37,3 +37,20 @@ export const gameOutcomes = Object.freeze({
   EVIL_WINS_FROM_NOMINATION_FAILURE: "evil_wins_from_nomination_failure"
 });
 
+export const roundStates = Object.freeze({
+  // Round is in the nomination phase
+  NOMINATION: "nomination",
+  // Round is in the mission phase
+  MISSION: "mission",
+  // Round is complete and has an outcome
+  COMPLETE: "complete"
+});
+
+export const roundOutcomes = Object.freeze({
+  // Round was won for the good guys
+  SUCCESS: "success",
+  // Round was won for the bad guys
+  FAILURE: "failure",
+  // Round was won because all nominations were exhausted (ending the game)
+  OUT_OF_NOMINATIONS: "out_of_nominations"
+});
