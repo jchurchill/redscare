@@ -90,4 +90,49 @@ class GameTest < ActiveSupport::TestCase
     assert_equal "nomination", round.state
     assert_nil round.outcome
   end
+
+  test "secret_info" do
+    game = games(:vanilla_6)
+    user = users(:user_1)
+
+    secrets = game.secret_info(user.id)
+    role = secrets[:role]
+    submissions = secrets[:submissions]
+    votes = secrets[:votes]
+
+    assert_equal :good_normal, role.to_sym
+
+    expected_submissions = [
+      { round_number: 1, submitted: true, pass: true },
+      { round_number: 2, submitted: false, pass: nil }
+    ]
+    expected_submissions.each_with_index do |expected, i|
+      submission = submissions[i]
+      assert_equal expected[:round_number], submission[:round_number]
+      assert_equal expected[:submitted], submission[:submitted]
+      assert_equal expected[:pass], submission[:pass]
+    end
+
+    expected_votes = [
+      { round_number: 1, nomination_votes: [
+          {nomination_number: 1, voted: true, upvote: false},
+          {nomination_number: 2, voted: true, upvote: true}
+        ]
+      },
+      { round_number: 2, nomination_votes: [
+          { nomination_number: 1, voted: true, upvote: true }
+        ]
+      }
+    ]
+    expected_votes.each_with_index do |expected_r, i_r|
+      vote = votes[i_r]
+      assert_equal expected_r[:round_number], vote[:round_number]
+      expected_r[:nomination_votes].each_with_index do |expected_v, i_v|
+        nom_vote = vote[:nomination_votes][i_v]
+        assert_equal expected_v[:nomination_number], nom_vote[:nomination_number]
+        assert_equal expected_v[:voted], nom_vote[:voted]
+        assert_equal expected_v[:upvote], nom_vote[:upvote]
+      end
+    end
+  end
 end

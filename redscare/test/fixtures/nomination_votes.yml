@@ -17,3 +17,10 @@ vanilla_6_round_1_nom_2_vote_<%= n %>:
   user: user_<%= n %>
   upvote: true
 <% end %>
+
+<% (1..6).each do |n| %>
+vanilla_6_round_2_nom_1_vote_<%= n %>:
+  nomination: vanilla_6_round_2_nom_1
+  user: user_<%= n %>
+  upvote: true
+<% end %>

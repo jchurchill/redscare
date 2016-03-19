@@ -20,3 +20,11 @@ vanilla_6_round_1_nom_2:
   state: <%= Nomination.states[:complete] %>
   outcome: <%= Nomination.outcomes[:accepted] %>
   nominees: user_1, user_2
+
+vanilla_6_round_2_nom_1:
+  round: vanilla_6_round_2
+  leader: user_3
+  nomination_number: 1
+  state: <%= Nomination.states[:complete] %>
+  outcome: <%= Nomination.outcomes[:accepted] %>
+  nominees: user_3, user_4

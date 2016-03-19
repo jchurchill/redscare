@@ -117,6 +117,35 @@ class Game < ActiveRecord::Base
     }[player_count]
   end
 
+  def secret_info (user_id)
+    # secret info includes:
+    # - assigned role
+    # - submitted pass/fails
+    # - upvotes / downvotes on nominations (note these don't remain secret, but they are for at least some time)
+    role = players.find { |p| p.user_id == user_id }.try(:role)
+
+    submissions = rounds
+      .sort_by { |r| r.round_number }
+      .map { |r|
+        pass = r.operatives.find { |o| o.operative_id == user_id }.try(:pass)
+        { round_number: r.round_number, submitted: !pass.nil?, pass: pass }
+      }.to_a
+
+    votes = rounds
+      .sort_by { |r| r.round_number }
+      .map { |r|
+        nom_votes = r.nominations
+          .sort_by { |nom| nom.nomination_number }
+          .map { |nom|
+            upvote = nom.votes.find { |v| v.user_id == user_id }.try(:upvote)
+            { nomination_number: nom.nomination_number, voted: !upvote.nil?, upvote: upvote }
+          }.to_a
+        { round_number: r.round_number, nomination_votes: nom_votes }
+      }.to_a
+
+    return { role: role, submissions: submissions, votes: votes }
+  end
+
   def get_public_state
     self.as_json(include: {
         creator: {},
