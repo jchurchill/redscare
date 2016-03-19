@@ -56,7 +56,7 @@ class Game < ActiveRecord::Base
     role_set = derive_role_set.to_a.shuffle!
 
     # zip the shuffled list with the players, assigning each his role
-    players.zip(role_set) { |player, role| player.role = role }
+    players.zip(role_set) { |player, role| player.update! role: role }
 
     # initialize the first round
     first_leader = players[rand(player_count)].user
@@ -146,6 +146,10 @@ class Game < ActiveRecord::Base
     return { role: role, submissions: submissions, votes: votes }
   end
 
+  def secret_role_info (role)
+
+  end
+
   def get_public_state
     self.as_json(include: {
         creator: {},
@@ -157,17 +161,14 @@ class Game < ActiveRecord::Base
         rounds: {
           include: {
             operatives: {
-              include: :user,
-              # include the list of mission-goers, but not their submission
-              only: :user
+              # include the list of operatives, but not their submission
+              only: [:user_id]
             },
             nominations: {
               include: {
-                leader: {},
                 nominees: {},
                 votes: {
                   # TODO: don't expose upvote / downvote until nomination complete
-                  include: :user
                 }
               }
             }

@@ -4,7 +4,7 @@ export default class User {
     this._user = user;
   }
 
-  get stateObject() {
+  get userStateObject() {
     return this._user;
   }
 

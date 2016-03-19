@@ -5,12 +5,17 @@ import * as gameRules from './gameRules';
 
 // Wraps a game from the server in a more convenient API
 class Game {
-  constructor(game) {
+  constructor(game, secrets) {
     this._game = game;
+    this._secrets = secrets;
   }
 
-  get stateObject() {
+  get gameStateObject() {
     return this._game;
+  }
+
+  get secretsStateObject() {
+    return this._secrets;
   }
 
   get id() {
@@ -25,9 +30,8 @@ class Game {
     return this._game.player_count;
   }
 
-  get creator() {
-    return memoize("creator", this,
-      () => new User(this._game.creator));
+  get creatorId() {
+    return this._game.creator_id;
   }
 
   get state() {
@@ -66,6 +70,11 @@ class Game {
       ));
   }
 
+  get currentRoundLeader() {
+    if (!this.currentRound) { return null; }
+    return this.getPlayerById(this.currentRound.currentLeaderId);
+  }
+
   get assassinatedPlayer() {
     return memoize("assassinatedPlayer", this,
       () => this._game.assassinated_player && new User(this._game.assassinated_player));
@@ -75,18 +84,23 @@ class Game {
     return memoize("evilRoleCount", this,
       () => gameRules.getEvilRoleCount(this.playerCount));
   }
+
+  get currentUserIsEvil() {
+    return this._secrets && gameRules.isRoleEvil(this._secrets.role);
+  }
+
+  getPlayerById(userId) {
+    const lookup = memoize("getPlayerById", this,
+      () => this.players.reduce((ps, p) => { ps[p.id] = p; return ps; }, {}))
+    return lookup[userId];
+  }
 };
 
-Game.roles = Object.freeze({
-  GOOD_NORMAL: "good_normal",
-  EVIL_NORMAL: "evil_normal",
-  SEER: "seer",
-  SEER_KNOWER: "seer_knower",
-  FALSE_SEER: "false_seer",
-  ROGURE_EVIL: "rogue_evil",
-  EVIL_MASTER: "evil_master",
-  ASSASSIN: "assassin"
-});
+Game.roles = Object.freeze(
+  Object.keys(gameRules.roles).reduce((rs, r) => {
+    rs[r] = gameRules.roles[r].name; return rs;
+  }, {})
+);
 
 Game.states = Object.freeze({
   // Game is created and looking for players

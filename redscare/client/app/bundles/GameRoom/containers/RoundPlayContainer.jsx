@@ -23,7 +23,7 @@ class RoundPlayContainer extends React.Component {
 
   isCurrentUserLeader() {
     const { game, user } = this.props
-    return game.currentRound.currentLeader.id == user.id;
+    return game.currentRoundLeader.id == user.id;
   }
 
   render() {
@@ -35,7 +35,7 @@ class RoundPlayContainer extends React.Component {
           {
             this.isCurrentUserLeader()
             ? <span>You are the round leader.</span>
-            : <span>{game.currentRound.currentLeader.name} is the round leader.</span>
+            : <span>{game.currentRoundLeader.name} is the round leader.</span>
           }
         </div>
       </div>
@@ -45,9 +45,9 @@ class RoundPlayContainer extends React.Component {
 
 
 const mapStateToProps = (state) => {
-  const { game, user } = state.gameRoomStore;
+  const { game, secrets, user } = state.gameRoomStore;
   return {
-    game: new Game(game),
+    game: new Game(game, secrets),
     user: new User(user)
   };
 }

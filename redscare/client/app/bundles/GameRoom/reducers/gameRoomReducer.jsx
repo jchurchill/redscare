@@ -44,7 +44,9 @@ function gameReducer(state, action) {
       return { ...state, players: gamePlayersReducer(state.players, action) };
 
     case actionTypes.START_GAME:
-      return { ...state, state: Game.states.ROUNDS_IN_PROGRESS };
+      // Wait for server to say the game has started, since it does the work of
+      // updating a bunch of game state that would be a shame to replicate here
+      return state;
 
     case actionTypes.GAME_STARTED:
       // Entire game state is received from the server
@@ -58,7 +60,7 @@ function gameReducer(state, action) {
 function gamePlayersReducer(state, action) {
   switch(action.type) {
     case actionTypes.JOIN_ROOM:
-      return [ ...state, { user: action.user.stateObject } ];
+      return [ ...state, { user: action.user.userStateObject } ];
 
     case actionTypes.LEAVE_ROOM:
       return state.filter((p) => p.user.id !== action.user.id);

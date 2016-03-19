@@ -1,6 +1,5 @@
 import memoize from './memoize';
 import Nomination from './nominationHelper';
-import User from './userHelper';
 
 // Wraps a round object from the server in a more convenient API
 class Round {
@@ -8,7 +7,7 @@ class Round {
     this._round = round;
   }
 
-  get stateObject() {
+  get roundStateObject() {
     return this._round;
   }
 
@@ -33,9 +32,9 @@ class Round {
       () => (this._round.nominations || []).map((nom) => new Nomination(nom)));
   }
   
-  get operatives() {
-    return memoize("operatives", this,
-      () => (this._round.operatives || []).map((op) => new User(op.operative)));
+  get operativeIds() {
+    return memoize("operativeIds", this,
+      () => (this._round.operatives || []).map((op) => op.operative_id));
   }
 
   get currentNomination() {
@@ -46,8 +45,8 @@ class Round {
       ));
   }
 
-  get currentLeader() {
-    return this.currentNomination.leader;
+  get currentLeaderId() {
+    return this.currentNomination.leaderId;
   }
 };
 

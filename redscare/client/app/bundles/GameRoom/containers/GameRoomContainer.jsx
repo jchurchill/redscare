@@ -80,8 +80,8 @@ class GameRoomContainer extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { connectionState, game } = state.gameRoomStore;
-  return { connectionState, game: new Game(game) };
+  const { connectionState, game, secrets } = state.gameRoomStore;
+  return { connectionState, game: new Game(game, secrets) };
 }
 
 const mapDispatchToProps = (dispatch) => {

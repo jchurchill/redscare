@@ -21,6 +21,7 @@ class GamesController < ApplicationController
     # TODO: remove private information
     game = Game.find(params[:id]);
     game_info = game.get_public_state
+    secrets = game.secret_info(current_user.id)
 
     @game_room_props = {
       :component_props => {
@@ -31,7 +32,8 @@ class GamesController < ApplicationController
       },
       :store_props => {
         :user => current_user,
-        :game => game_info
+        :game => game_info,
+        :secrets => secrets
       }
     }
   end

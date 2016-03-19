@@ -1,5 +1,4 @@
 import memoize from './memoize';
-import User from './userHelper';
 
 // Wraps a nomination object from the server in a more convenient API
 class Nomination {
@@ -7,7 +6,7 @@ class Nomination {
     this._nomination = nomination;
   }
 
-  get stateObject() {
+  get nominationStateObject() {
     return this._nomination;
   }
 
@@ -27,15 +26,14 @@ class Nomination {
     return this._nomination.outcome; 
   }
 
-  get leader() {
-    return memoize("leader", this,
-      () => new User(this._nomination.leader));
+  get leaderId() {
+    return this._nomination.leader_id;
   }
 
   get votes() {
     return memoize("votes", this, 
       () => this._nomination.votes.map(
-        (v) => ({ upvote: v.upvote, user: new User(v.user) })
+        (v) => ({ upvote: v.upvote, userId: v.user_id })
       ));
   }
 };

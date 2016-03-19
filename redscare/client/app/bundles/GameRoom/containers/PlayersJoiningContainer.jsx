@@ -23,6 +23,10 @@ class PlayersJoiningContainer extends React.Component {
     gameClient.bind("game_room.player_joined", this.playerJoined.bind(this));
     gameClient.bind("game_room.player_left", this.playerLeft.bind(this));
     gameClient.bind("game_room.game_started", this.gameStarted.bind(this));
+
+    // When a game is started, we wait for the server to respond
+    // that it has initialized the game. While waiting, display ui cue
+    this.state = { waitingForGameInit: false };
   }
 
   playerJoined(gamePlayers) {
@@ -52,6 +56,7 @@ class PlayersJoiningContainer extends React.Component {
   startGame() {
     const { actions } = this.props;
     actions.startGame();
+    this.setState({ waitingForGameInit: true });
     gameClient.trigger("game_room.start_game");
   }
 
@@ -65,12 +70,15 @@ class PlayersJoiningContainer extends React.Component {
   canLeave() {
     const { user, game } = this.props
     // Can leave if you're not the creator and you're currently in the game
-    return !this.isGameCreator() && game.players.some((p) => p.id === user.id);
+    return !this.isCurrentUserGameCreator() && game.players.some((p) => p.id === user.id);
   }
 
-  isGameCreator() {
-    const { user, game } = this.props
-    return user.id === game.creator.id
+  isCurrentUserGameCreator() {
+    return this.isGameCreator(this.props.user.id);
+  }
+
+  isGameCreator(userId) {
+    return userId === this.props.game.creatorId;
   }
 
   isGameReadyToStart() {
@@ -80,6 +88,7 @@ class PlayersJoiningContainer extends React.Component {
 
   render() {
     const { game } = this.props
+    const { waitingForGameInit } = this.state
     return (
       <div>
         <h2>Waiting for players</h2>
@@ -87,7 +96,13 @@ class PlayersJoiningContainer extends React.Component {
         <div>
           {
             game.players.map((p) => 
-              <div key={p.id} style={{ display: "inline-block", margin: '0 5px', padding: '5px', border: '1px solid black' }}>{p.name}</div>
+              <div key={p.id} style={{
+                display: "inline-block",
+                margin: '5px',
+                padding: '5px',
+                border: '1px solid black',
+                backgroundColor: this.isGameCreator(p.id) ? 'lightcyan' : 'white'
+              }}>{p.name}</div>
             )
           }
         </div>
@@ -98,13 +113,18 @@ class PlayersJoiningContainer extends React.Component {
         <div>
           {
             this.isGameReadyToStart()
-              ? this.isGameCreator()
+              ? this.isCurrentUserGameCreator()
                 ? <div>
-                    <button onClick={this.startGame.bind(this)}>Start</button>
-                    <div style={{ display:"inline-block", marginLeft: '15px' }}>All set! Press start to begin the game.</div>
+                    <button onClick={this.startGame.bind(this)} disabled={waitingForGameInit}>Start</button>
+                    <div style={{ display:"inline-block", marginLeft: '15px' }}>
+                      { waitingForGameInit
+                        ? "Setting up game..."
+                        : "All set! Press start to begin the game."
+                      }
+                    </div>
                   </div>
                 : <div>All set! Waiting for the leader to begin.</div>
-              : <div>Waiting for players to join...</div>
+              : <div style={{ fontWeight: 'bold' }}>{game.players.length} / {game.playerCount} players in game</div>
           }
         </div>
       </div>
@@ -114,9 +134,9 @@ class PlayersJoiningContainer extends React.Component {
 
 
 const mapStateToProps = (state) => {
-  const { game, user } = state.gameRoomStore;
+  const { game, secrets, user } = state.gameRoomStore;
   return {
-    game: new Game(game),
+    game: new Game(game, secrets),
     user: new User(user)
   };
 }
