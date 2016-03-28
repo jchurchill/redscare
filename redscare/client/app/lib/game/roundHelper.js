@@ -7,6 +7,24 @@ class Round {
     this._round = round;
   }
 
+  static states = Object.freeze({
+    // Round is in the nomination phase
+    NOMINATION: "nomination",
+    // Round is in the mission phase
+    MISSION: "mission",
+    // Round is complete and has an outcome
+    COMPLETE: "complete"
+  });
+
+  static outcomes = Object.freeze({
+    // Round was won for the good guys
+    SUCCESS: "success",
+    // Round was won for the bad guys
+    FAILURE: "failure",
+    // Round was won because all nominations were exhausted (ending the game)
+    OUT_OF_NOMINATIONS: "out_of_nominations"
+  });
+
   get roundStateObject() {
     return this._round;
   }
@@ -49,23 +67,5 @@ class Round {
     return this.currentNomination.leaderId;
   }
 };
-
-Round.states = Object.freeze({
-  // Round is in the nomination phase
-  NOMINATION: "nomination",
-  // Round is in the mission phase
-  MISSION: "mission",
-  // Round is complete and has an outcome
-  COMPLETE: "complete"
-});
-
-Round.outcomes = Object.freeze({
-  // Round was won for the good guys
-  SUCCESS: "success",
-  // Round was won for the bad guys
-  FAILURE: "failure",
-  // Round was won because all nominations were exhausted (ending the game)
-  OUT_OF_NOMINATIONS: "out_of_nominations"
-});
 
 export default Round;

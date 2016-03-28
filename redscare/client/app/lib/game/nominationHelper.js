@@ -6,6 +6,22 @@ class Nomination {
     this._nomination = nomination;
   }
 
+  static state = Object.freeze({
+    // The nomination has just begun, but nominees have not yet been selected
+    SELECTING: "selecting",
+    // The nominees were selected, and are currently being voted on
+    VOTING: "voting",
+    // The nomination is over because voting has occurred and the outcome recorded
+    COMPLETE: "complete"
+  });
+
+  static outcome = Object.freeze({
+    // A majority of players upvoted the nomination, so it was accepted
+    ACCEPTED: "accepted",
+    // A majority of players did not upvote the nomination, so it was rejected
+    REJECTED: "rejected"
+  });
+
   get nominationStateObject() {
     return this._nomination;
   }
@@ -37,21 +53,5 @@ class Nomination {
       ));
   }
 };
-
-Nomination.state = Object.freeze({
-  // The nomination has just begun, but nominees have not yet been selected
-  SELECTING: "selecting",
-  // The nominees were selected, and are currently being voted on
-  VOTING: "voting",
-  // The nomination is over because voting has occurred and the outcome recorded
-  COMPLETE: "complete"
-});
-
-Nomination.outcome = Object.freeze({
-  // A majority of players upvoted the nomination, so it was accepted
-  ACCEPTED: "accepted",
-  // A majority of players did not upvote the nomination, so it was rejected
-  REJECTED: "rejected"
-});
 
 export default Nomination;

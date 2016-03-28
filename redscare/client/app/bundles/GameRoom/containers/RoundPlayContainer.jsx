@@ -5,6 +5,7 @@ import * as roundPlayActionCreators from '../actions/roundPlayActionCreators';
 import Game from 'lib/game/gameHelper';
 import User from 'lib/game/userHelper';
 import websocket from 'lib/websocket/websocket';
+import SecretRoleInfo from '../components/SecretRoleInfo.jsx';
 
 class RoundPlayContainer extends React.Component {
   static propTypes = {
@@ -31,6 +32,7 @@ class RoundPlayContainer extends React.Component {
     return (
       <div>
         <h2>Round {game.currentRound.roundNumber}</h2>
+        <SecretRoleInfo game={game} />
         <div>
           {
             this.isCurrentUserLeader()
