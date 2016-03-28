@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as playerWaitingRoomActionCreators from '../actions/playerWaitingRoomActionCreators';
 import websocket from 'lib/websocket/websocket';
+import PlayerList from '../components/PlayerList';
 import Game from 'lib/game/gameHelper';
 import User from 'lib/game/userHelper';
 
@@ -93,19 +94,7 @@ class PlayersJoiningContainer extends React.Component {
       <div>
         <h2>Waiting for players</h2>
         <h3>Currently in game:</h3>
-        <div>
-          {
-            game.players.map((p) => 
-              <div key={p.id} style={{
-                display: "inline-block",
-                margin: '5px',
-                padding: '5px',
-                border: '1px solid black',
-                backgroundColor: this.isGameCreator(p.id) ? 'lightcyan' : 'white'
-              }}>{p.name}</div>
-            )
-          }
-        </div>
+        <PlayerList players={game.players} />
         <div style={{ margin: '30px' }}>
           { this.canJoin() ? <button onClick={this.joinGame.bind(this)}>Join</button> : '' }
           { this.canLeave() ? <button onClick={this.leaveGame.bind(this)}>Leave</button> : '' }

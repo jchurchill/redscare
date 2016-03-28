@@ -60,6 +60,10 @@ class Nomination {
         v => ({ upvote: v.upvote, userId: v.user_id })
       ));
   }
+
+  get playerProvider() {
+    return this._playerProvider;
+  }
 };
 
 export default Nomination;

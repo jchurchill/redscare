@@ -72,6 +72,10 @@ class Round {
   get missionInfo() {
     return getRoundMissionInfo(this.roundNumber, this._playerProvider.playerCount);
   }
+
+  get playerProvider() {
+    return this._playerProvider;
+  }
 };
 
 export default Round;

@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as roundPlayActionCreators from '../actions/roundPlayActionCreators';
 import Game from 'lib/game/gameHelper';
 import Round from 'lib/game/roundHelper';
+import Nomination from 'lib/game/nominationHelper';
 import User from 'lib/game/userHelper';
 import websocket from 'lib/websocket/websocket';
 
@@ -47,9 +48,14 @@ class RoundPlayContainer extends React.Component {
 
   render() {
     const { game: { currentRound } } = this.props
+    const { operativeCount, requiredFailCount } = currentRound.missionInfo
     return (
       <div>
         <h2>Round {currentRound.roundNumber}</h2>
+        <div style={{ margin: '5px', fontStyle: 'italic' }}>
+          {operativeCount} operatives
+          {requiredFailCount > 1 ? `; ${requiredFailCount} fails required` : ""}
+        </div>
         <div>
           {
             this.isCurrentUserLeader()
@@ -84,17 +90,17 @@ class NominationPhase extends React.Component {
   }
 
   render() {
-    const { round: { currentNomination, missionInfo } } = this.props
+    const { round: { currentNomination, missionInfo: { operativeCount, requiredFailCount } }, nominate } = this.props
     const { nominationNumber, nominees } = currentNomination
     const isCurrentUserLeader = this.isCurrentUserLeader()
     return (
       <div>
         <h3>Nomination {nominationNumber}</h3>
-        <div style={{ fontStyle:'italic' }}>{nominees.length} out of {missionInfo.operativeCount} players nominated</div>
+        <div style={{ fontStyle:'italic' }}>{nominees.length} out of {operativeCount} players nominated</div>
         <div style={{ margin: '10px' }}>{
           isCurrentUserLeader
-            ? <LeaderNominationPhase nomination={currentNomination} missionInfo={missionInfo}/>
-            : <NonLeaderNominationPhase nomination={currentNomination} missionInfo={missionInfo} />
+            ? <LeaderNominationPhase nomination={currentNomination} operativeCount={operativeCount} nominate={nominate} />
+            : <NonLeaderNominationPhase nomination={currentNomination} operativeCount={operativeCount} />
         }</div>
       </div>
     );
@@ -104,25 +110,36 @@ class NominationPhase extends React.Component {
 //export default NominationPhase;
 
 class LeaderNominationPhase extends React.Component {
-    constructor(props, context) {
-      super(props, context);
-    }
+  static PropTypes = {
+    nomination: PropTypes.instanceOf(Nomination).isRequired,
+    operativeCount: PropTypes.number.isRequired,
+    nominate: PropTypes.func.isRequired
+  }
 
-    render() {
-      return <div>LeaderNominationPhase</div>;
-    }
+  constructor(props, context) {
+    super(props, context);
+  }
+
+  render() {
+    return <div>LeaderNominationPhase</div>;
+  }
 }
 
 //export default LeaderNominationPhase;
 
 class NonLeaderNominationPhase extends React.Component {
-    constructor(props, context) {
-      super(props, context);
-    }
+  static PropTypes = {
+    nomination: PropTypes.instanceOf(Nomination).isRequired,
+    operativeCount: PropTypes.number.isRequired
+  }
 
-    render() {
-      return <div>NonLeaderNominationPhase</div>;
-    }
+  constructor(props, context) {
+    super(props, context);
+  }
+
+  render() {
+    return <div>NonLeaderNominationPhase</div>;
+  }
 }
 
 //export default NonLeaderNominationPhase;

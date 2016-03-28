@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import PlayerList from '../components/PlayerList';
 import Game from 'lib/game/gameHelper';
 import PlayerProvider from 'lib/game/playerProvider';
 
@@ -40,7 +41,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your fellow evil players:</div>
-        {this.renderPlayerList(knownEvilPlayers)}
+        <PlayerList players={knownEvilPlayers} />
         {includesRogueEvil ? <div style={{ fontStyle: 'italic' }}>Note: does not include the rogue evil</div> : "" }
       </div>
     );
@@ -56,7 +57,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your evil enemies:</div>
-        {this.renderPlayerList(knownEvilPlayers)}
+        <PlayerList players={knownEvilPlayers} />
         {includesEvilMaster ? <div style={{ fontStyle: 'italic' }}>Note: does not include the evil master</div> : "" }
       </div>
     );
@@ -71,7 +72,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>The potential seers:</div>
-        {this.renderPlayerList(possibleSeerPlayers)}
+        <PlayerList players={possibleSeerPlayers} />
       </div>
     );
   }
@@ -85,7 +86,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your fellow evil players:</div>
-        {this.renderPlayerList(knownEvilPlayers)}
+        <PlayerList players={knownEvilPlayers} />
         {includesRogueEvil ? <div style={{ fontStyle: 'italic' }}>Note: does not include the rogue evil</div> : "" }
       </div>
     ); 
@@ -104,7 +105,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your fellow evil players:</div>
-        {this.renderPlayerList(knownEvilPlayers)}
+        <PlayerList players={knownEvilPlayers} />
         {includesRogueEvil ? <div style={{ fontStyle: 'italic' }}>Note: does not include the rogue evil</div> : "" }
       </div>
     );
@@ -119,28 +120,10 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your fellow evil players:</div>
-        {this.renderPlayerList(knownEvilPlayers)}
+        <PlayerList players={knownEvilPlayers} />
         {includesRogueEvil ? <div style={{ fontStyle: 'italic' }}>Note: does not include the rogue evil</div> : "" }
       </div>
     );
-  }
-
-  renderPlayerList(players) {
-    return (
-      <div>
-        {
-          players.map((p) => 
-            <div key={p.id} style={{
-              display: "inline-block",
-              margin: '5px',
-              padding: '5px',
-              border: '1px solid black',
-              backgroundColor: 'white'
-            }}>{p.name}</div>
-          )
-        }
-      </div>
-    )
   }
 
   getRoleRenderInfo() {
