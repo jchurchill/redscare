@@ -1,25 +1,29 @@
 import React, { PropTypes } from 'react';
 import Game from 'lib/game/gameHelper';
+import PlayerProvider from 'lib/game/playerProvider';
 
 export default class SecretRoleInfo extends React.Component {
   static propTypes = {
-    game: PropTypes.shape({
-      roleSecrets: PropTypes.shape({
-        role: PropTypes.string.isRequired,
-        roleInfo: PropTypes.object.isRequired
-      }).isRequired,
-      specialRules: PropTypes.shape({
-        includesSeer: PropTypes.bool.isRequired,
-        includesSeerDeception: PropTypes.bool.isRequired,
-        includesRogueEvil: PropTypes.bool.isRequired,
-        includesEvilMaster: PropTypes.bool.isRequired
-      }).isRequired,
-      getPlayerById: PropTypes.func.isRequired
-    }).isRequired
+    roleSecrets: PropTypes.shape({
+      role: PropTypes.string.isRequired,
+      roleInfo: PropTypes.object.isRequired
+    }).isRequired,
+    specialRules: PropTypes.shape({
+      includesSeer: PropTypes.bool.isRequired,
+      includesSeerDeception: PropTypes.bool.isRequired,
+      includesRogueEvil: PropTypes.bool.isRequired,
+      includesEvilMaster: PropTypes.bool.isRequired
+    }).isRequired,
+    playerProvider: PropTypes.instanceOf(PlayerProvider).isRequired
   };
 
   constructor(props, context) {
     super(props, context);
+    this.state = { show: false }
+  }
+
+  toggleShow() {
+    this.setState({ show: !this.state.show });
   }
 
   renderGoodNormal() {
@@ -27,12 +31,12 @@ export default class SecretRoleInfo extends React.Component {
   }
 
   renderEvilNormal() {
-    const { game } = this.props
     const {
       roleSecrets: { roleInfo: { known_evils } },
-      specialRules: { includesRogueEvil }
-    } = game
-    const knownEvilPlayers = known_evils.map(id => game.getPlayerById(id))
+      specialRules: { includesRogueEvil },
+      playerProvider
+    } = this.props
+    const knownEvilPlayers = known_evils.map(id => playerProvider.getPlayerById(id))
     return (
       <div>
         <div>Your fellow evil players:</div>
@@ -43,12 +47,12 @@ export default class SecretRoleInfo extends React.Component {
   }
 
   renderSeer() {
-    const { game } = this.props
     const {
       roleSecrets: { roleInfo: { known_evils } },
-      specialRules: { includesEvilMaster }
-    } = game
-    const knownEvilPlayers = known_evils.map(id => game.getPlayerById(id))
+      specialRules: { includesEvilMaster },
+      playerProvider
+    } = this.props
+    const knownEvilPlayers = known_evils.map(id => playerProvider.getPlayerById(id))
     return (
       <div>
         <div>Your evil enemies:</div>
@@ -59,11 +63,11 @@ export default class SecretRoleInfo extends React.Component {
   }
 
   renderSeerKnower() {
-    const { game } = this.props
     const {
-      roleSecrets: { roleInfo: { possible_seers } }
-    } = game
-    const possibleSeerPlayers = possible_seers.map(id => game.getPlayerById(id))
+      roleSecrets: { roleInfo: { possible_seers } },
+      playerProvider
+    } = this.props
+    const possibleSeerPlayers = possible_seers.map(id => playerProvider.getPlayerById(id))
     return (
       <div>
         <div>The potential seers:</div>
@@ -73,12 +77,11 @@ export default class SecretRoleInfo extends React.Component {
   }
 
   renderFalseSeer() {
-    const { game } = this.props
     const {
       roleSecrets: { roleInfo: { known_evils } },
       specialRules: { includesRogueEvil }
-    } = game
-    const knownEvilPlayers = known_evils.map(id => game.getPlayerById(id))
+    } = this.props
+    const knownEvilPlayers = known_evils.map(id => playerProvider.getPlayerById(id))
     return (
       <div>
         <div>Your fellow evil players:</div>
@@ -93,12 +96,11 @@ export default class SecretRoleInfo extends React.Component {
   }
 
   renderEvilMaster() {
-    const { game } = this.props
     const {
       roleSecrets: { roleInfo: { known_evils } },
       specialRules: { includesRogueEvil }
-    } = game
-    const knownEvilPlayers = known_evils.map(id => game.getPlayerById(id))
+    } = this.props
+    const knownEvilPlayers = known_evils.map(id => playerProvider.getPlayerById(id))
     return (
       <div>
         <div>Your fellow evil players:</div>
@@ -109,12 +111,11 @@ export default class SecretRoleInfo extends React.Component {
   }
 
   renderAssassin() {
-    const { game } = this.props
     const {
       roleSecrets: { roleInfo: { known_evils } },
       specialRules: { includesRogueEvil }
-    } = game
-    const knownEvilPlayers = known_evils.map(id => game.getPlayerById(id))
+    } = this.props
+    const knownEvilPlayers = known_evils.map(id => playerProvider.getPlayerById(id))
     return (
       <div>
         <div>Your fellow evil players:</div>
@@ -133,7 +134,8 @@ export default class SecretRoleInfo extends React.Component {
               display: "inline-block",
               margin: '5px',
               padding: '5px',
-              border: '1px solid black'
+              border: '1px solid black',
+              backgroundColor: 'white'
             }}>{p.name}</div>
           )
         }
@@ -142,7 +144,7 @@ export default class SecretRoleInfo extends React.Component {
   }
 
   getRoleRenderInfo() {
-    const { game: { roleSecrets: { role }, specialRules } } = this.props
+    const { roleSecrets: { role }, specialRules } = this.props
     switch (role) {
       case Game.roles.GOOD_NORMAL:
         return {
@@ -212,13 +214,26 @@ export default class SecretRoleInfo extends React.Component {
 
   render() {
     const { name, description, style, renderOtherInfo } = this.getRoleRenderInfo();
-    return (
-      <div style={{ margin: '5px', padding: '5px', border: '1px solid black', ...style }}>
-        <div>You are...</div>
-        <h3>{name}</h3>
-        <div style={{ marginBottom: '10px' }}>{description}</div>
-        {renderOtherInfo()}
-      </div>
-    )
+    const { show } = this.state;
+    if (show) {
+      return (
+        <div style={{ margin: '5px', padding: '5px', border: '1px solid black', ...style }}>
+          <div>You are...</div>
+          <h3>{name}</h3>
+          <div style={{ marginBottom: '10px' }}>{description}</div>
+          {renderOtherInfo()}
+          <a href="#" onClick={this.toggleShow.bind(this)}>
+            Click to hide
+          </a>
+        </div>
+      )
+    }
+    else {
+      return (
+        <a href="#" onClick={this.toggleShow.bind(this)}>
+          Click to show your identity
+        </a>
+      )
+    }
   }
 }

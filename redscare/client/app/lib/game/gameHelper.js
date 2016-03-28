@@ -1,12 +1,13 @@
 import memoize from './memoize';
 import Round from './roundHelper';
-import User from './userHelper';
+import PlayerProvider from './playerProvider';
 import * as gameRules from './gameRules';
 
 // Wraps a game from the server in a more convenient API
 export default class Game {
   constructor(game, secrets) {
     this._game = game;
+    this._playerProvider = new PlayerProvider(game);
     this._secrets = secrets;
   }
 
@@ -82,14 +83,21 @@ export default class Game {
       }));
   }
 
+  get playerProvider() {
+    return this._playerProvider;
+  }
+
   get players() {
-    return memoize("players", this,
-      () => this._game.players.map((pl) => new User(pl.user)));
+    return this._playerProvider.players;
+  }
+
+  getPlayerById(userId) {
+    return this._playerProvider.getPlayerById(userId);
   }
 
   get rounds() {
     return memoize("rounds", this,
-      () => (this._game.rounds || []).map((r) => new Round(r)));
+      () => (this._game.rounds || []).map((r) => new Round(r, this._playerProvider)));
   }
 
   get currentRound() {
@@ -100,14 +108,9 @@ export default class Game {
       ));
   }
 
-  get currentRoundLeader() {
-    if (!this.currentRound) { return null; }
-    return this.getPlayerById(this.currentRound.currentLeaderId);
-  }
-
   get assassinatedPlayer() {
-    return memoize("assassinatedPlayer", this,
-      () => this._game.assassinated_player && new User(this._game.assassinated_player));
+    const userId = this._game.assassinated_player_id;
+    return userId && this._playerProvider.getPlayerById(userId);
   }
 
   get evilRoleCount() {
@@ -122,11 +125,5 @@ export default class Game {
   get roleSecrets() {
     const { role, role_info } = this._secrets;
     return { role, roleInfo: role_info };
-  }
-
-  getPlayerById(userId) {
-    const lookup = memoize("getPlayerById", this,
-      () => this.players.reduce((ps, p) => { ps[p.id] = p; return ps; }, {}))
-    return lookup[userId];
   }
 };

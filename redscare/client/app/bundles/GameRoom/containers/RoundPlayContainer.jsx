@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as roundPlayActionCreators from '../actions/roundPlayActionCreators';
 import Game from 'lib/game/gameHelper';
+import Round from 'lib/game/roundHelper';
 import User from 'lib/game/userHelper';
 import websocket from 'lib/websocket/websocket';
-import SecretRoleInfo from '../components/SecretRoleInfo.jsx';
 
 class RoundPlayContainer extends React.Component {
   static propTypes = {
@@ -22,28 +22,111 @@ class RoundPlayContainer extends React.Component {
     // this.gameClient.bind(...);
   }
 
+  nominate() {
+    console.log("nominate!")
+  }
+
   isCurrentUserLeader() {
-    const { game, user } = this.props
-    return game.currentRoundLeader.id == user.id;
+    const { game: { currentRound: { currentLeader } }, user } = this.props
+    return currentLeader.id === user.id;
+  }
+
+  renderCurrentRoundView() {
+    const { game: { currentRound }, user } = this.props
+    switch(currentRound.state) {
+      case Round.states.NOMINATION:
+        return <NominationPhase round={currentRound} currentUser={user} nominate={this.nominate.bind(this)} />
+      case Round.states.MISSION:
+        return "mission"
+      case Round.states.COMPLETE:
+        return "complete"
+      default:
+        throw { message: "unrecognized round state" }
+    }
   }
 
   render() {
-    const { game } = this.props
+    const { game: { currentRound } } = this.props
     return (
       <div>
-        <h2>Round {game.currentRound.roundNumber}</h2>
-        <SecretRoleInfo game={game} />
+        <h2>Round {currentRound.roundNumber}</h2>
         <div>
           {
             this.isCurrentUserLeader()
             ? <span>You are the round leader.</span>
-            : <span>{game.currentRoundLeader.name} is the round leader.</span>
+            : <span>{currentRound.currentLeader.name} is the round leader.</span>
           }
+        </div>
+        <div style={{ margin: '5px' }}>
+          {this.renderCurrentRoundView()}
         </div>
       </div>
     );
   }
 }
+
+// TODO: move the below components out of this file once done iterating
+
+class NominationPhase extends React.Component {
+  static PropTypes = {
+    round: PropTypes.instanceOf(Round).isRequired,
+    currentUser: PropTypes.instanceOf(User).isRequired,
+    nominate: PropTypes.func.isRequired
+  }
+
+  constructor(props, context) {
+    super(props, context);
+  }
+
+  isCurrentUserLeader() {
+    const { round: { currentLeader }, currentUser } = this.props
+    return currentLeader.id === currentUser.id
+  }
+
+  render() {
+    const { round: { currentNomination, missionInfo } } = this.props
+    const { nominationNumber, nominees } = currentNomination
+    const isCurrentUserLeader = this.isCurrentUserLeader()
+    return (
+      <div>
+        <h3>Nomination {nominationNumber}</h3>
+        <div style={{ fontStyle:'italic' }}>{nominees.length} out of {missionInfo.operativeCount} players nominated</div>
+        <div style={{ margin: '10px' }}>{
+          isCurrentUserLeader
+            ? <LeaderNominationPhase nomination={currentNomination} missionInfo={missionInfo}/>
+            : <NonLeaderNominationPhase nomination={currentNomination} missionInfo={missionInfo} />
+        }</div>
+      </div>
+    );
+  }
+}
+
+//export default NominationPhase;
+
+class LeaderNominationPhase extends React.Component {
+    constructor(props, context) {
+      super(props, context);
+    }
+
+    render() {
+      return <div>LeaderNominationPhase</div>;
+    }
+}
+
+//export default LeaderNominationPhase;
+
+class NonLeaderNominationPhase extends React.Component {
+    constructor(props, context) {
+      super(props, context);
+    }
+
+    render() {
+      return <div>NonLeaderNominationPhase</div>;
+    }
+}
+
+//export default NonLeaderNominationPhase;
+
 
 
 const mapStateToProps = (state) => {

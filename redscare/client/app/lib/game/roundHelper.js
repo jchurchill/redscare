@@ -1,10 +1,12 @@
 import memoize from './memoize';
 import Nomination from './nominationHelper';
+import { getRoundMissionInfo } from './gameRules';
 
 // Wraps a round object from the server in a more convenient API
 class Round {
-  constructor(round) {
+  constructor(round, playerProvider) {
     this._round = round;
+    this._playerProvider = playerProvider;
   }
 
   static states = Object.freeze({
@@ -47,12 +49,12 @@ class Round {
 
   get nominations() {
     return memoize("nominations", this,
-      () => (this._round.nominations || []).map((nom) => new Nomination(nom)));
+      () => (this._round.nominations || []).map((nom) => new Nomination(nom, this._playerProvider)));
   }
   
-  get operativeIds() {
+  get operatives() {
     return memoize("operativeIds", this,
-      () => (this._round.operatives || []).map((op) => op.operative_id));
+      () => (this._round.operatives || []).map((op) => this._playerProvider.getPlayerById(op.operative_id)));
   }
 
   get currentNomination() {
@@ -63,8 +65,12 @@ class Round {
       ));
   }
 
-  get currentLeaderId() {
-    return this.currentNomination.leaderId;
+  get currentLeader() {
+    return this.currentNomination.leader;
+  }
+
+  get missionInfo() {
+    return getRoundMissionInfo(this.roundNumber, this._playerProvider.playerCount);
   }
 };
 

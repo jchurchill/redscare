@@ -2,8 +2,9 @@ import memoize from './memoize';
 
 // Wraps a nomination object from the server in a more convenient API
 class Nomination {
-  constructor(nomination) {
+  constructor(nomination, playerProvider) {
     this._nomination = nomination;
+    this._playerProvider = playerProvider;
   }
 
   static state = Object.freeze({
@@ -42,14 +43,21 @@ class Nomination {
     return this._nomination.outcome; 
   }
 
-  get leaderId() {
-    return this._nomination.leader_id;
+  get leader() {
+    return this._playerProvider.getPlayerById(this._nomination.leader_id);
+  }
+
+  get nominees() {
+    return memoize("nominees", this,
+      () => this._nomination.nominees.map(
+        nom => this._playerProvider.getPlayerById(nom.user_id)
+      ));
   }
 
   get votes() {
     return memoize("votes", this, 
       () => this._nomination.votes.map(
-        (v) => ({ upvote: v.upvote, userId: v.user_id })
+        v => ({ upvote: v.upvote, userId: v.user_id })
       ));
   }
 };

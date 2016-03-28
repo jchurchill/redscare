@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import PlayersJoiningContainer from '../containers/PlayersJoiningContainer';
 import RoundPlayContainer from '../containers/RoundPlayContainer';
 import GameStateDisplay from './GameStateDisplay';
+import SecretRoleInfo from '../components/SecretRoleInfo';
 import Game from 'lib/game/gameHelper';
 
 class GameRoom extends React.Component {
@@ -14,7 +15,7 @@ class GameRoom extends React.Component {
     console.log(props.game);
   }
 
-  getGameView(state) {
+  renderGameView(state) {
     switch (state) {
       case Game.states.CREATED:
         return <PlayersJoiningContainer />
@@ -23,6 +24,17 @@ class GameRoom extends React.Component {
       default:
         return <div>{`View for game state '${state}' not yet implemented`}</div>
     }
+  }
+
+  renderRoleInfo() {
+    const { game: { state, playerProvider, roleSecrets, specialRules, currentRound } } = this.props
+    // Unless game in progress, roles will not yet be assigned
+    if (state === Game.states.CREATED) { return ""; }
+    return (
+      <div style={{ margin: '10px' }}>
+        <SecretRoleInfo roleSecrets={roleSecrets} specialRules={specialRules} playerProvider={playerProvider} />
+      </div>
+    )
   }
 
   render() {
@@ -46,11 +58,12 @@ class GameRoom extends React.Component {
                 return <div key={i} style={{ display: "inline-block", margin: '0 5px', padding: '5px', ...extraStyle }}>{rs.text}</div>
             })}
           </div>
+          {this.renderRoleInfo()}
         </div>
         <hr/>
-        {this.getGameView(game.state)}
+        {this.renderGameView(game.state)}
         <hr/>
-        <GameStateDisplay game={this.props.game} />
+        <GameStateDisplay game={game} />
         <hr/>
       </div>
     );

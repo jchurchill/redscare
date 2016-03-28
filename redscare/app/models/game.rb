@@ -112,7 +112,7 @@ class Game < ActiveRecord::Base
       6 => 2,
       7 => 3,
       8 => 3,
-      9 => 4,
+      9 => 3,
       10 => 4
     }[player_count]
   end
@@ -180,7 +180,7 @@ class Game < ActiveRecord::Base
       return { }
     end
 
-    raise "should never get here"
+    return { }
   end
 
   def get_public_state
@@ -199,14 +199,14 @@ class Game < ActiveRecord::Base
             },
             nominations: {
               include: {
-                nominees: {},
+                nominees: { only: [:user_id] },
                 votes: {
                   # TODO: don't expose upvote / downvote until nomination complete
                 }
               }
             }
           }
-        }
+        },
       })
   end
 end
