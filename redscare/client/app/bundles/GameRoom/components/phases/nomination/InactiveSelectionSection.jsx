@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
 import PlayerList from '../../PlayerList.jsx';
-import Nomination from 'lib/game/nominationHelper';
 
-class ActiveNominationSelectionSection extends React.Component {
+import Nomination from 'lib/game/nominationHelper';
+import User from 'lib/game/userHelper';
+
+class InactiveSelectionSection extends React.Component {
   static PropTypes = {
     nomination: PropTypes.instanceOf(Nomination).isRequired,
-    operativeCount: PropTypes.number.isRequired,
-    nominate: PropTypes.func.isRequired
+    currentUser: PropTypes.instanceOf(User).isRequired
   }
 
   constructor(props, context) {
@@ -14,8 +15,8 @@ class ActiveNominationSelectionSection extends React.Component {
   }
 
   render() {
-    return <div>LeaderNominationPhase</div>;
+    return <div>InactiveSelectionSection</div>;
   }
 }
 
-export default ActiveNominationSelectionSection;
+export default InactiveSelectionSection;

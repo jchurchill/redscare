@@ -4,9 +4,9 @@ import { getRoundMissionInfo } from './gameRules';
 
 // Wraps a round object from the server in a more convenient API
 class Round {
-  constructor(round, playerProvider) {
-    this._round = round;
-    this._playerProvider = playerProvider;
+  constructor(round, game) {
+    this._round = round; // raw server data
+    this._game = game; // instanceof(Game) containing this round
   }
 
   static states = Object.freeze({
@@ -49,12 +49,12 @@ class Round {
 
   get nominations() {
     return memoize("nominations", this,
-      () => (this._round.nominations || []).map((nom) => new Nomination(nom, this._playerProvider)));
+      () => (this._round.nominations || []).map((nom) => new Nomination(nom, this)));
   }
   
   get operatives() {
     return memoize("operativeIds", this,
-      () => (this._round.operatives || []).map((op) => this._playerProvider.getPlayerById(op.operative_id)));
+      () => (this._round.operatives || []).map((op) => this.playerProvider.getPlayerById(op.operative_id)));
   }
 
   get currentNomination() {
@@ -70,11 +70,15 @@ class Round {
   }
 
   get missionInfo() {
-    return getRoundMissionInfo(this.roundNumber, this._playerProvider.playerCount);
+    return getRoundMissionInfo(this.roundNumber, this.playerProvider.playerCount);
+  }
+
+  get game() {
+    return this._game;
   }
 
   get playerProvider() {
-    return this._playerProvider;
+    return this.game.playerProvider;
   }
 };
 

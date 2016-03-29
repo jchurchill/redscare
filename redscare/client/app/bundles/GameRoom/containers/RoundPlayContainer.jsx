@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as roundPlayActionCreators from '../actions/roundPlayActionCreators';
 
 import NominationPhase from '../components/phases/nomination/NominationPhase'
+import MissionPhase from '../components/phases/mission/MissionPhase'
 
 import Game from 'lib/game/gameHelper';
 import Round from 'lib/game/roundHelper';
@@ -29,50 +30,52 @@ class RoundPlayContainer extends React.Component {
     console.log("nominate!")
   }
 
-  isCurrentUserLeader() {
-    const { game: { currentRound: { currentLeader } }, user } = this.props
-    return currentLeader.id === user.id;
+  vote() {
+    console.log("vote!")
   }
 
-  renderCurrentRoundView() {
+  submit() {
+    console.log("submit!")
+  }
+
+  renderCurrentRoundPhase() {
     const { game: { currentRound }, user } = this.props
-    switch(currentRound.state) {
+    switch (currentRound.state) {
       case Round.states.NOMINATION:
-        return <NominationPhase round={currentRound} currentUser={user} nominate={this.nominate.bind(this)} />
+        return <NominationPhase round={currentRound} currentUser={user} nominate={this.nominate.bind(this)} vote={this.vote.bind(this)} />;
       case Round.states.MISSION:
-        return "mission"
+        return <MissionPhase round={currentRound} currentUser={user} submit={this.submit.bind(this)} />;
       case Round.states.COMPLETE:
-        return "complete"
+        return "complete";
       default:
-        throw { message: "unrecognized round state" }
+        throw { message: "unrecognized round state" };
     }
   }
 
   render() {
-    const { game: { currentRound } } = this.props
-    const { operativeCount, requiredFailCount } = currentRound.missionInfo
+    const { game: { currentRound }, user } = this.props
+    const { currentLeader, roundNumber, missionInfo: { operativeCount, requiredFailCount } } = currentRound
     return (
       <div>
-        <h2>Round {currentRound.roundNumber}</h2>
+        <h2>Round {roundNumber}</h2>
         <div style={{ margin: '5px', fontStyle: 'italic' }}>
           {operativeCount} operatives
           {requiredFailCount > 1 ? `; ${requiredFailCount} fails required` : ""}
         </div>
         <div>
           {
-            this.isCurrentUserLeader()
+            user.id === currentLeader.id
             ? <span>You are the round leader.</span>
-            : <span>{currentRound.currentLeader.name} is the round leader.</span>
+            : <span>{currentLeader.name} is the round leader.</span>
           }
         </div>
         <div style={{ margin: '5px' }}>
-          {this.renderCurrentRoundView()}
+          { this.renderCurrentRoundPhase() }
         </div>
       </div>
     );
   }
 }
-
 
 const mapStateToProps = (state) => {
   const { game, secrets, user } = state.gameRoomStore;

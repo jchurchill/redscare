@@ -97,7 +97,7 @@ export default class Game {
 
   get rounds() {
     return memoize("rounds", this,
-      () => (this._game.rounds || []).map((r) => new Round(r, this._playerProvider)));
+      () => (this._game.rounds || []).map((r) => new Round(r, this)));
   }
 
   get currentRound() {

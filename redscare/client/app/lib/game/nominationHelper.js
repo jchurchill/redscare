@@ -2,12 +2,12 @@ import memoize from './memoize';
 
 // Wraps a nomination object from the server in a more convenient API
 class Nomination {
-  constructor(nomination, playerProvider) {
-    this._nomination = nomination;
-    this._playerProvider = playerProvider;
+  constructor(nomination, round) {
+    this._nomination = nomination; // raw server data
+    this._round = round; // instanceof(Round) containing this nomination
   }
 
-  static state = Object.freeze({
+  static states = Object.freeze({
     // The nomination has just begun, but nominees have not yet been selected
     SELECTING: "selecting",
     // The nominees were selected, and are currently being voted on
@@ -16,7 +16,7 @@ class Nomination {
     COMPLETE: "complete"
   });
 
-  static outcome = Object.freeze({
+  static outcomes = Object.freeze({
     // A majority of players upvoted the nomination, so it was accepted
     ACCEPTED: "accepted",
     // A majority of players did not upvote the nomination, so it was rejected
@@ -61,8 +61,12 @@ class Nomination {
       ));
   }
 
-  get playerProvider() {
-    return this._playerProvider;
+  get requiredNomineeCount() {
+    return this._round.missionInfo.operativeCount;
+  }
+
+  get _playerProvider() {
+    return this._round.playerProvider;
   }
 };
 
