@@ -47,11 +47,23 @@ config.module.loaders.push(
       ],
     },
   },
-  { test: /\.css$/, loader: 'style-loader!css-loader' },
+  {
+    test: /\.css$/,
+    loaders: [
+      'style',
+      'css?modules&importLoaders=1&localIdentName=[name]__[local]__[hash:base64:5]',
+      'postcss',
+    ],
+  },
   {
     test: /\.scss$/,
-    loader: `style!css!sass?outputStyle=expanded&imagePath=/assets/images&includePaths[]=\
-${path.resolve(__dirname, './assets/stylesheets')}`,
+    loaders: [
+      'style',
+      'css?modules&importLoaders=3&localIdentName=[name]__[local]__[hash:base64:5]',
+      'postcss',
+      'sass',
+      'sass-resources',
+    ],
   },
 
   // The url-loader uses DataUrls. The file-loader emits files.

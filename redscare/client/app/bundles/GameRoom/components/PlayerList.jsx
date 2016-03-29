@@ -1,24 +1,12 @@
 import React from 'react';
-
-const defaultStyle = {
-  display: "inline-block",
-  margin: '5px',
-  padding: '5px',
-  border: '1px solid black',
-  backgroundColor: 'white'
-};
+import css from './PlayerList.scss'
 
 const PlayerList = (props) => {
   const { players, getAdditionalPlayerStyle } = props;
-  const getStyle = getAdditionalPlayerStyle
-    ? userId => {
-      const additionalStyle = getAdditionalPlayerStyle(userId)
-      return { ...defaultStyle, ...additionalStyle };
-    }
-    : userId => defaultStyle
+  const getStyle = userId => getAdditionalPlayerStyle ? getAdditionalPlayerStyle(userId) : {}
   return (
     <div>
-      { players.map(p => <div key={p.id} style={getStyle(p.id)}>{p.name}</div>) }
+      { players.map(p => <div key={p.id} className={css.player} style={getStyle(p.id)}>{p.name}</div>) }
     </div>
   );
 };

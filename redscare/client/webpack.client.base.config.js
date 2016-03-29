@@ -5,6 +5,7 @@ const path = require('path');
 
 const devBuild = process.env.NODE_ENV !== 'production';
 const nodeEnv = devBuild ? 'development' : 'production';
+const autoprefixer = require('autoprefixer');
 
 module.exports = {
 
@@ -56,4 +57,10 @@ module.exports = {
     loaders: [
     ],
   },
+  postcss: [autoprefixer],
+  // Place here all SASS files with variables, mixins etc.
+  // And sass-resources-loader will load them in every CSS Module (SASS file) for you
+  // (so don't need to @import them explicitly)
+  // https://github.com/shakacode/sass-resources-loader
+  sassResources: ['./app/assets/styles/app-variables.scss'],
 };

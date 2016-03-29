@@ -1,0 +1,9 @@
+@import './app/assets/styles/app-variables.scss';
+
+.player {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid black;
+  background-color: white;
+}

@@ -1,0 +1,4 @@
+// This is loaded into all CSS modules via webpack sass-resources-loader
+// Any sass variables defined here can be referenced anywhere
+$good-color: lightcyan;
+$evil-color: lightpink;

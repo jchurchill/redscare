@@ -1,5 +1,5 @@
-//= require generated/vendor-bundle
-//= require generated/app-bundle
+//= require vendor-bundle
+//= require app-bundle
 
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
