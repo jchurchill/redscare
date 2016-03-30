@@ -33,6 +33,11 @@ function gameReducer(state, action) {
     case actionTypes.VOTE:
       return { ...state, rounds: state.rounds.map(r => roundReducer(r, action)) };
 
+    case actionTypes.PLAYER_NOMINATED:
+    case actionTypes.PLAYER_VOTED:
+      // Entire game state is received from the server
+      return action.newGameState;
+
     case actionTypes.JOIN_ROOM:
     case actionTypes.LEAVE_ROOM:
     case actionTypes.PLAYER_JOINED:
