@@ -123,6 +123,9 @@ class Game < ActiveRecord::Base
     # - submitted pass/fails
     # - upvotes / downvotes on nominations (note these don't remain secret, but they are for at least some time)
     player = players.find { |p| p.user_id == user_id }
+    if player.nil?
+      return { role: nil, role_info: nil, submissions: [], votes: [] }
+    end
     
     role = player.try(:role)
     role_info = secret_role_info player
