@@ -22,21 +22,17 @@ export default function gameRoomReducer(state = initialState, action) {
     case actionTypes.CONNECTION_STATUS_UPDATED:
       return { ...state, connectionState: action.connectionState };
 
-    case actionTypes.JOIN_ROOM:
-    case actionTypes.LEAVE_ROOM:
-    case actionTypes.PLAYER_JOINED:
-    case actionTypes.PLAYER_LEFT:
-    case actionTypes.START_GAME:
-    case actionTypes.GAME_STARTED:
-      return { ...state, game: gameReducer(state.game, action) };
-
     default:
-      return state;
+      return { ...state, game: gameReducer(state.game, action) };
   }
 }
 
 function gameReducer(state, action) {
   switch(action.type) {
+    case actionTypes.NOMINATE:
+    case actionTypes.VOTE:
+      return { ...state, rounds: state.rounds.map(r => roundReducer(r, action)) };
+
     case actionTypes.JOIN_ROOM:
     case actionTypes.LEAVE_ROOM:
     case actionTypes.PLAYER_JOINED:
@@ -69,6 +65,54 @@ function gamePlayersReducer(state, action) {
     case actionTypes.PLAYER_JOINED:
     case actionTypes.PLAYER_LEFT:
       return action.gamePlayers;
+
+    default:
+      return state;
+  }
+}
+
+function roundReducer(state, action) {
+  switch(action.type) {
+    case actionTypes.NOMINATE:
+    case actionTypes.VOTE:
+      return { ...state, nominations: state.nominations.map(n => nominationReducer(n, action)) };
+
+    default:
+      return state;
+  }
+}
+
+function nominationReducer(state, action) {
+  switch(action.type) {
+    case actionTypes.NOMINATE:
+      return action.nominationId === state.id
+        ? { ...state, nominees: nomineesReducer(state.nominees, action) }
+        : state;
+
+    case actionTypes.VOTE:
+      return action.nominationId === state.id
+        ? { ...state, votes: votesReducer(state.votes, action) }
+        : state;
+
+    default:
+      return state;
+  }
+}
+
+function nomineesReducer(state, action) {
+  switch(action.type) {
+    case actionTypes.NOMINATE:
+      return [ ...state, { id: action.nomineeUserId } ];
+
+    default:
+      return state;
+  }
+}
+
+function votesReducer(state, action) {
+  switch(action.type) {
+    case actionTypes.VOTE:
+      return [ ...state, { upvote: action.upvote, user_id: action.currentUserId } ];
 
     default:
       return state;

@@ -7,3 +7,14 @@
   border: 1px solid black;
   background-color: white;
 }
+
+.nominatedPlayer {
+  background-color: lightgreen;
+  font-weight: bold;
+}
+
+.potentialNominatedPlayer {
+  &:hover {
+    background-color: ivory;
+  }
+}

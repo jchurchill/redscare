@@ -44,13 +44,13 @@ class Nomination {
   }
 
   get leader() {
-    return this._playerProvider.getPlayerById(this._nomination.leader_id);
+    return this.playerProvider.getPlayerById(this._nomination.leader_id);
   }
 
   get nominees() {
     return memoize("nominees", this,
       () => this._nomination.nominees.map(
-        nom => this._playerProvider.getPlayerById(nom.user_id)
+        nominee => this.playerProvider.getPlayerById(nominee.id)
       ));
   }
 
@@ -65,7 +65,7 @@ class Nomination {
     return this._round.missionInfo.operativeCount;
   }
 
-  get _playerProvider() {
+  get playerProvider() {
     return this._round.playerProvider;
   }
 };

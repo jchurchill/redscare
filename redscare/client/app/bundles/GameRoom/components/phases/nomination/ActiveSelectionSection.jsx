@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
-import PlayerList from '../../PlayerList.jsx';
+import classNames from 'classnames';
+import css from '../../PlayerList.scss'
 
 import Nomination from 'lib/game/nominationHelper';
 import User from 'lib/game/userHelper';
@@ -15,8 +16,46 @@ class ActiveSelectionSection extends React.Component {
     super(props, context);
   }
 
+  isPlayerNominated(userId) {
+    const { nomination, currentUser } = this.props;
+    return nomination.nominees.some(p => p.id === userId);
+  }
+
+  remainingNominations() {
+    const { nomination: { nominees, requiredNomineeCount } } = this.props;
+    return requiredNomineeCount - nominees.length;
+  }
+
+  nominate(player) {
+    if (this.remainingNominations() === 0) { return; }
+    if (window.confirm(`Nominate ${player.name}? This will be final.`)) {
+      this.props.nominate(player.id);
+    }
+  }
+
+  renderPlayer(p) {
+    const isPlayerNominated = this.isPlayerNominated(p.id);
+    const remainingNominations = this.remainingNominations();
+    const className = classNames(
+      css.player,
+      isPlayerNominated
+        ? css.nominatedPlayer
+        : (remainingNominations > 0 ? css.potentialNominatedPlayer : '')
+    );
+    const disabled = isPlayerNominated || remainingNominations === 0;
+    const onClick = isPlayerNominated ? () => {} : this.nominate.bind(this, p)
+    return (<button key={p.id} className={className} onClick={onClick} disabled={disabled}>{p.name}</button>);
+  }
+
   render() {
-    return <div>ActiveSelectionSection</div>;
+    const { nomination: { playerProvider: { players } } } = this.props;
+    const stillNominating = this.remainingNominations() > 0;
+    return (
+      <div>
+        <div>{ stillNominating ? "Choose players to nominate." : "Nomination complete." }</div>
+        <div>{ players.map(p => this.renderPlayer(p)) }</div>
+      </div>
+    );
   }
 }
 

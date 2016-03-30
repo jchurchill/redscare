@@ -19,5 +19,9 @@ WebsocketRails::EventMap.describe do
     [:join_room, :leave_room, :start_game].each do |action|
       subscribe action, to: WaitingRoomController, with_method: action
     end
+
+    [:nominate, :vote].each do |action|
+      subscribe action, to: RoundPlayController, with_method: action
+    end
   end
 end

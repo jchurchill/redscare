@@ -199,7 +199,7 @@ class Game < ActiveRecord::Base
             },
             nominations: {
               include: {
-                nominees: { only: [:user_id] },
+                nominees: { only: [:id] },
                 votes: {
                   # TODO: don't expose upvote / downvote until nomination complete
                 }

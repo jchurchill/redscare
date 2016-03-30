@@ -13,8 +13,14 @@ import websocket from 'lib/websocket/websocket';
 
 class RoundPlayContainer extends React.Component {
   static propTypes = {
-      game: PropTypes.instanceOf(Game).isRequired,
-      user: PropTypes.instanceOf(User).isRequired
+    game: PropTypes.instanceOf(Game).isRequired,
+    user: PropTypes.instanceOf(User).isRequired,
+    actions: PropTypes.shape({
+      nominate: PropTypes.func.isRequired,
+      playerNominated: PropTypes.func.isRequired,
+      vote: PropTypes.func.isRequired,
+      playerVoted: PropTypes.func.isRequired
+    }).isRequired
   };
 
   constructor(props, context) {
@@ -23,15 +29,27 @@ class RoundPlayContainer extends React.Component {
     // Bind websocket events once in the constructor.
     // We need props for the game_id to know which channel to listen to.
     this.gameClient = websocket.gameClientFactory(props.game.id);
-    // this.gameClient.bind(...);
+    this.gameClient.bind("game_room.player_nominated", this.props.actions.playerNominated);
+    this.gameClient.bind("game_room.player_voted", this.props.actions.playerVoted);
   }
 
-  nominate() {
-    console.log("nominate!")
+  nominate(nomineeUserId) {
+    const { game: { currentRound: { currentNomination } } } = this.props;
+    this.props.actions.nominate(currentNomination.id, nomineeUserId);
+    this.gameClient.trigger("game_room.nominate", {
+      nomination_id: currentNomination.id,
+      user_id: nomineeUserId,
+    });
   }
 
-  vote() {
-    console.log("vote!")
+  vote(upvote) {
+    const { game: { currentRound: { currentNomination } }, user } = this.props;
+    this.props.actions.vote(currentNomination.id, user.id, upvote);
+    this.gameClient.trigger("game_room.vote", {
+      nomination_id: currentNomination.id,
+      user_id: user.id,
+      upvote: upvote,
+    });
   }
 
   submit() {
