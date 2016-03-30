@@ -20,6 +20,6 @@ export function playerLeft(gamePlayers) {
   return { type: actionTypes.PLAYER_LEFT, gamePlayers };
 }
 
-export function gameStarted(gameState) {
-  return { type: actionTypes.GAME_STARTED, gameState };
+export function gameStarted(gameState, secrets) {
+  return { type: actionTypes.GAME_STARTED, gameState, secrets };
 }

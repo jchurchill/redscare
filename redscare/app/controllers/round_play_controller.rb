@@ -12,10 +12,10 @@ class RoundPlayController < WebsocketRails::BaseController
     user = User.find(user_id)
     nomination.nominees << user
     nomination.save!
-
+    
     # Send back the new game state
-    game = Game.find(game_id)
-    game_client(game.id).trigger :player_nominated, game, :namespace => 'game_room'
+    game = Game.find(game_id).get_public_state
+    game_client(game_id).trigger :player_nominated, game, :namespace => 'game_room'
   end
 
   def vote
@@ -30,8 +30,8 @@ class RoundPlayController < WebsocketRails::BaseController
     nomination.save!
 
     # Send back the new game state
-    game = Game.find(game_id)
-    game_client(game.id).trigger :player_voted, game, :namespace => 'game_room'
+    game = Game.find(game_id).get_public_state
+    game_client(game_id).trigger :player_voted, game, :namespace => 'game_room'
   end
 
   private

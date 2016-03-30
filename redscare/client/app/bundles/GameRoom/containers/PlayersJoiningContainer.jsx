@@ -38,8 +38,8 @@ class PlayersJoiningContainer extends React.Component {
     this.props.actions.playerLeft(gamePlayers);
   }
 
-  gameStarted(gameState) {
-    this.props.actions.gameStarted(gameState);
+  gameStarted(result) {
+    this.props.actions.gameStarted(result.game, result.secrets);
   }
 
   joinGame() {

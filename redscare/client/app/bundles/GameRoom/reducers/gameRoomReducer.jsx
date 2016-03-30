@@ -23,7 +23,18 @@ export default function gameRoomReducer(state = initialState, action) {
       return { ...state, connectionState: action.connectionState };
 
     default:
-      return { ...state, game: gameReducer(state.game, action) };
+      return { ...state, game: gameReducer(state.game, action), secrets: secretsReducer(state.secrets, action) };
+  }
+}
+
+function secretsReducer(state, action) {
+  switch (action.type) {
+    case actionTypes.GAME_STARTED:
+      // New secrets come from server
+      return action.secrets;
+
+    default:
+      return state;
   }
 }
 

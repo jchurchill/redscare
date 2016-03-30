@@ -21,7 +21,7 @@ class RoundPlayContainer extends React.Component {
       vote: PropTypes.func.isRequired,
       playerVoted: PropTypes.func.isRequired
     }).isRequired
-  };
+  }
 
   constructor(props, context) {
     super(props, context);
@@ -60,9 +60,9 @@ class RoundPlayContainer extends React.Component {
     const { game: { currentRound }, user } = this.props
     switch (currentRound.state) {
       case Round.states.NOMINATION:
-        return <NominationPhase round={currentRound} currentUser={user} nominate={this.nominate.bind(this)} vote={this.vote.bind(this)} />;
+        return <NominationPhase round={currentRound} currentUser={user} nominate={this.nominate.bind(this)} vote={this.vote.bind(this)} />
       case Round.states.MISSION:
-        return <MissionPhase round={currentRound} currentUser={user} submit={this.submit.bind(this)} />;
+        return <MissionPhase round={currentRound} currentUser={user} submit={this.submit.bind(this)} />
       case Round.states.COMPLETE:
         return "complete";
       default:

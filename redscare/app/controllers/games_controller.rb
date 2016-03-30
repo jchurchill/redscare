@@ -4,21 +4,18 @@ class GamesController < ApplicationController
   before_filter :authenticate_user!
 
   def index
+    user_id = current_user.id
+    unstarted_games = Game.where(state: Game.states[:created])
+    your_games = Game.joins(:players).where(game_players: { user_id: user_id })
     @game_index_props = { 
       :chatPath => chat_path,
       :newGamePath => new_game_path,
-      :games => Game.all.map { |g| {
-        :id => g.id,
-        :title => g.name,
-        :creator => g.creator.email,
-        :created_at => g.created_at,
-        :path => url_for(g)
-        } }
+      :unstartedGames => unstarted_games.map { |g| to_game_info g },
+      :yourGames => your_games.map { |g| to_game_info g },
     }
   end
 
   def show
-    # TODO: remove private information
     game = Game.find(params[:id]);
     game_info = game.get_public_state
     secrets = game.secret_info(current_user.id)
@@ -65,4 +62,16 @@ class GamesController < ApplicationController
 
     redirect_to game
   end
+
+  private
+    def to_game_info (game)
+      {
+        :id => game.id,
+        :title => game.name,
+        :creator => game.creator.email,
+        :created_at => game.created_at,
+        :path => url_for(game)
+      }
+    end
+
 end

@@ -80,7 +80,8 @@ export default class SecretRoleInfo extends React.Component {
   renderFalseSeer() {
     const {
       roleSecrets: { roleInfo: { known_evils } },
-      specialRules: { includesRogueEvil }
+      specialRules: { includesRogueEvil },
+      playerProvider
     } = this.props
     const knownEvilPlayers = known_evils.map(id => playerProvider.getPlayerById(id))
     return (
@@ -99,7 +100,8 @@ export default class SecretRoleInfo extends React.Component {
   renderEvilMaster() {
     const {
       roleSecrets: { roleInfo: { known_evils } },
-      specialRules: { includesRogueEvil }
+      specialRules: { includesRogueEvil },
+      playerProvider
     } = this.props
     const knownEvilPlayers = known_evils.map(id => playerProvider.getPlayerById(id))
     return (
@@ -114,7 +116,8 @@ export default class SecretRoleInfo extends React.Component {
   renderAssassin() {
     const {
       roleSecrets: { roleInfo: { known_evils } },
-      specialRules: { includesRogueEvil }
+      specialRules: { includesRogueEvil },
+      playerProvider
     } = this.props
     const knownEvilPlayers = known_evils.map(id => playerProvider.getPlayerById(id))
     return (

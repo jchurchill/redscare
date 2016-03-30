@@ -35,8 +35,9 @@ class WaitingRoomController < WebsocketRails::BaseController
     # TODO: validation that current user is game creator
     game.start!
 
-    # Send back the new entire game state
-    game_client(game.id).trigger :game_started, game.get_public_state, :namespace => 'game_room'
+    # Send back the new entire game state, including new secrets
+    result = { secrets: game.secret_info(current_user.id), game: game.get_public_state }
+    game_client(game.id).trigger :game_started, result, :namespace => 'game_room'
   end
 
   private
