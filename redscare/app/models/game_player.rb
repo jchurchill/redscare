@@ -26,14 +26,19 @@ class GamePlayer < ActiveRecord::Base
     assassin:     8
   }
 
+  belongs_to :game, inverse_of: :players
+  belongs_to :user
+
   def is_evil?
-    evil_normal? or false_seer? or rogue_evil? or evil_master? or assassin?
+    GameRules.is_role_evil(role)
   end
 
   def is_good?
-    good_normal? or seer? or seer_knower?
+    GameRules.is_role_good(role)
   end
 
-  belongs_to :game, inverse_of: :players
-  belongs_to :user
+  def as_state
+    # Include the list of players, but not their secret role
+    as_json({ include: :user, only: [:id, :user] })
+  end
 end

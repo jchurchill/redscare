@@ -8,10 +8,10 @@ export function nominate(nominationId, nomineeUserId) {
   };
 }
 
-export function playerNominated(newGameState) {
+export function playerNominated(newState) {
   return {
     type: actionTypes.PLAYER_NOMINATED,
-    newGameState
+    newState
   };
 }
 
@@ -24,9 +24,9 @@ export function vote(nominationId, currentUserId, upvote) {
   };
 }
 
-export function playerVoted(newGameState) {
+export function playerVoted(newState) {
   return {
     type: actionTypes.PLAYER_VOTED,
-    newGameState
+    newState
   };
 }

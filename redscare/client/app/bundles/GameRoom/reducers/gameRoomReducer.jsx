@@ -31,7 +31,7 @@ function secretsReducer(state, action) {
   switch (action.type) {
     case actionTypes.GAME_STARTED:
       // New secrets come from server
-      return action.secrets;
+      return action.newState.secrets;
 
     default:
       return state;
@@ -47,7 +47,7 @@ function gameReducer(state, action) {
     case actionTypes.PLAYER_NOMINATED:
     case actionTypes.PLAYER_VOTED:
       // Entire game state is received from the server
-      return action.newGameState;
+      return action.newState.game;
 
     case actionTypes.JOIN_ROOM:
     case actionTypes.LEAVE_ROOM:
@@ -118,7 +118,7 @@ function nominationReducer(state, action) {
 function nomineesReducer(state, action) {
   switch(action.type) {
     case actionTypes.NOMINATE:
-      return [ ...state, { id: action.nomineeUserId } ];
+      return [ ...state, action.nomineeUserId ];
 
     default:
       return state;

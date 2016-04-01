@@ -31,4 +31,12 @@ class Nomination < ActiveRecord::Base
   belongs_to :leader, class_name: "User"
   has_and_belongs_to_many :nominees, class_name: "User"
   has_many :votes, class_name: "NominationVote"
+
+  def as_state
+    state = as_json(only: [:id, :leader_id, :nomination_number, :state, :outcome])
+    # Only include the id of the nominee
+    state[:nominees] = nominees.map { |n| n.id }
+    state[:votes] = votes.map { |v| v.as_state }
+    return state
+  end
 end

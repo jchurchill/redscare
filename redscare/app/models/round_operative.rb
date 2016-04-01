@@ -9,4 +9,9 @@ class RoundOperative < ActiveRecord::Base
 
   belongs_to :round, inverse_of: :operatives
   belongs_to :operative, class_name: "User"
+
+  def as_state
+    # include the list of operatives, but not their submission
+    as_json({ only: [:id, :operative_id] })
+  end
 end

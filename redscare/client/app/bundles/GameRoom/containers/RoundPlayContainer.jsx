@@ -47,7 +47,6 @@ class RoundPlayContainer extends React.Component {
     this.props.actions.vote(currentNomination.id, user.id, upvote);
     this.gameClient.trigger("game_room.vote", {
       nomination_id: currentNomination.id,
-      user_id: user.id,
       upvote: upvote,
     });
   }

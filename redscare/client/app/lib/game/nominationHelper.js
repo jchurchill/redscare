@@ -50,7 +50,7 @@ class Nomination {
   get nominees() {
     return memoize("nominees", this,
       () => this._nomination.nominees.map(
-        nominee => this.playerProvider.getPlayerById(nominee.id)
+        nomineeUserId => this.playerProvider.getPlayerById(nomineeUserId)
       ));
   }
 

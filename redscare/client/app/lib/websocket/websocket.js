@@ -63,15 +63,27 @@ const getDispatcher = () => {
   return websocket;
 }
 
+const logError = () => { console.error("Error on websocket:", arguments); }
+
+// Returns a function that will first log arguments to the console,
+// then call the failure callback provided (if provided)
+const wrapFailure = (failureFunc) => {
+  const args = Array.prototype.slice.call(arguments, 1);
+  return typeof(failureFunc) === 'function'
+    ? () => { logError.apply(this, args); failureFunc.apply(this, args); }
+    : () => { logError.apply(this, args); };
+};
+
 // Wraps the API of the websocket to reduce confusion around 
 // how to communicate on the channel.
 const gameClientFactory = (gameId) => {
     const dispatcher = getDispatcher();
     const listener = dispatcher.subscribe(`game_room:${gameId}`);
+    
     // Send messages to the server in the context of this game
     const trigger = (eventName, data, success, failure) => {
       // Include game_id in every message to the server
-      dispatcher.trigger(eventName, { game_id: gameId, message: data }, success, failure);
+      dispatcher.trigger(eventName, { game_id: gameId, message: data }, success, wrapFailure(failure));
     }
     // Listen to messages from the server on the game's channel
     const bind = (eventName, callback) => {

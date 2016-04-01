@@ -31,4 +31,11 @@ class Round < ActiveRecord::Base
   belongs_to :game, inverse_of: :rounds
   has_many :operatives, class_name: "RoundOperative", inverse_of: :round
   has_many :nominations, inverse_of: :round
+
+  def as_state
+    state = as_json(only: [:id, :round_number, :state, :outcome])
+    state[:operatives] = operatives.map { |o| o.as_state }
+    state[:nominations] = nominations.map { |n| n.as_state }
+    return state
+  end
 end
