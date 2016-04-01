@@ -27,14 +27,22 @@ class GameRoom extends React.Component {
   }
 
   renderRoleInfo() {
-    const { game: { state, playerProvider, roleSecrets, specialRules, currentRound } } = this.props
-    // Unless game in progress, roles will not yet be assigned
-    if (state === Game.states.CREATED) { return ""; }
-    return (
-      <div style={{ margin: '10px' }}>
-        <SecretRoleInfo roleSecrets={roleSecrets} specialRules={specialRules} playerProvider={playerProvider} />
-      </div>
-    )
+    const { game: { state, playerProvider, roleSecrets, specialRules} } = this.props
+    // If game not started, display nothing
+    if (state === Game.states.CREATED) {
+      return <div></div>;
+    }
+    // If game started but role not assigned, then the current user is just a spectator
+    else if (!roleSecrets.role) {
+      return <div style={{ margin: '10px' }}>You are a spectator in this game.</div>;
+    }
+    else {
+      return (
+        <div style={{ margin: '10px' }}>
+          <SecretRoleInfo roleSecrets={roleSecrets} specialRules={specialRules} playerProvider={playerProvider} />
+        </div>
+      )
+    }
   }
 
   render() {
