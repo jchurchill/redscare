@@ -27,7 +27,7 @@ class GameStarter
 
   private
     def validate
-      if @game.state != Game.states[:created]
+      if not @game.created?
         raise "Cannot start a game whose state is not :created"
       end
       if @game.player_count != @game.players.count

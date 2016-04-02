@@ -63,15 +63,14 @@ const getDispatcher = () => {
   return websocket;
 }
 
-const logError = () => { console.error("Error on websocket:", arguments); }
-
 // Returns a function that will first log arguments to the console,
 // then call the failure callback provided (if provided)
 const wrapFailure = (failureFunc) => {
-  const args = Array.prototype.slice.call(arguments, 1);
-  return typeof(failureFunc) === 'function'
-    ? () => { logError.apply(this, args); failureFunc.apply(this, args); }
-    : () => { logError.apply(this, args); };
+  failureFunc = typeof(failureFunc) === 'function' ? failureFunc : () => {}
+  return () => {
+    console.error("Error on websocket.");
+    failureFunc.apply(this, arguments);
+  }
 };
 
 // Wraps the API of the websocket to reduce confusion around 

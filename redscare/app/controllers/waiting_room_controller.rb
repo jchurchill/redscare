@@ -34,7 +34,7 @@ class WaitingRoomController < GameClientWebsocketController
 
     # Send back the new entire game state, including new secrets
     state = GameRoomStateProvider.new(game, current_user).get_state
-    game_client.trigger :game_started, result, :namespace => 'game_room'
+    game_client.trigger :game_started, state, :namespace => 'game_room'
   end
 
 end
