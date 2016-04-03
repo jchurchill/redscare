@@ -47,6 +47,10 @@ class Game < ActiveRecord::Base
 
   has_many :rounds, inverse_of: :game
 
+  def current_round
+    rounds.max_by { |r| r.round_number }
+  end
+
   def is_in_game? (user_id)
     return players.any? { |player| player.user_id = user_id }
   end

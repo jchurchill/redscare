@@ -30,7 +30,7 @@ class WaitingRoomController < GameClientWebsocketController
     game = Game.find(game_id)
     # TODO: validation to prevent race conditions
     # TODO: validation that current user is game creator
-    GameStarter.new(game).start!
+    GameTransitioner.new(game).start!
 
     # Send back the new entire game state, including new secrets
     state = GameRoomStateProvider.new(game, current_user).get_state

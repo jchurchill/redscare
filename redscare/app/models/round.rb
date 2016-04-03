@@ -32,6 +32,22 @@ class Round < ActiveRecord::Base
   has_many :operatives, class_name: "RoundOperative", inverse_of: :round
   has_many :nominations, inverse_of: :round
 
+  def current_nomination
+    nominations.max_by { |n| n.nomination_number }
+  end
+
+  def operatives_required
+    mission_info.operative_count
+  end
+
+  def fails_required_for_failure
+    mission_info.required_fail_count
+  end
+
+  def mission_info
+    GameRules.round_mission_properties(game.player_count, round_number)
+  end
+
   def as_state
     state = as_json(only: [:id, :round_number, :state, :outcome])
     state[:operatives] = operatives.map { |o| o.as_state }

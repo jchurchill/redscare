@@ -17,6 +17,14 @@ class RoundPlayController < GameClientWebsocketController
     game = Game.find(game_id)
     state = GameRoomStateProvider.new(game, current_user).get_state
     game_client.trigger :player_nominated, state, :namespace => 'game_room'
+
+    nomination_transitioner = NominationTransitioner.new(nomination)
+    if nomination_transitioner.can_transition_to_voting
+      nomination_transitioner.to_voting_phase!
+      game = Game.find(game_id)
+      state = GameRoomStateProvider.new(game, current_user).get_state
+      game_client.trigger :nomination_voting_phase, state, :namespace => 'game_room'
+    end
   end
 
   def vote

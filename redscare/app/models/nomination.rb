@@ -32,6 +32,10 @@ class Nomination < ActiveRecord::Base
   has_and_belongs_to_many :nominees, class_name: "User"
   has_many :votes, class_name: "NominationVote"
 
+  def required_nominee_count
+    round.operatives_required
+  end
+
   def as_state
     state = as_json(only: [:id, :leader_id, :nomination_number, :state, :outcome])
     # Only include the id of the nominee
