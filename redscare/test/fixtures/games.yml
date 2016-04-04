@@ -21,3 +21,14 @@ vanilla_6_ready_to_start:
   includes_seer_deception: true
   includes_evil_master: false
   includes_rogue_evil: false
+
+<% (1..10).each do |n| %>
+game_reducer_game_testcase_<%= n %>:
+  name: "Reducer test game <%= n %>"
+  player_count: 5
+  creator: user_1
+  includes_seer: false
+  includes_seer_deception: false
+  includes_evil_master: false
+  includes_rogue_evil: false
+<% end %>

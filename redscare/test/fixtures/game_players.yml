@@ -16,3 +16,9 @@ vanilla_6_ready_to_start_player_<%= n %>:
   game: vanilla_6_ready_to_start
   user: user_<%= n %>
 <% end %>
+
+<% (1..10).each do |n| %>
+game_reducer_initial_game_player_testcase_<%= n %>:
+  game: game_reducer_game_testcase_<%= n %>
+  user: user_1
+<% end %>

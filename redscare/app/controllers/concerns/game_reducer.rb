@@ -66,11 +66,11 @@ module GameReducer
 
   class << self
     def dispatch (game, action, data = nil)
-      @@reducer.dispatch game, action, data
+      @@reducer.dispatch game, action, (data || { })
     end
 
     # data: { user_id }
-    def player_join (game, action, data = nil)
+    def player_join (game, action, data)
       players = game.players
       # Only allow if...
       return false if not (
@@ -83,23 +83,27 @@ module GameReducer
       )
 
       game.players << GamePlayer.new(user_id: data[:user_id])
+      game.save!
       return true
     end
 
     # data: { user_id }
-    def player_leave (game, action, data = nil)
+    def player_leave (game, action, data)
       # Only allow if...
       return false if not (
         # game is in "created" state
-        (game.created?)
+        (game.created?) and
+        # the player leaving is not the creator
+        (data[:user_id] != game.creator_id)
       )
 
-      game.players.where(user_id: data[:user_id]).destroy_all
+      game.players.destroy(GamePlayer.find_by(game_id: game.id, user_id: data[:user_id]))
+      game.save!
       return true
     end
 
     # data: { }
-    def start (game, action, data = nil)
+    def start (game, action, data)
       # Only allow if...
       return false if not (
         # game is in "created" state
@@ -155,7 +159,7 @@ module GameReducer
     end
 
     # data: { }
-    def new_round (game, action, data = nil)
+    def new_round (game, action, data)
       current_round = game.current_round
       # Only allow if...
       return false if not (
@@ -186,7 +190,7 @@ module GameReducer
     end
 
     # data: { }
-    def begin_assassination (game, action, data = nil)
+    def begin_assassination (game, action, data)
       current_round = game.current_round
       # Only allow if...
       return false if not (
@@ -204,7 +208,7 @@ module GameReducer
     end
 
     # data: { selecting_user_id, target_user_id }
-    def select_assassin_target (game, action, data = nil)
+    def select_assassin_target (game, action, data)
       # Only allow if...
       return false if not (
         # game is in "assassination" state
@@ -223,7 +227,7 @@ module GameReducer
     end
 
     # data: { }
-    def complete_game (game, action, data = nil)
+    def complete_game (game, action, data)
       # Only allow if...
       return false if not (
         (
