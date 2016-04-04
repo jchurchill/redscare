@@ -8,6 +8,10 @@ class GameClientWebsocketController < WebsocketRails::BaseController
       WebsocketRails[:"game_room:#{game_id}"]
     end
 
+    def context_game
+      Game.find(game_id)
+    end
+
     def game_id
       message[:game_id]
     end

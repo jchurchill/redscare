@@ -37,15 +37,23 @@ class Round < ActiveRecord::Base
   end
 
   def operatives_required
-    mission_info.operative_count
+    mission_info[:operative_count]
   end
 
   def fails_required_for_failure
-    mission_info.required_fail_count
+    mission_info[:required_fail_count]
   end
 
   def mission_info
     GameRules.round_mission_properties(game.player_count, round_number)
+  end
+
+  def current_leader_id
+    if not current_nomination.nil? then current_nomination.leader_id else nil end
+  end
+
+  def outcome_decided?
+    outcome.nil?
   end
 
   def as_state

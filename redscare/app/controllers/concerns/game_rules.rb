@@ -1,5 +1,5 @@
-class GameRules
-  
+module GameRules
+
   @@roles = {
     :good_normal => { good: true  },
     :evil_normal => { good: false },

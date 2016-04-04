@@ -51,8 +51,33 @@ class Game < ActiveRecord::Base
     rounds.max_by { |r| r.round_number }
   end
 
+  def succeeded_rounds
+    rounds.select { |r| r.success? }
+  end
+
+  def failed_rounds
+    rounds.select { |r| r.failure? }
+  end
+
+  def current_leader_id
+    # Order nominations by (round_number desc, nomination_number desc), take the first one's leader
+    current = rounds.flat_map { |r|
+        r.nominations.map { |n|
+          { key: [r.round_number, n.nomination_number], leader_id: n.leader_id }
+        }
+      }
+      .sort_by { |rn| rn[:key] }.reverse
+      .first
+
+    return (if current.nil? then nil else current[:leader_id] end)
+  end
+
+  def seer_was_assassinated?
+    not assassinated_player_id.nil? and players.any? { |p| p.user_id == assassinated_player_id and p.seer? }
+  end
+
   def is_in_game? (user_id)
-    return players.any? { |player| player.user_id = user_id }
+    return players.any? { |player| player.user_id == user_id }
   end
 
   def as_state

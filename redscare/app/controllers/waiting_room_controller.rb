@@ -1,39 +1,32 @@
 class WaitingRoomController < GameClientWebsocketController
 
   def join_room
-    user_id = message_data[:user_id]
-    
-    game = Game.find(game_id)
-    user = User.find(user_id)
-    # TODO: validation to prevent race conditions
-    game.players << GamePlayer.new(user: user)
-    game.save!
+    game = GameReducer.dispatch(context_game, :player_join, {
+      user_id: message_data[:user_id]
+    })[:state]
 
-    # Send back the new list of users
-    game_players = game.players.map { |p| p.as_state }
-    game_client.trigger :player_joined, game_players, :namespace => 'game_room'
+    # Send back the new state
+    state = GameRoomStateProvider.get_state(game, current_user)
+    game_client.trigger :player_joined, state, :namespace => 'game_room'
   end
 
   def leave_room
-    user_id = message_data[:user_id]
+    game = GameReducer.dispatch(context_game, :player_leave, {
+      user_id: message_data[:user_id]
+    })[:state]
 
-    game = Game.find(game_id)
-    # TODO: validation to prevent race conditions
-    game.players.where(user_id: user_id).destroy_all
-
-    # Send back the new list of users
-    game_players = game.players.map { |p| p.as_state }
-    game_client.trigger :player_left, game_players, :namespace => 'game_room'
+    # Send back the new state
+    state = GameRoomStateProvider.get_state(game, current_user)
+    game_client.trigger :player_left, state, :namespace => 'game_room'
   end
 
   def start_game
-    game = Game.find(game_id)
-    # TODO: validation to prevent race conditions
-    # TODO: validation that current user is game creator
-    GameTransitioner.new(game).start!
+    game = GameReducer.dispatch(context_game, :start)[:state]
+    game = GameReducer.dispatch(game, :new_round)[:state]
+    game = GameReducer.dispatch(game, :new_nomination)[:state]
 
-    # Send back the new entire game state, including new secrets
-    state = GameRoomStateProvider.new(game, current_user).get_state
+    # Send back the new state
+    state = GameRoomStateProvider.get_state(game, current_user)
     game_client.trigger :game_started, state, :namespace => 'game_room'
   end
 

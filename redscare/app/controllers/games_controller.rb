@@ -17,8 +17,7 @@ class GamesController < ApplicationController
 
   def show
     game = Game.find(params[:id])
-    state = GameRoomStateProvider.new(game, current_user).get_state
-
+    state = GameRoomStateProvider.get_state(game, current_user)
     @game_room_props = {
       :component_props => {
         :links => {

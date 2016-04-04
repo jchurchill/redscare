@@ -21,25 +21,13 @@ class PlayersJoiningContainer extends React.Component {
     // Bind websocket events once in the constructor.
     // We need props for the game_id to know which channel to listen to.
     gameClient = websocket.gameClientFactory(props.game.id);
-    gameClient.bind("game_room.player_joined", this.playerJoined.bind(this));
-    gameClient.bind("game_room.player_left", this.playerLeft.bind(this));
-    gameClient.bind("game_room.game_started", this.gameStarted.bind(this));
+    gameClient.bind("game_room.player_joined", this.props.actions.playerJoined);
+    gameClient.bind("game_room.player_left", this.props.actions.playerLeft);
+    gameClient.bind("game_room.game_started", this.props.actions.gameStarted);
 
     // When a game is started, we wait for the server to respond
     // that it has initialized the game. While waiting, display ui cue
     this.state = { waitingForGameInit: false };
-  }
-
-  playerJoined(gamePlayers) {
-    this.props.actions.playerJoined(gamePlayers);
-  }
-
-  playerLeft(gamePlayers) {
-    this.props.actions.playerLeft(gamePlayers);
-  }
-
-  gameStarted(state) {
-    this.props.actions.gameStarted(state.game, state.secrets);
   }
 
   joinGame() {

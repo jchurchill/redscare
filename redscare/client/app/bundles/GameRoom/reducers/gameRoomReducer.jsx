@@ -44,15 +44,8 @@ function gameReducer(state, action) {
     case actionTypes.VOTE:
       return { ...state, rounds: state.rounds.map(r => roundReducer(r, action)) };
 
-    case actionTypes.PLAYER_NOMINATED:
-    case actionTypes.PLAYER_VOTED:
-      // Entire game state is received from the server
-      return action.newState.game;
-
     case actionTypes.JOIN_ROOM:
     case actionTypes.LEAVE_ROOM:
-    case actionTypes.PLAYER_JOINED:
-    case actionTypes.PLAYER_LEFT:
       return { ...state, players: gamePlayersReducer(state.players, action) };
 
     case actionTypes.START_GAME:
@@ -60,9 +53,13 @@ function gameReducer(state, action) {
       // updating a bunch of game state that would be a shame to replicate here
       return state;
 
+    case actionTypes.PLAYER_JOINED:
+    case actionTypes.PLAYER_LEFT:
+    case actionTypes.PLAYER_NOMINATED:
+    case actionTypes.PLAYER_VOTED:
     case actionTypes.GAME_STARTED:
       // Entire game state is received from the server
-      return action.gameState;
+      return action.newState.game;
 
     default:
       return state;
@@ -76,11 +73,6 @@ function gamePlayersReducer(state, action) {
 
     case actionTypes.LEAVE_ROOM:
       return state.filter((p) => p.user.id !== action.user.id);
-
-    // When other players join, we get the full game player state from the server
-    case actionTypes.PLAYER_JOINED:
-    case actionTypes.PLAYER_LEFT:
-      return action.gamePlayers;
 
     default:
       return state;

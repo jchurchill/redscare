@@ -12,14 +12,14 @@ export function startGame() {
   return { type: actionTypes.START_GAME };
 }
 
-export function playerJoined(gamePlayers) {
-  return { type: actionTypes.PLAYER_JOINED, gamePlayers };
+export function playerJoined(newState) {
+  return { type: actionTypes.PLAYER_JOINED, newState };
 }
 
-export function playerLeft(gamePlayers) {
-  return { type: actionTypes.PLAYER_LEFT, gamePlayers };
+export function playerLeft(newState) {
+  return { type: actionTypes.PLAYER_LEFT, newState };
 }
 
-export function gameStarted(gameState, secrets) {
-  return { type: actionTypes.GAME_STARTED, gameState, secrets };
+export function gameStarted(newState) {
+  return { type: actionTypes.GAME_STARTED, newState };
 }

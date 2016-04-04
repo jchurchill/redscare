@@ -36,6 +36,10 @@ class Nomination < ActiveRecord::Base
     round.operatives_required
   end
 
+  def is_final_nomination
+    nomination_number == 5
+  end
+
   def as_state
     state = as_json(only: [:id, :leader_id, :nomination_number, :state, :outcome])
     # Only include the id of the nominee
