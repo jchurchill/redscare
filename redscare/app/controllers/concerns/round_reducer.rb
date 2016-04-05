@@ -120,7 +120,7 @@ module RoundReducer
       # Determine round outcome.
       if round.current_nomination.rejected?
         round.out_of_nominations!
-      elsif (round.operatives.count { |o| not o.pass }) >= round.fails_required_for_failure
+      elsif round.operatives.where(pass: false).count >= round.fails_required_for_failure
         round.failure!
       else
         round.success!

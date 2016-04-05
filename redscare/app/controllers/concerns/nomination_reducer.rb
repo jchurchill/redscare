@@ -41,7 +41,7 @@ module NominationReducer
         # state is "selecting"
         (nomination.selecting?) and
         # required nominee count reached
-        (nominees.count == nomination.required_nominee_count)
+        (nomination.nominees.count == nomination.required_nominee_count)
       )
 
       nomination.voting!
@@ -77,7 +77,7 @@ module NominationReducer
       )
 
       # Set the outcome of the nomination
-      strict_majority_upvote = (nomination.votes.count { |v| v.upvote }) > (nomination.votes.count / 2)
+      strict_majority_upvote = nomination.votes.where(upvote: true).count > (nomination.votes.count / 2)
       if strict_majority_upvote
         nomination.accepted!
       else
