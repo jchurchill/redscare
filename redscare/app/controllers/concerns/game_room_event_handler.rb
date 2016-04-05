@@ -40,7 +40,7 @@ class GameRoomEventHandler
   end
 
   private
-    def dispatch(action, data)
+    def dispatch(action, data = nil)
       @dispatcher.dispatch(action, data)
     end
 
