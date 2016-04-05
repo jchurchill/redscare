@@ -97,7 +97,8 @@ module GameReducer
         (data[:user_id] != game.creator_id)
       )
 
-      game.players.destroy(GamePlayer.find_by(game_id: game.id, user_id: data[:user_id]))
+      to_destroy = GamePlayer.find_by(game_id: game.id, user_id: data[:user_id])
+      game.players.destroy(to_destroy) if not to_destroy.nil?
       game.save!
       return true
     end

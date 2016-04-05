@@ -16,12 +16,8 @@ WebsocketRails::EventMap.describe do
   subscribe :client_connected, to: ChatWebsocketController, with_method: :client_connected
 
   namespace :game_room do
-    [:join_room, :leave_room, :start_game].each do |action|
-      subscribe action, to: WaitingRoomController, with_method: action
-    end
-
-    [:nominate, :vote].each do |action|
-      subscribe action, to: RoundPlayController, with_method: action
+    GameRoomWebsocketController.supported_events.each do |event_name|
+      subscribe event_name, to: GameRoomWebsocketController, with_method: :handle
     end
   end
 end
