@@ -1,5 +1,13 @@
 import { actionTypes } from '../constants/gameRoomConstants';
 
+export function newRound(newState) {
+  return { type: actionTypes.NEW_ROUND, newState };
+}
+
+export function newNomination(newState) {
+  return { type: actionTypes.NEW_NOMINATION, newState };
+}
+
 export function nominate(nominationId, nomineeUserId) {
   return {
     type: actionTypes.NOMINATE,

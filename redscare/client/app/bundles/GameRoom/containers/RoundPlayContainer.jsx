@@ -29,6 +29,8 @@ class RoundPlayContainer extends React.Component {
     // Bind websocket events once in the constructor.
     // We need props for the game_id to know which channel to listen to.
     this.gameClient = websocket.gameClientFactory(props.game.id);
+    this.gameClient.bind("game_room.new_round", this.props.actions.newRound);
+    this.gameClient.bind("game_room.new_nomination", this.props.actions.newNomination);
     this.gameClient.bind("game_room.player_nominated", this.props.actions.playerNominated);
     this.gameClient.bind("game_room.player_voted", this.props.actions.playerVoted);
   }
@@ -71,6 +73,11 @@ class RoundPlayContainer extends React.Component {
 
   render() {
     const { game: { currentRound }, user } = this.props
+    if (!currentRound) {
+      return (
+        <h2>Setting up first round...</h2>
+      );
+    }
     const { currentLeader, roundNumber, missionInfo: { operativeCount, requiredFailCount } } = currentRound
     return (
       <div>

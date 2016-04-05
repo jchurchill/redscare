@@ -66,7 +66,7 @@ class Round {
   }
 
   get currentLeader() {
-    return this.currentNomination.leader;
+    return this.currentNomination && this.currentNomination.leader;
   }
 
   get missionInfo() {

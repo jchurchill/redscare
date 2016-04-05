@@ -34,10 +34,15 @@ class NominationPhase extends React.Component {
   }
 
   render() {
-    const { nominationNumber } = this.props.round.currentNomination
+    const { currentNomination } = this.props.round
+    if (!currentNomination) {
+      return (
+        <h3>Setting up first nomination...</h3>
+      );
+    }
     return (
       <div>
-        <h3>Nomination {nominationNumber}</h3>
+        <h3>Nomination {currentNomination.nominationNumber}</h3>
         { this.renderSubPhase() }
       </div>
     );

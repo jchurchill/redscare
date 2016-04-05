@@ -10,6 +10,9 @@ export const actionTypes = mirrorCreator([
   'PLAYER_LEFT', // When server tells us someone else left
   'GAME_STARTED', // When server tells us room leader started the game
 
+  'NEW_ROUND', // When server tells us a new round has started
+  'NEW_NOMINATION', // When server tells us a new nomination has started
+
   'NOMINATE', // When user (as round leader) nominates a player
   'PLAYER_NOMINATED', // When server tells us the round leader nominated a player
 

@@ -58,6 +58,8 @@ function gameReducer(state, action) {
     case actionTypes.PLAYER_NOMINATED:
     case actionTypes.PLAYER_VOTED:
     case actionTypes.GAME_STARTED:
+    case actionTypes.NEW_ROUND:
+    case actionTypes.NEW_NOMINATION:
       // Entire game state is received from the server
       return action.newState.game;
 
