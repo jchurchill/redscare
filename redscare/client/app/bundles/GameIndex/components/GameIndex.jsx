@@ -4,6 +4,7 @@ import GameIndexGame from './GameIndexGame.jsx'
 class GameIndex extends React.Component {
   static PropTypes = {
     chatPath: PropTypes.string.isRequired,
+    devPanelPath: PropTypes.string.isRequired,
     newGamePath: PropTypes.string.isRequired,
     unstartedGames: React.PropTypes.array.isRequired,
     yourGames: React.PropTypes.array.isRequired,
@@ -14,7 +15,7 @@ class GameIndex extends React.Component {
   }
 
   render() {
-    const { chatPath, newGamePath, unstartedGames, yourGames } = this.props
+    const { chatPath, devPanelPath, newGamePath, unstartedGames, yourGames } = this.props
     return (
       <div className="container">
         <h1>Games#index</h1>
@@ -25,9 +26,8 @@ class GameIndex extends React.Component {
         <GameIndexTable title="All unstarted games" games={unstartedGames} />
         <GameIndexTable title="Your games" games={yourGames} />
         <h2>Other links</h2>
-        <div>
-          <a href={chatPath}>Chat</a>
-        </div>
+        <div><a href={chatPath}>Chat</a></div>
+        <div><a href={devPanelPath}>Dev panel</a></div>
       </div>
     );
   }

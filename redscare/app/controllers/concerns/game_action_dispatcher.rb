@@ -33,6 +33,7 @@ class GameActionDispatcher
     if dispatch_result[:success] and not outgoing_event_name.nil?
       broadcast_update_to_room outgoing_event_name, dispatch_result[:state]
     end
+    return dispatch_result
   end
 
   private

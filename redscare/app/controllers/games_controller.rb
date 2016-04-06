@@ -9,6 +9,7 @@ class GamesController < ApplicationController
     your_games = Game.joins(:players).where(game_players: { user_id: user_id })
     @game_index_props = { 
       :chatPath => chat_path,
+      :devPanelPath => devpanel_path,
       :newGamePath => new_game_path,
       :unstartedGames => unstarted_games.map { |g| to_game_info g },
       :yourGames => your_games.map { |g| to_game_info g },

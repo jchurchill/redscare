@@ -19,24 +19,29 @@ class GameRoomEventHandler
   end
 
   def join_room
-    dispatch :player_join, event_data
+    result = dispatch :player_join, { user_id: current_user.id }
+    return result[:success]
   end
 
   def leave_room
-    dispatch :player_leave, event_data
+    result = dispatch :player_leave, { user_id: current_user.id }
+    return result[:success]
   end
 
   def start_game
-    dispatch :start
-    dispatch :new_round
-    dispatch :new_nomination
+    results = []
+    results << (dispatch :start)
+    results << (dispatch :new_round)
+    results << (dispatch :new_nomination)
+    return results.any? { |r| r[:success] }
   end
 
   def nominate
-    dispatch :nominate_player, {
+    result = dispatch :nominate_player, {
       selecting_user_id: current_user.id,
       selected_user_id: event_data[:user_id]
     }
+    return result[:success]
   end
 
   private

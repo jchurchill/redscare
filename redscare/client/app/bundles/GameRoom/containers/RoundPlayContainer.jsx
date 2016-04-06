@@ -86,19 +86,27 @@ class RoundPlayContainer extends React.Component {
           {operativeCount} operatives
           {requiredFailCount > 1 ? `; ${requiredFailCount} fails required` : ""}
         </div>
-        <div>
-          {
-            user.id === currentLeader.id
-            ? <span>You are the round leader.</span>
-            : <span>{currentLeader.name} is the round leader.</span>
-          }
-        </div>
+        <CurrentLeaderDisplay user={user} currentLeader={currentLeader} />
         <div style={{ margin: '5px' }}>
           { this.renderCurrentRoundPhase() }
         </div>
       </div>
     );
   }
+}
+
+const CurrentLeaderDisplay = (props) => {
+  const { user, currentLeader } = props;
+  if (!currentLeader) { return (<div></div>); }
+  return (
+    <div>
+      {
+        user.id === currentLeader.id
+        ? <span>You are the round leader.</span>
+        : <span>{currentLeader.name} is the round leader.</span>
+      }
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {

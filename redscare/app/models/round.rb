@@ -53,7 +53,7 @@ class Round < ActiveRecord::Base
   end
 
   def outcome_decided?
-    outcome.nil?
+    not outcome.nil?
   end
 
   def as_state

@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
-  get '/chat', to: 'chat#chat' 
+  get '/chat', to: 'chat#chat'
+  get '/devpanel', to: 'dev_panel#index'
+  post '/devpanel/game_action', to: 'dev_panel#game_action'
 
   resources :games, only: [:index, :show, :new, :create]
   
