@@ -162,9 +162,6 @@ module GameReducer
     # data: { }
     def new_round (game, action, data)
       current_round = game.current_round
-      p current_round
-      p game.state
-      game.rounds.each do |r| p r end
       # Only allow if...
       return false if not (
         # game is still in "rounds_in_progress" state

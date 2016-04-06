@@ -32,6 +32,7 @@ class RoundPlayContainer extends React.Component {
     this.gameClient.bind("game_room.new_round", this.props.actions.newRound);
     this.gameClient.bind("game_room.new_nomination", this.props.actions.newNomination);
     this.gameClient.bind("game_room.player_nominated", this.props.actions.playerNominated);
+    this.gameClient.bind("game_room.voting_started", this.props.actions.votingStarted);
     this.gameClient.bind("game_room.player_voted", this.props.actions.playerVoted);
   }
 

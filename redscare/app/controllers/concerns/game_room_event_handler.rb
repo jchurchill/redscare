@@ -6,34 +6,42 @@ class GameRoomEventHandler
     dispatcher = GameActionDispatcher.new message[:game_id], current_user
     handler = GameRoomEventHandler.new dispatcher, message[:message], current_user
     handler.send(incoming_event.to_sym)
+
+    results = handler.event_results
+    # success = "was game updated in any way"
+    success = results.any? { |r| r[:success] }
+    # game = final state of game after (possible) chain of updates
+    game = results.reverse.first[:game]
+    return { success: success, game: game }
   end
 
   def self.supported_events
     self.public_instance_methods false
   end
 
+  def event_results
+    @results
+  end
+
   def initialize (action_dispatcher, event_data, current_user)
     @dispatcher = action_dispatcher
     @event_data = event_data
     @current_user = current_user
+    @results = []
   end
 
   def join_room
-    result = dispatch :player_join, { user_id: current_user.id }
-    return result[:success]
+    dispatch :player_join, { user_id: current_user.id }
   end
 
   def leave_room
-    result = dispatch :player_leave, { user_id: current_user.id }
-    return result[:success]
+    dispatch :player_leave, { user_id: current_user.id }
   end
 
   def start_game
-    results = []
-    results << (dispatch :start)
-    results << (dispatch :new_round)
-    results << (dispatch :new_nomination)
-    return results.any? { |r| r[:success] }
+    dispatch :start
+    dispatch :new_round
+    dispatch :new_nomination
   end
 
   def nominate
@@ -41,12 +49,19 @@ class GameRoomEventHandler
       selecting_user_id: current_user.id,
       selected_user_id: event_data[:user_id]
     }
-    return result[:success]
+
+    nomination = result[:game].try(:current_round).try(:current_nomination)
+    if not nomination.nil? and nomination.nominees.count == nomination.required_nominee_count
+      dispatch :start_voting
+    end
   end
 
   private
     def dispatch(action, data = nil)
-      @dispatcher.dispatch(action, data)
+      dispatch_result = @dispatcher.dispatch(action, data)
+      result = { action: action, success: dispatch_result[:success], game: dispatch_result[:state] }
+      @results << result
+      return result
     end
 
     def event_data

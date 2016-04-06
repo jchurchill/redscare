@@ -20,6 +20,10 @@ export function playerNominated(newState) {
   return { type: actionTypes.PLAYER_NOMINATED, newState };
 }
 
+export function votingStarted(newState) {
+  return { type: actionTypes.VOTING_STARTED, newState };
+}
+
 export function vote(nominationId, currentUserId, upvote) {
   return {
     type: actionTypes.VOTE,

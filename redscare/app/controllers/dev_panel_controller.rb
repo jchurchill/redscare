@@ -14,26 +14,21 @@ class DevPanelController < ApplicationController
         :game_id => params[:gameId],
         :message => params[:data]
       }
-
       user = User.find(params[:userId])
-      if user.nil?
-        respond(false)
-      end
 
-      success = GameRoomEventHandler.handle(event, message, user)
+      result = GameRoomEventHandler.handle(event, message, user)
+      respond({ success: result[:success] })
 
     rescue StandardError
-      respond(false)
+      respond({ success: false })
       raise
     end
-
-    respond(success)
   end
 
   private
-    def respond(success)
+    def respond(data)
       respond_to do |format|
-        format.json { render json: { :success => success } }
+        format.json { render json: data }
       end
     end
 end

@@ -16,6 +16,7 @@ export const actionTypes = mirrorCreator([
   'NOMINATE', // When user (as round leader) nominates a player
   'PLAYER_NOMINATED', // When server tells us the round leader nominated a player
 
+  'VOTING_STARTED', // When nomination transitions to the voting phase
   'VOTE', // When user upvotes or downvotes a nomination
   'PLAYER_VOTED', // When server tells us another player upvoted or downvoted a nomination
 ]);
