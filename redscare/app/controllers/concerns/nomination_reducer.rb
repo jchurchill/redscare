@@ -53,6 +53,8 @@ module NominationReducer
     def cast_vote (nomination, action, data)
       # Only allow if...
       return false if not (
+        # upvote provided
+        (not data[:upvote].nil?) and
         # state is "voting"
         (nomination.voting?) and
         # vote not already cast for this user

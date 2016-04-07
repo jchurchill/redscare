@@ -12,6 +12,7 @@ class GameActionDispatcher
     :cast_vote                => :vote_cast,
     :complete_nomination      => :nomination_completed,
     :start_mission            => :mission_started,
+    :mission_submit           => :submission_cast,
     :complete_mission         => :mission_completed,
     :begin_assassination      => :assassination_begun,
     :select_assassin_target   => :assassin_target_selected,

@@ -1,44 +1,49 @@
 import React, { PropTypes } from 'react';
+import Action from './action.js'
 import css from './ActionForm.scss'
 
 class ActionForm extends React.Component {
   static PropTypes = {
-    submit: PropTypes.string.isRequired,
-    actionName: PropTypes.string.isRequired,
-    disabled: PropTypes.bool,
-    parameters: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      parse: PropTypes.func
-    })).isRequired
+    submit: PropTypes.func.isRequired,
+    action: PropTypes.instanceOf(Action).isRequired,
+    disabled: PropTypes.bool
   }
 
   constructor(props) {
     super(props);
-    const initialData =
-      props.parameters.reduce((data, param) => { data[param.name] = null; return data; }, {});
+    const initialData = props.action.parameters.reduce(
+      (data, param) => {
+        data[param.name] = { hasValue: false, value: null };
+        return data;
+      }, {});
     this.state = { data: initialData };
   }
 
   onChange(param, e) {
-    const { name, parse } = param
-    const parser = parse || (x => x);
-    const newData = { ...(this.state.data), [name]: parser(e.target.value) }
+    const { name, parser } = param
+    const paramData = { hasValue: (e.target.value != null), value: parser(e.target.value) }
+    const newData = { ...(this.state.data), [name]: paramData }
     this.setState({ data: newData });
   }
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.submit(this.state.data);
+    const submitData = this.props.action.parameters.reduce(
+      (data, param) => {
+        data[param.name] = this.state.data[param.name].value;
+        return data;
+      }, {});
+    this.props.submit(submitData);
   }
 
   canSubmit() {
     const { data } = this.state;
     // All params must have a value of _some_ kind
-    return !this.props.parameters.some(p => !data[p.name]);
+    return !this.props.action.parameters.some(p => !data[p.name].hasValue);
   }
 
   render() {
-    const { actionName, parameters, disabled } = this.props;
+    const { action: { actionName, parameters }, disabled } = this.props;
     return (
       <form className={css.actionForm} onSubmit={this.onSubmit.bind(this)}>
         <input type="submit" disabled={disabled || !this.canSubmit()} value={actionName} />

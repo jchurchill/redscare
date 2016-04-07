@@ -14,8 +14,13 @@ class RoundOperative < ActiveRecord::Base
     not pass.nil?
   end
 
+  # for json state (can't have ?)
+  def submitted
+    submitted?
+  end
+
   def as_state
     # include the list of operatives, but not their submission
-    as_json({ only: [:id, :operative_id] })
+    as_json({ only: [:id, :operative_id, :submitted] })
   end
 end

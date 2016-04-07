@@ -85,9 +85,11 @@ module RoundReducer
 
     # data: { submitting_user_id, pass }
     def mission_submit (round, action, data)
-      round_operative = round.operatives.find { |o| o.user_id == data[:submitting_user_id] }
+      round_operative = round.operatives.find { |o| o.operative_id == data[:submitting_user_id] }
       # Only allow if...
       return false if not (
+        # pass provided
+        (not data[:pass].nil?) and
         # round is in "mission" state
         (round.mission?) and
         # submitting user is an operative on the mission

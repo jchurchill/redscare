@@ -9,15 +9,11 @@ class DevPanelController < ApplicationController
   def game_action
     begin
 
-      event = params[:gameEvent]
-      message = {
-        :game_id => params[:gameId],
-        :message => params[:data]
-      }
       user = User.find(params[:userId])
 
-      result = GameRoomEventHandler.handle(event, message, user)
-      respond({ success: result[:success] })
+      result = GameActionDispatcher.new(params[:gameId], user).dispatch(params[:gameAction].to_sym, params[:data])
+      
+      respond({ success: result[:success], gameState: result[:state].as_state })
 
     rescue StandardError
       respond({ success: false })

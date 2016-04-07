@@ -6,3 +6,8 @@ export function updateConnectionStatus(connectionState) {
     connectionState
   };
 }
+
+export function stateUpdated(newState) {
+  console.log("stateUpdated!");
+  return { type: actionTypes.STATE_UPDATED, newState };
+}

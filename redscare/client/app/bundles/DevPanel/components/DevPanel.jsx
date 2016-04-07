@@ -1,20 +1,10 @@
 import React, { PropTypes } from 'react';
 import request from 'superagent';
 import ActionForm from './ActionForm.jsx';
+import GameActionForm from './GameActionForm.jsx';
+import Action from './action.js'
 import css from './DevPanel.scss';
-
-const gameActions = [
-
-  ["join_room",   "Join game",         [] ],
-  ["leave_room",  "Leave game",        [] ],
-  ["start_game",  "Start game",        [] ],
-  ["nominate",    "Nominate",          [{ name: "user_id", parse: x => parseInt(x, 10) }] ],
-
-].map(action => ({
-  actionName: action[0],
-  actionDescription: action[1],
-  parameters: action[2]
-}));
+import gameActions from './gameActions';
 
 class DevPanel extends React.Component {
   static PropTypes = {
@@ -35,7 +25,7 @@ class DevPanel extends React.Component {
   onGameAction(action, data) {
     const requestData = {
       ...this.state.gameContext,
-      gameEvent: action.actionName,
+      gameAction: action.actionName,
       data
     };
     request.post(this.props.gameActionPath)
@@ -44,17 +34,18 @@ class DevPanel extends React.Component {
         if (err) { console.error(err); }
         else {
           const result = res.body;
-          this.onGameActionComplete(!err && result.success, action.actionName, requestData);
+          this.onGameActionComplete(!err && result.success, action, requestData, result.gameState);
         }
       })
   }
 
-  onGameActionComplete(success, actionName, data) {
+  onGameActionComplete(success, action, data, gameState) {
     if (!success) {
-      console.error("Failed:", actionName, data);
+      console.error("Failed:", action.actionName, data);
     }
     else {
-      console.log("Succeeded:", actionName, data);
+      console.log("Succeeded:", action.actionName);
+      console.log(">> New game state:", gameState);
     }
   }
 
@@ -65,28 +56,29 @@ class DevPanel extends React.Component {
 
   hasGameContext() {
     const { gameId, userId } = this.state.gameContext;
-    return gameId && userId;
+    return gameId != null && userId != null;
   }
 
   render() {
+    const createUserAction = new Action("create_user").withParam('email', 'string').withParam('password', 'string')
     return (
       <div>
         <h2>User</h2>
         <div>TODO: implement this</div>
-        <ActionForm actionName="Create user" submit={this.createUser.bind(this)} disabled={true} parameters={[{name: "email"}, {name:"password"}]} />
+        <ActionForm action={createUserAction} submit={this.createUser.bind(this)} disabled={true} />
         <h2>Game</h2>
         <div style={{ marginBottom: 5 }}>Context</div>
         <div style={{ marginBottom: 10 }}>
           <input type="number" placeholder="game_id" onChange={this.onGameContextChange.bind(this, "gameId")} />
           <input type="number" placeholder="acting_user_id" onChange={this.onGameContextChange.bind(this, "userId")} />
         </div>
-        {gameActions.map(a => 
-          <ActionForm
-            key={a.actionName}
-            actionName={a.actionDescription}
-            submit={this.onGameAction.bind(this, a)}
+        {gameActions.map(action => 
+          <GameActionForm
+            key={action.actionName}
+            action={action}
+            submit={this.onGameAction.bind(this, action)}
             disabled={!this.hasGameContext()}
-            parameters={a.parameters}
+            contextUserId={this.state.gameContext.userId}
           />
         )}
       </div>

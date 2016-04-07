@@ -29,7 +29,7 @@ export default function gameRoomReducer(state = initialState, action) {
 
 function secretsReducer(state, action) {
   switch (action.type) {
-    case actionTypes.GAME_STARTED:
+    case actionTypes.STATE_UPDATED:
       // New secrets come from server
       return action.newState.secrets;
 
@@ -40,9 +40,9 @@ function secretsReducer(state, action) {
 
 function gameReducer(state, action) {
   switch(action.type) {
-    case actionTypes.NOMINATE:
-    case actionTypes.VOTE:
-      return { ...state, rounds: state.rounds.map(r => roundReducer(r, action)) };
+    case actionTypes.STATE_UPDATED:
+      // Entire game state is received from the server
+      return action.newState.game;
 
     case actionTypes.JOIN_ROOM:
     case actionTypes.LEAVE_ROOM:
@@ -53,16 +53,9 @@ function gameReducer(state, action) {
       // updating a bunch of game state that would be a shame to replicate here
       return state;
 
-    case actionTypes.PLAYER_JOINED:
-    case actionTypes.PLAYER_LEFT:
-    case actionTypes.PLAYER_NOMINATED:
-    case actionTypes.PLAYER_VOTED:
-    case actionTypes.GAME_STARTED:
-    case actionTypes.NEW_ROUND:
-    case actionTypes.NEW_NOMINATION:
-    case actionTypes.VOTING_STARTED:
-      // Entire game state is received from the server
-      return action.newState.game;
+    case actionTypes.NOMINATE:
+    case actionTypes.VOTE:
+      return { ...state, rounds: state.rounds.map(r => roundReducer(r, action)) };
 
     default:
       return state;

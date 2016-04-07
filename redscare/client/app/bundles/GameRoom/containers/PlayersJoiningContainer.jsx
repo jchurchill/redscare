@@ -7,8 +7,6 @@ import PlayerList from '../components/PlayerList';
 import Game from 'lib/game/gameHelper';
 import User from 'lib/game/userHelper';
 
-let gameClient;
-
 class PlayersJoiningContainer extends React.Component {
   static propTypes = {
       game: PropTypes.instanceOf(Game).isRequired,
@@ -20,10 +18,7 @@ class PlayersJoiningContainer extends React.Component {
 
     // Bind websocket events once in the constructor.
     // We need props for the game_id to know which channel to listen to.
-    gameClient = websocket.gameClientFactory(props.game.id);
-    gameClient.bind("game_room.player_joined", this.props.actions.playerJoined);
-    gameClient.bind("game_room.player_left", this.props.actions.playerLeft);
-    gameClient.bind("game_room.game_started", this.props.actions.gameStarted);
+    this._gameClient = websocket.gameClientFactory(props.game.id);
 
     // When a game is started, we wait for the server to respond
     // that it has initialized the game. While waiting, display ui cue
@@ -33,20 +28,20 @@ class PlayersJoiningContainer extends React.Component {
   joinGame() {
     const { user, actions } = this.props;
     actions.joinRoom(user);
-    gameClient.trigger("game_room.join_room", { user_id: user.id });
+    this._gameClient.trigger("game_room.join_room", { user_id: user.id });
   }
 
   leaveGame() {
     const { user, actions } = this.props;
     actions.leaveRoom(user);
-    gameClient.trigger("game_room.leave_room", { user_id: user.id });
+    this._gameClient.trigger("game_room.leave_room", { user_id: user.id });
   }
 
   startGame() {
     const { actions } = this.props;
     actions.startGame();
     this.setState({ waitingForGameInit: true });
-    gameClient.trigger("game_room.start_game");
+    this._gameClient.trigger("game_room.start_game");
   }
 
   canJoin() {

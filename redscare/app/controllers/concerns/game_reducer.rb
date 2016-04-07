@@ -50,6 +50,7 @@ module GameReducer
       # Round actions
       :new_nomination, # initialization; state = "mission", leader is assigned
       :start_mission, # state: "nomination" => "mission"
+      :mission_submit, # modify "pass" on round_operative
       :complete_mission, # state: "mission" => "complete", outcome is set
       # Nomination actions
       :nominate_player, # add player to set of nominees
@@ -74,6 +75,8 @@ module GameReducer
       players = game.players
       # Only allow if...
       return false if not (
+        # user_id provided
+        (not data[:user_id].nil?) and
         # game is in "created" state
         (game.created?) and
         # the player has not joined
@@ -91,6 +94,8 @@ module GameReducer
     def player_leave (game, action, data)
       # Only allow if...
       return false if not (
+        # user_id provided
+        (not data[:user_id].nil?) and
         # game is in "created" state
         (game.created?) and
         # the player leaving is not the creator
@@ -235,16 +240,18 @@ module GameReducer
           # game is in "assassination" state
           (game.assassination?) and
           # and assassinated player has selected target
-          (game.assassinated_player_id.nil?)
+          (not game.assassinated_player_id.nil?)
         ) or
         # or...
         (
           # game is in "rounds_in_progress" state
           (game.rounds_in_progress?) and
+          # we're not supposed to go to the assassination phase
+          (not game.includes_seer) and
           # and the following game-over conditions are met:
           (
             # the last round's outcome was "out_of_nominations"
-            (current_round.out_of_nominations?) or
+            (game.current_round.out_of_nominations?) or
             # or, across previous rounds, 3 successes or 3 failures are present
             (game.succeeded_rounds.count == 3 or game.failed_rounds.count == 3)
           )
@@ -252,7 +259,7 @@ module GameReducer
       )
 
       game.complete!
-      if current_round.out_of_nominations?
+      if game.current_round.out_of_nominations?
         game.evil_wins_from_nomination_failure!
       elsif game.seer_was_assassinated?
         game.evil_wins_from_assassination!

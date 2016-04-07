@@ -3,6 +3,7 @@ import GameRoom from '../components/GameRoom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
+import listenForStateUpdates from './gameRoomEventListener.js';
 import { connectionStates } from '../constants/gameRoomConstants';
 import Game from 'lib/game/gameHelper';
 import websocket from 'lib/websocket/websocket'
@@ -10,7 +11,8 @@ import websocket from 'lib/websocket/websocket'
 class GameRoomContainer extends React.Component {
   static propTypes = {
     actions: PropTypes.shape({
-      updateConnectionStatus: PropTypes.func.isRequired
+      updateConnectionStatus: PropTypes.func.isRequired,
+      stateUpdated: PropTypes.func.isRequired,
     }).isRequired,
     connectionState: PropTypes.string.isRequired,
     game: PropTypes.instanceOf(Game).isRequired,
@@ -23,13 +25,17 @@ class GameRoomContainer extends React.Component {
   constructor(props, context) {
     super(props, context);
 
+    const { links: { host }, game: { id: gameId }, actions: { stateUpdated } } = props
+
     // Initialize the websocket as this root component is spinning up
     websocket.initialize({
-      host: props.links.host,
+      host: host,
       onOpen: this.onWebsocketOpen.bind(this),
       onClose: this.onWebsocketClose.bind(this),
       onError: this.onWebsocketError.bind(this)
     })
+    // Listen to all server events that update the state of the game room (e.g., other players taking actions)
+    listenForStateUpdates(websocket.gameClientFactory(gameId), stateUpdated);
   }
 
   onWebsocketOpen(data, ws) {
