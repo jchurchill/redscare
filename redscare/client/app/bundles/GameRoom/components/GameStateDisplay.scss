@@ -1,0 +1,25 @@
+.roundMarker {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 3px;
+
+  &.unstarted {
+    color: silver;
+  }
+
+  &.active {
+    border: 3px solid black;
+  }
+
+  &.success {
+    color: blue;
+    background-color: cyan;
+  }
+
+  &.failure {
+    color: red;
+    background-color: pink;
+  }
+}
