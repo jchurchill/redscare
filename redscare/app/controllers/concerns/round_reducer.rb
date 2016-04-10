@@ -4,7 +4,7 @@ module RoundReducer
     r.delegate :new_nomination # initialization; state = "mission", leader is assigned
     r.delegate :start_mission # state: "nomination" => "mission"
     r.delegate :mission_submit # operative on mission submits a pass or a fail
-    r.delegate :complete_mission # state: "mission" => "complete", outcome is set
+    r.delegate :complete_round # state: "nomination" or "mission" => "complete", outcome is set
 
     # Delegate nomination actions to the round reducer
     r.delegate [
@@ -33,7 +33,7 @@ module RoundReducer
             # the last nomination's outcome was rejected
             (current_nomination.rejected?) and
             # current nomination is not the 5th nomination
-            (not current_nomination.is_final_nomination)
+            (not current_nomination.is_final_nomination?)
           )
         )
       )
@@ -104,19 +104,14 @@ module RoundReducer
     end
 
     # data: { }
-    def complete_mission (round, action, data)
+    def complete_round (round, action, data)
       current_nomination = round.current_nomination
       # Only allow if...
       return false if not (
-        # round is still in "mission" state
-        (round.mission?) and
-        # one of the following conditions are met:
-        (
-          # round operatives have all submitted
-          (round.operatives.all? { |o| o.submitted? }) or
-          # current nomination is 5 and was rejected
-          (current_nomination.is_final_nomination and current_nomination.rejected?)
-        )
+        # round is still in "mission" state and round operatives have all submitted
+        (round.mission? and round.operatives.all? { |o| o.submitted? }) or
+        # or, round is still in "nomination" state, current nomination is 5, and it was rejected
+        (round.nomination? and current_nomination.is_final_nomination? and current_nomination.rejected?)
       )
 
       # Determine round outcome.
@@ -129,7 +124,7 @@ module RoundReducer
       end
 
       round.complete!
-      
+
       round.save!
       return true
     end

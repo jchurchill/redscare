@@ -31,7 +31,7 @@ export default [
     .withContextUserId('submitting_user_id')
     .withParam('pass', 'bool'),
 
-  new GameAction("complete_mission"),
+  new GameAction("complete_round"),
 
   new GameAction("begin_assassination"),
 

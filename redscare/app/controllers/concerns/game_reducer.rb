@@ -51,7 +51,7 @@ module GameReducer
       :new_nomination, # initialization; state = "mission", leader is assigned
       :start_mission, # state: "nomination" => "mission"
       :mission_submit, # modify "pass" on round_operative
-      :complete_mission, # state: "mission" => "complete", outcome is set
+      :complete_round, # state: "nomination" or "mission" => "complete", outcome is set
       # Nomination actions
       :nominate_player, # add player to set of nominees
       :start_voting, # state: "selecting" => "voting"

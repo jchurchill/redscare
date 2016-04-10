@@ -36,7 +36,7 @@ class Nomination < ActiveRecord::Base
     round.operatives_required
   end
 
-  def is_final_nomination
+  def is_final_nomination?
     nomination_number == 5
   end
 

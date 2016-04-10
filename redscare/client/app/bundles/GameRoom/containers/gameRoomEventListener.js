@@ -11,7 +11,7 @@ const events = [
     'nomination_completed',
     'mission_started',
     'submission_cast',
-    'mission_completed',
+    'round_completed',
     'assassination_begun',
     'assassin_target_selected',
     'game_completed',
