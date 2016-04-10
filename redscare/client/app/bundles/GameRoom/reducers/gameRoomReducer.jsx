@@ -30,8 +30,8 @@ export default function gameRoomReducer(state = initialState, action) {
 function secretsReducer(state, action) {
   switch (action.type) {
     case actionTypes.STATE_UPDATED:
-      // New secrets come from server
-      return action.newState.secrets;
+      // If new secrets present in action, use it; else stick with what we have
+      return action.newState.secrets || state;
 
     default:
       return state;
@@ -41,8 +41,8 @@ function secretsReducer(state, action) {
 function gameReducer(state, action) {
   switch(action.type) {
     case actionTypes.STATE_UPDATED:
-      // Entire game state is received from the server
-      return action.newState.game;
+      // If new game state present in action, use it; else stick with what we have
+      return action.newState.game || state;
 
     case actionTypes.JOIN_ROOM:
     case actionTypes.LEAVE_ROOM:

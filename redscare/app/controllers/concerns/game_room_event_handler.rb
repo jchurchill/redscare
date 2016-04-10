@@ -3,7 +3,7 @@ class GameRoomEventHandler
   def self.handle(incoming_event, message, current_user)
     # message expected to have :game_id and :message properties
     # because it is a message from the game room client
-    dispatcher = GameActionDispatcher.new message[:game_id], current_user
+    dispatcher = GameActionDispatcher.new message[:game_id]
     handler = GameRoomEventHandler.new dispatcher, message[:message], current_user
     handler.send(incoming_event.to_sym)
 

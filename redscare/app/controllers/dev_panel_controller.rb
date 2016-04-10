@@ -16,9 +16,8 @@ class DevPanelController < ApplicationController
   def game_action
     begin
 
-      user = User.find(params[:userId])
-
-      result = GameActionDispatcher.new(params[:gameId], user).dispatch(params[:gameAction].to_sym, params[:data])
+      dispatcher = GameActionDispatcher.new(params[:gameId])
+      result = dispatcher.dispatch(params[:gameAction].to_sym, params[:data])
 
       respond({ success: result[:success], gameState: result[:state].as_state })
 

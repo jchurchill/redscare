@@ -21,6 +21,6 @@ class RoundOperative < ActiveRecord::Base
 
   def as_state
     # include the list of operatives, but not their submission
-    as_json({ only: [:id, :operative_id, :submitted] })
+    as_json({ only: [:id, :operative_id, :submitted], methods: [:submitted] })
   end
 end

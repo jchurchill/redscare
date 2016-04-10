@@ -128,6 +128,8 @@ module RoundReducer
         round.success!
       end
 
+      round.complete!
+      
       round.save!
       return true
     end

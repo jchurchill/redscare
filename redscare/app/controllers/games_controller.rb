@@ -18,7 +18,6 @@ class GamesController < ApplicationController
 
   def show
     game = Game.find(params[:id])
-    state = GameRoomStateProvider.get_state(game, current_user)
     @game_room_props = {
       :component_props => {
         :links => {
@@ -26,7 +25,11 @@ class GamesController < ApplicationController
           :host => request.host_with_port
         }
       },
-      :store_props => state
+      :store_props => {
+        :user => current_user,
+        :game => game.as_state,
+        :secrets => GameSecretsProvider.secret_info(game, current_user.id)
+      }
     }
   end
 

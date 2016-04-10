@@ -56,8 +56,13 @@ class Round < ActiveRecord::Base
     not outcome.nil?
   end
 
+  def fail_count
+    return nil if not outcome_decided?
+    operatives.where(pass: false).count
+  end
+
   def as_state
-    state = as_json(only: [:id, :round_number, :state, :outcome])
+    state = as_json({ only: [:id, :round_number, :state, :outcome, :fail_count], methods: [:fail_count] })
     state[:operatives] = operatives.map { |o| o.as_state }
     state[:nominations] = nominations.map { |n| n.as_state }
     return state

@@ -19,9 +19,8 @@ class GameActionDispatcher
     :complete_game            => :game_completed,
   }
 
-  def initialize(game_id, current_user)
+  def initialize(game_id)
     @game_id = game_id
-    @current_user = current_user
   end
 
   def dispatch(action, data = nil)
@@ -39,12 +38,23 @@ class GameActionDispatcher
 
   private
     def broadcast_update_to_room(event, game)
-      state = GameRoomStateProvider.get_state(game, @current_user)
-      game_client.trigger event, state, :namespace => 'game_room'
+      state = { game: game.as_state }
+      WebsocketRails[channel_name].trigger event, state, :namespace => 'game_room'
+      broadcast_secrets_to_players(event, game)
     end
 
-    def game_client
-      WebsocketRails[:"game_room:#{@game_id}"]
+    def broadcast_secrets_to_players(event, game)
+      game.players.each do |player|
+        user_id = player.user_id
+        state = { secrets: GameSecretsProvider.secret_info(game, user_id) }
+        p "User #{user_id} secrets:"
+        p state[:secrets]
+        WebsocketRails.users[user_id].send_message event, state, :namespace => 'game_room', :channel => channel_name
+      end
+    end
+
+    def channel_name
+      :"game_room:#{@game_id}"
     end
 
     def game

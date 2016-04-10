@@ -177,6 +177,8 @@ module GameReducer
           (
             # the last round's outcome was decided
             (current_round.outcome_decided?) and
+            # the last round's state is complete
+            (current_round.complete?) and
             # the last round's outcome was not "out_of_nominations" (would mean game over)
             (not current_round.out_of_nominations?) and
             # across previous rounds, 3 successes or 3 failures are not present (would mean game over)
@@ -246,19 +248,18 @@ module GameReducer
         (
           # game is in "rounds_in_progress" state
           (game.rounds_in_progress?) and
-          # we're not supposed to go to the assassination phase
-          (not game.includes_seer) and
           # and the following game-over conditions are met:
           (
             # the last round's outcome was "out_of_nominations"
             (game.current_round.out_of_nominations?) or
-            # or, across previous rounds, 3 successes or 3 failures are present
-            (game.succeeded_rounds.count == 3 or game.failed_rounds.count == 3)
+            # or, 3 successful rounds are present and we're not supposed to go to the assassination phase
+            (game.succeeded_rounds.count == 3 and not game.includes_seer) or
+            # or, 3 failed rounds are present
+            (game.failed_rounds.count == 3)
           )
         )
       )
 
-      game.complete!
       if game.current_round.out_of_nominations?
         game.evil_wins_from_nomination_failure!
       elsif game.seer_was_assassinated?
@@ -268,6 +269,8 @@ module GameReducer
       elsif game.succeeded_rounds.count == 3
         game.good_wins_normally!
       end
+
+      game.complete!
           
       game.save!
       return true
