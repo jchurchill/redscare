@@ -5,10 +5,12 @@ import GameActionForm from './GameActionForm.jsx';
 import Action from './action.js'
 import css from './DevPanel.scss';
 import gameActions from './gameActions';
+import * as railsHelpers from 'lib/rails/railsHelpers'
 
 class DevPanel extends React.Component {
   static PropTypes = {
-    gameActionPath: PropTypes.string.isRequired
+    gameActionPath: PropTypes.string.isRequired,
+    createUserPath: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -19,12 +21,22 @@ class DevPanel extends React.Component {
   }
 
   createUser(data) {
-    console.log("create user", data);
+    request.post(this.props.createUserPath)
+      .send({ ...data, authenticity_token: railsHelpers.authToken() })
+      .end((err, res) => {
+        if (err) { console.error(err); }
+        else {
+          const result = res.body;
+          if (result.success) { console.log('User successfully created.'); }
+          else { console.error('User not created. Errors:', result.errors); }
+        }
+      })
   }
 
   onGameAction(action, data) {
     const requestData = {
       ...this.state.gameContext,
+      authenticity_token: railsHelpers.authToken(),
       gameAction: action.actionName,
       data
     };
@@ -39,9 +51,9 @@ class DevPanel extends React.Component {
       })
   }
 
-  onGameActionComplete(success, action, data, gameState) {
+  onGameActionComplete(success, action, requestData, gameState) {
     if (!success) {
-      console.error("Failed:", action.actionName, data);
+      console.error("Failed:", action.actionName, requestData.data);
     }
     else {
       console.log("Succeeded:", action.actionName);
@@ -64,8 +76,7 @@ class DevPanel extends React.Component {
     return (
       <div>
         <h2>User</h2>
-        <div>TODO: implement this</div>
-        <ActionForm action={createUserAction} submit={this.createUser.bind(this)} disabled={true} />
+        <ActionForm action={createUserAction} submit={this.createUser.bind(this)} />
         <h2>Game</h2>
         <div style={{ marginBottom: 5 }}>Context</div>
         <div style={{ marginBottom: 10 }}>

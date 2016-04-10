@@ -274,6 +274,8 @@ module GameReducer
     end
 
     def round_reduce (game, action, data)
+      round = game.current_round
+      return false if round.nil?
       result = RoundReducer.dispatch game.current_round, action, data
       return result[:success]
     end

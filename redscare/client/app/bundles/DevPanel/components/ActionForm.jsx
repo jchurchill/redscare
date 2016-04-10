@@ -48,7 +48,7 @@ class ActionForm extends React.Component {
       <form className={css.actionForm} onSubmit={this.onSubmit.bind(this)}>
         <input type="submit" disabled={disabled || !this.canSubmit()} value={actionName} />
         {parameters.map(param =>
-          <input key={param.name} type="number" disabled={disabled} placeholder={param.name} onChange={this.onChange.bind(this, param)} />
+          <input key={param.name} type="text" disabled={disabled} placeholder={param.name} onChange={this.onChange.bind(this, param)} />
         )}
       </form>
     )

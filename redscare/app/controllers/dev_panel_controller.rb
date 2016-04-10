@@ -1,9 +1,16 @@
 class DevPanelController < ApplicationController
 
-  protect_from_forgery :except => [:game_action]
-
   def index
-    @props = { :gameActionPath => devpanel_game_action_path }
+    @props = {
+      :gameActionPath => devpanel_game_action_path,
+      :createUserPath => devpanel_create_user_path
+    }
+  end
+
+  def create_user
+    new_user = User.new({ email: params[:email], password: params[:password], password_confirmation: params[:password] })
+    success = new_user.save
+    respond({ success: success, errors: new_user.errors })
   end
 
   def game_action
@@ -12,7 +19,7 @@ class DevPanelController < ApplicationController
       user = User.find(params[:userId])
 
       result = GameActionDispatcher.new(params[:gameId], user).dispatch(params[:gameAction].to_sym, params[:data])
-      
+
       respond({ success: result[:success], gameState: result[:state].as_state })
 
     rescue StandardError

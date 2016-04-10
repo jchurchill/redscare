@@ -133,6 +133,8 @@ module RoundReducer
     end
 
     def nomination_reduce (round, action, data)
+      nomination = round.current_nomination
+      return false if nomination.nil?
       result = NominationReducer.dispatch round.current_nomination, action, data
       return result[:success]
     end
