@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 import css from './GameStateDisplay.scss'
-import GameRoundDisplay from './GameRoundDisplay';
+import RoundStateDisplay from './RoundStateDisplay';
 import Game from 'lib/game/gameHelper';
 import Round from 'lib/game/roundHelper';
 
@@ -63,7 +63,7 @@ class GameStateDisplay extends React.Component {
             )
           }
         </div>
-        <GameRoundDisplay round={game.currentRound} />
+        <RoundStateDisplay round={game.currentRound} />
       </div>
     );
   }
