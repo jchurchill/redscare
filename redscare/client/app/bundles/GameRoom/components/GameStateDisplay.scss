@@ -5,21 +5,26 @@
   border: 1px solid black;
   border-radius: 3px;
 
+  @include noselect();
+
   &.unstarted {
     color: silver;
   }
 
   &.active {
     border: 3px solid black;
+    cursor: pointer;
   }
 
   &.success {
     color: blue;
-    background-color: cyan;
+    background-color: $good-color;
+    cursor: pointer;
   }
 
   &.failure {
     color: red;
-    background-color: pink;
+    background-color: $evil-color;
+    cursor: pointer;
   }
 }

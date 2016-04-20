@@ -12,6 +12,18 @@ class GameStateDisplay extends React.Component {
 
   constructor(props, context) {
     super(props, context);
+    this.state = { selectedRoundId: this.getDefaultSelectedRoundId() };
+  }
+
+  getDefaultSelectedRoundId() {
+    const { game: { currentRound } } = this.props;
+    return currentRound && currentRound.id;
+  }
+
+  onRoundMarkerClick(round) {
+    if (round) {
+      this.setState({ selectedRoundId: round.id });
+    }
   }
 
   getAllRoundsInfo() {
@@ -20,7 +32,7 @@ class GameStateDisplay extends React.Component {
     const existingRounds = game.rounds.reduce((rs, r) => { rs[r.roundNumber] = r; return rs; }, {})
     return [1,2,3,4,5].map((i) => ({
       roundNumber: i,
-      info: existingRounds[i],
+      round: existingRounds[i],
       classnames: this._getRoundClassnames(existingRounds[i])
     }));
   }
@@ -47,23 +59,23 @@ class GameStateDisplay extends React.Component {
   }
 
   render() {
-    const { game } = this.props
-    const rounds = this.getAllRoundsInfo()
-    if (!game.currentRound) {
-      return <div></div>;
+    const { game: { rounds } } = this.props
+    if (!rounds.some(r => true)) {
+      return (<div></div>);
     }
+    const selectedRound = rounds.find(r => r.id === this.state.selectedRoundId)
     return (
       <div>
         <div>
           {
-            rounds.map((r) => 
-              <div key={r.roundNumber} className={r.classnames} >
+            this.getAllRoundsInfo().map((r) => 
+              <div key={r.roundNumber} className={r.classnames} onClick={this.onRoundMarkerClick.bind(this, r.round)}>
                 Round {r.roundNumber}
               </div>
             )
           }
         </div>
-        <RoundStateDisplay round={game.currentRound} />
+        <RoundStateDisplay round={selectedRound} />
       </div>
     );
   }
