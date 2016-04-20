@@ -23,24 +23,28 @@ class NominationStateDisplay extends React.Component {
 
 const NominationStateTable = props => {
   const { nomination } = props;
+  const voting = nomination.state === Nomination.states.VOTING
+  const complete = nomination.state === Nomination.states.COMPLETE
+    
   return (
     <div>
       <table style={{ margin: 'auto' }}>
         <tbody>
           <NominationStateTableNomineesRow nomination={nomination} />
-          <NominationStateTableVotesRow nomination={nomination} />
+          { voting || complete ? <NominationStateTableVotesRow nomination={nomination} /> : null }
         </tbody>
       </table>
-      <NominationCompletionInfo nomination={nomination} />
+      { complete ? <NominationCompletionInfo nomination={nomination} /> : null }
     </div>
   );
 }
 
 const NominationStateTableNomineesRow = props => {
-  const { nomination: { nominees, playerProvider: { players } } } = props;
+  const { nomination: { nominees, leader, playerProvider: { players } } } = props;
   const columnInfos = players.map(player => ({
     player,
-    isNominated: nominees.some(nom => nom.id === player.id)
+    isNominated: nominees.some(nom => nom.id === player.id),
+    isLeader: player.id === leader.id
   }))
   return (
     <tr>
@@ -50,10 +54,12 @@ const NominationStateTableNomineesRow = props => {
 }
 
 const NominationStateTableNominee = props => {
-  const { player, isNominated } = props;
-  const style = isNominated ? { border: '2px solid black' } : {}
+  const { player, isNominated, isLeader } = props;
+  var style = { padding: 5 }
+  if (isLeader) { style = { ...style, borderBottom: '3px solid #444444' }; }
+  if (isNominated) { style = { ...style, backgroundColor: 'lightgray' }; }
   return (
-    <td style={{ padding: 5, ...style }}>
+    <td style={style}>
       {player.name}
     </td>
   );
