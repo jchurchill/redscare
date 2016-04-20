@@ -4,6 +4,7 @@
   padding: 5px;
   border: 1px solid black;
   border-radius: 3px;
+  font-size: larger;
 
   @include noselect();
 
@@ -26,5 +27,9 @@
     color: red;
     background-color: $evil-color;
     cursor: pointer;
+  }
+
+  &.selected {
+    box-shadow: 0 0 10px 2px #a09385;
   }
 }

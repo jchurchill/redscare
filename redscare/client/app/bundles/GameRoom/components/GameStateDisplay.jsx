@@ -38,6 +38,7 @@ class GameStateDisplay extends React.Component {
   }
 
   _getRoundClassnames(roundInfo) {
+    const { selectedRoundId } = this.state;
     const cssClasses = [css.roundMarker];
     if (!roundInfo) {
       cssClasses.push(css.unstarted);
@@ -53,6 +54,9 @@ class GameStateDisplay extends React.Component {
           break;
         default:
           cssClasses.push(css.active);
+      }
+      if (roundInfo.id === selectedRoundId) {
+        cssClasses.push(css.selected);
       }
     }
     return classnames(cssClasses);

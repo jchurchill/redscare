@@ -47,6 +47,10 @@ class Round {
     return this._round.outcome;
   }
 
+  get failCount() {
+    return this._round.fail_count;
+  }
+
   get nominations() {
     return memoize("nominations", this,
       () => (this._round.nominations || []).map((nom) => new Nomination(nom, this)));
