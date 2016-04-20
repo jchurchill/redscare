@@ -31,7 +31,6 @@ const NominationStateTable = props => {
       <table style={{ margin: 'auto' }}>
         <tbody>
           <NominationStateTableNomineesRow nomination={nomination} />
-          { voting || complete ? <NominationStateTableVotesRow nomination={nomination} /> : null }
         </tbody>
       </table>
       { complete ? <NominationCompletionInfo nomination={nomination} /> : null }
@@ -40,56 +39,40 @@ const NominationStateTable = props => {
 }
 
 const NominationStateTableNomineesRow = props => {
-  const { nomination: { nominees, leader, playerProvider: { players } } } = props;
-  const columnInfos = players.map(player => ({
-    player,
-    isNominated: nominees.some(nom => nom.id === player.id),
-    isLeader: player.id === leader.id
-  }))
+  const { nomination: { nominees, votes, leader, playerProvider: { players } } } = props;
+  const nomineeProps = players.map(player => {
+    const vote = votes.find(v => v.userId === player.id)
+    return {
+      player,
+      isNominated: nominees.some(nom => nom.id === player.id),
+      isLeader: player.id === leader.id,
+      hasVoted: !!vote,
+      upvote: vote && vote.upvote
+    };
+  })
   return (
     <tr>
-      { columnInfos.map(columnInfo => (<NominationStateTableNominee key={columnInfo.player.id} {...columnInfo} />)) }
+      { nomineeProps.map(np => (<NominationStateTableNominee key={np.player.id} {...np} />)) }
     </tr>
   );
 }
 
 const NominationStateTableNominee = props => {
-  const { player, isNominated, isLeader } = props;
-  var style = { padding: 5 }
-  if (isLeader) { style = { ...style, borderBottom: '3px solid #444444' }; }
-  if (isNominated) { style = { ...style, backgroundColor: 'lightgray' }; }
-  return (
-    <td style={style}>
-      {player.name}
-    </td>
-  );
-}
+  const { player, isNominated, isLeader, hasVoted, upvote } = props;
+  const style = { padding: 5 };
 
-const NominationStateTableVotesRow = props => {
-  const { nomination: { votes, playerProvider: { players } } } = props;
-  const columnInfos = players.map(player => {
-    const vote = votes.find(v => v.userId === player.id);
-    return { player, voted: !!vote, upvote: vote && vote.upvote };
-  })
-  return (
-    <tr>
-      { columnInfos.map(columnInfo => (<NominationStateTableVote key={columnInfo.player.id} {...columnInfo} />)) }
-    </tr>
-  );
-}
+  // Bold when leader
+  if (isLeader) { style.fontWeight = 'bold'; }
 
-const NominationStateTableVote = props => {
-  const { player, voted, upvote } = props;
-  const style =
-    (voted && upvote === true) ? { backgroundColor: 'lightgreen' }
-    : (voted && upvote === false) ? { backgroundColor: 'lightpink' }
-    : (voted) ? { backgroundColor: 'lightgray' }
-    : { }
-  return (
-    <td style={{ padding: 5, ...style }}>
-      {player.name}
-    </td>
-  );
+  // Underlined when nominated
+  if (isNominated) { style.borderBottom = '3px solid #444444'; }
+
+  // colored based on vote (gray while still secret)
+  if (hasVoted && upvote === true) { style.backgroundColor = 'lightgreen'; }
+  else if (hasVoted && upvote === false) { style.backgroundColor = 'lightpink'; }
+  else if (hasVoted) { style.backgroundColor = 'lightgray'; }
+
+  return (<td style={style}>{player.name}</td>);
 }
 
 const NominationCompletionInfo = props => {

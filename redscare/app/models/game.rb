@@ -87,7 +87,8 @@ class Game < ActiveRecord::Base
       :state, :outcome,
       :assassinated_player_id
     ])
-    state[:players] = players.map { |p| p.as_state }
+    # leader rotates in order of game_player id, so order by that
+    state[:players] = players.sort_by { |p| p.id }.map { |p| p.as_state }
     state[:rounds] = rounds.map { |r| r.as_state }
     return state
   end

@@ -10,15 +10,24 @@ class RoundStateDisplay extends React.Component {
 
   constructor(props, context) {
     super(props, context);
+    this.state = { selectedIndex: this.defaultSelectedIndex() }
+  }
+
+  defaultSelectedIndex() {
+    const { round: { currentNomination } } = this.props;
+    return currentNomination && (currentNomination.nominationNumber - 1);
+  }
+
+  onTabSelect(index) {
+    this.setState({ selectedIndex: index });
   }
 
   render() {
-    const { round: { state, nominations, currentNomination } } = this.props;
-    const selectedIndex = currentNomination && (currentNomination.nominationNumber - 1);
+    const { round: { nominations } } = this.props;
+    const { selectedIndex } = this.state;
     return (
       <div>
-        <div>Current status: {state}</div>
-        <Tabs selectedIndex={selectedIndex}>
+        <Tabs onSelect={this.onTabSelect.bind(this)} selectedIndex={selectedIndex}>
           <TabList>
             { nominations.map(nom => (
               <Tab key={nom.nominationNumber}>
