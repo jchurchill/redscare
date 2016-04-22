@@ -1,107 +1,97 @@
-class GameRoomEventHandler
+module GameRoomEventHandler
 
-  def self.handle(incoming_event, message, current_user)
-    # message expected to have :game_id and :message properties
-    # because it is a message from the game room client
-    dispatcher = GameActionDispatcher.new message[:game_id]
-    handler = GameRoomEventHandler.new dispatcher, message[:message], current_user
-    handler.send(incoming_event.to_sym)
+  class EventChainer
+    def initialize(&block)
+      builder = EventChainBuilder.new
+      block.call(builder)
+      @callback_registrations = builder.callback_registrations
+    end
 
-    results = handler.event_results
-    # success = "was game updated in any way"
-    success = results.any? { |r| r[:success] }
-    # game = final state of game after (possible) chain of updates
-    game = results.reverse.first[:game]
-    return { success: success, game: game }
-  end
+    def handler(action_dispatcher)
+      EventChainHandler.new action_dispatcher, @callback_registrations
+    end
 
-  def self.supported_events
-    self.public_instance_methods false
-  end
-
-  def event_results
-    @results
-  end
-
-  def initialize (action_dispatcher, event_data, current_user)
-    @dispatcher = action_dispatcher
-    @event_data = event_data
-    @current_user = current_user
-    @results = []
-  end
-
-  def join_room
-    dispatch :player_join, { user_id: current_user.id }
-  end
-
-  def leave_room
-    dispatch :player_leave, { user_id: current_user.id }
-  end
-
-  def start_game
-    dispatch :start
-    dispatch :new_round
-    dispatch :new_nomination
-  end
-
-  def nominate
-    result = dispatch :nominate_player, {
-      selecting_user_id: current_user.id,
-      selected_user_id: event_data[:user_id]
-    }
-
-    nomination = result[:game].try(:current_round).try(:current_nomination)
-    if not nomination.nil? and nomination.nominees.count == nomination.required_nominee_count
-      dispatch :start_voting
+    # Provides builder syntax for setting up all the event callbacks
+    class EventChainBuilder
+      def initialize
+        @callback_registrations = {}
+      end
+      # handler expected to accept (dispatcher, game)
+      def callback(event, &handler)
+        e_sym = event.to_sym
+        @callback_registrations[e_sym] ||= []
+        @callback_registrations[e_sym] << handler
+        return self
+      end
+      attr_reader :callback_registrations
     end
   end
 
-  def vote
-    result = dispatch :cast_vote, {
-      voting_user_id: current_user.id,
-      upvote: event_data[:upvote]
-    }
+  # Dispatches actions and invokes their configured callbacks (if any)
+  class EventChainHandler
+    def initialize(action_dispatcher, callback_registrations)
+      @action_dispatcher = action_dispatcher
+      @callback_registrations = callback_registrations
+    end
 
-    # handle last vote => complete_nomination
-    nomination = result[:game].try(:current_round).try(:current_nomination)
-    nomination_completed = false
-    if not nomination.nil? and nomination.votes.count == result[:game].player_count
-      result = dispatch :complete_nomination
+    def fire(action, data = nil)
+      dispatch_result = @action_dispatcher.dispatch(action, data)
       
-      # if nomination completed, move to next state
-      if result[:success]
-        nomination = result[:game].current_round.current_nomination
-        if nomination.accepted?
-          # successful nomination, begin mission
-          result = dispatch :start_mission
-        elsif nomination.rejected? and not nomination.is_final_nomination?
-          # rejected nomination (but not last), start next nomination
-          result = dispatch :new_nomination
-        else
-          # rejected nomination (and last), game is over
-          result = dispatch :complete_round
-          if result[:success]
-            result = dispatch :complete_game
-          end
+      if dispatch_result[:success]
+        (@callback_registrations[action.to_sym] || []).each do |callback|
+          callback.call(self, dispatch_result[:state])
         end
       end
-
     end
   end
 
-  private
-    def dispatch(action, data = nil)
-      dispatch_result = @dispatcher.dispatch(action, data)
-      result = { action: action, success: dispatch_result[:success], game: dispatch_result[:state] }
-      @results << result
-      return result
-    end
+  @@event_chainer = EventChainer.new do |builder|
+    
+    # Whenever any of the following events are fired, try taking the action(s) in its corresponding list.
+    # It will simply do nothing if it is not a valid transition.
+    # This is just a nice way to not have to repeat a lot of the logic already in the game_reducer
+    # that understands when certain transitions are valid.
 
-    def event_data
-      @event_data
+    {
+      :start => [
+        :new_round # always
+      ],
+      :new_round => [
+        :new_nomination # always
+      ],
+      :nominate_player => [
+        :start_voting 
+      ],
+      :cast_vote => [
+        :complete_nomination # upon last vote
+      ],
+      :complete_nomination => [
+        :start_mission, # upon successful nomination
+        :new_nomination, # upon failed nomination (but not final one)
+        :complete_round # upon failed nomination (final one)
+      ],
+      :mission_submit => [
+        :complete_round # upon final submission
+      ],
+      :complete_round => [
+        :new_round, # upon non-game-ending round completion
+        :begin_assassination, # upon good team win, in game with seer/assassin
+        :complete_game # evil team wins, good team wins with no seer in game
+      ],
+      :select_assassin_target => [
+        :complete_game # always
+      ]
+    }.each do |action, next_actions|
+      next_actions.each do |next_action|
+        builder.callback(action) { |dispatcher, game| dispatcher.fire(next_action) }
+      end
     end
+  end
 
-    def current_user
-      @current_user
-    end
+  # Gets an event handler for the game with the provided game_id
+  def self.for_game(game_id)
+    action_dispatcher = GameActionDispatcher.new game_id
+    return @@event_chainer.handler action_dispatcher
+  end
+
 end

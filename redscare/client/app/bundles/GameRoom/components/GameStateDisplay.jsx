@@ -79,7 +79,7 @@ class GameStateDisplay extends React.Component {
             )
           }
         </div>
-        <RoundStateDisplay round={selectedRound} />
+        { selectedRound ? <RoundStateDisplay round={selectedRound} /> : null }
       </div>
     );
   }

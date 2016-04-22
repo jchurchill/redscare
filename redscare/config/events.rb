@@ -17,7 +17,7 @@ WebsocketRails::EventMap.describe do
 
   namespace :game_room do
     GameRoomWebsocketController.supported_events.each do |event_name|
-      subscribe event_name, to: GameRoomWebsocketController, with_method: :handle
+      subscribe event_name, to: GameRoomWebsocketController, with_method: event_name
     end
   end
 end
