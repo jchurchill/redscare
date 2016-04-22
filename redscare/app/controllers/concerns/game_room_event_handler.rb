@@ -56,6 +56,39 @@ class GameRoomEventHandler
     end
   end
 
+  def vote
+    result = dispatch :cast_vote, {
+      voting_user_id: current_user.id,
+      upvote: event_data[:upvote]
+    }
+
+    # handle last vote => complete_nomination
+    nomination = result[:game].try(:current_round).try(:current_nomination)
+    nomination_completed = false
+    if not nomination.nil? and nomination.votes.count == result[:game].player_count
+      result = dispatch :complete_nomination
+      
+      # if nomination completed, move to next state
+      if result[:success]
+        nomination = result[:game].current_round.current_nomination
+        if nomination.accepted?
+          # successful nomination, begin mission
+          result = dispatch :start_mission
+        elsif nomination.rejected? and not nomination.is_final_nomination?
+          # rejected nomination (but not last), start next nomination
+          result = dispatch :new_nomination
+        else
+          # rejected nomination (and last), game is over
+          result = dispatch :complete_round
+          if result[:success]
+            result = dispatch :complete_game
+          end
+        end
+      end
+
+    end
+  end
+
   private
     def dispatch(action, data = nil)
       dispatch_result = @dispatcher.dispatch(action, data)

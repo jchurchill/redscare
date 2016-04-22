@@ -47,8 +47,6 @@ class GameActionDispatcher
       game.players.each do |player|
         user_id = player.user_id
         state = { secrets: GameSecretsProvider.secret_info(game, user_id) }
-        p "User #{user_id} secrets:"
-        p state[:secrets]
         WebsocketRails.users[user_id].send_message event, state, :namespace => 'game_room', :channel => channel_name
       end
     end
