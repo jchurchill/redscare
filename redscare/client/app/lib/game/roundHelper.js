@@ -57,8 +57,11 @@ class Round {
   }
   
   get operatives() {
-    return memoize("operativeIds", this,
-      () => (this._round.operatives || []).map((op) => this.playerProvider.getPlayerById(op.operative_id)));
+    return memoize("operatives", this,
+      () => (this._round.operatives || []).map((op) => ({
+        player: this.playerProvider.getPlayerById(op.operative_id),
+        submitted: op.submitted
+      })));
   }
 
   get currentNomination() {

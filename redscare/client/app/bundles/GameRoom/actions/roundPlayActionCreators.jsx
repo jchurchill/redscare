@@ -20,3 +20,11 @@ export function vote(nominationId, currentUserId, upvote) {
     upvote
   };
 }
+
+export function missionSubmit(roundId, currentUserId) {
+  return {
+    type: actionTypes.SUBMIT,
+    roundId,
+    currentUserId
+  };
+}

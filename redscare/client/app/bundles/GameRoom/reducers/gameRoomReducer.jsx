@@ -55,6 +55,7 @@ function gameReducer(state, action) {
 
     case actionTypes.NOMINATE:
     case actionTypes.VOTE:
+    case actionTypes.SUBMIT:
       return { ...state, rounds: state.rounds.map(r => roundReducer(r, action)) };
 
     default:
@@ -80,6 +81,11 @@ function roundReducer(state, action) {
     case actionTypes.NOMINATE:
     case actionTypes.VOTE:
       return { ...state, nominations: state.nominations.map(n => nominationReducer(n, action)) };
+
+    case actionTypes.SUBMIT:
+      return state.id === action.roundId
+        ? { ...state, operatives: state.operatives.map(op => operativeReducer(op, action)) }
+        : state;
 
     default:
       return state;
@@ -117,6 +123,18 @@ function votesReducer(state, action) {
   switch(action.type) {
     case actionTypes.VOTE:
       return [ ...state, { upvote: action.upvote, user_id: action.currentUserId } ];
+
+    default:
+      return state;
+  }
+}
+
+function operativeReducer(state, action) {
+  switch(action.type) {
+    case actionTypes.SUBMIT:
+      return state.operative_id === action.currentUserId
+        ? { ...state, submitted: true }
+        : state;
 
     default:
       return state;

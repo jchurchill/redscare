@@ -35,11 +35,11 @@ class InactiveSelectionSection extends React.Component {
   }
 
   render() {
-    const { nomination: { playerProvider: { players } } } = this.props;
+    const { nomination: { playerProvider: { players }, leader } } = this.props;
     const stillNominating = this.remainingNominations() > 0;
     return (
       <div>
-        <div>{ stillNominating ? "The round leader is nominating." : "Nomination complete." }</div>
+        <div>{ stillNominating ? `${leader.name} is nominating.` : "Nomination complete." }</div>
         <div>{ players.map(p => this.renderPlayer(p)) }</div>
       </div>
     );

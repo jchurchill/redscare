@@ -13,6 +13,7 @@ export const actionTypes = mirrorCreator([
 
   'NOMINATE', // When user (as round leader) nominates a player
   'VOTE', // When user upvotes or downvotes a nomination
+  'SUBMIT', // When user operative submits pass / fail for a round
 ]);
 
 export const connectionStates = mirrorCreator([

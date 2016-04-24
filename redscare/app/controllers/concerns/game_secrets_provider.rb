@@ -33,9 +33,9 @@ module GameSecretsProvider
       end
 
       if game_player.evil_normal? or game_player.assassin? or game_player.evil_master? or game_player.false_seer?
-        # Can see other evils who aren't rogue_evil
+        # Can see other evils who aren't rogue_evil (and other than self, who is obviously evil)
         known_to_evil_normal = all_players
-          .find_all { |p| p.is_evil? and not p.rogue_evil? }
+          .find_all { |p| p.is_evil? and not p.rogue_evil? and not p.id == game_player.id }
           .map { |p| p.user_id }
         return { known_evils: known_to_evil_normal.to_a }
       end

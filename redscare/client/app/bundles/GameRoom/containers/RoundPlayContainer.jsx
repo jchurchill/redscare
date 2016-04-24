@@ -44,8 +44,10 @@ class RoundPlayContainer extends React.Component {
     this._gameClient.trigger("game_room.vote", { upvote: upvote });
   }
 
-  submit() {
-    console.log("submit!")
+  missionSubmit(pass) {
+    const { game: { currentRound: { id: roundId } }, user: { id: userId } } = this.props;
+    this.props.actions.missionSubmit(roundId, userId);
+    this._gameClient.trigger("game_room.mission_submit", { pass });
   }
 
   renderCurrentRoundPhase() {
@@ -54,7 +56,7 @@ class RoundPlayContainer extends React.Component {
       case Round.states.NOMINATION:
         return <NominationPhase round={currentRound} currentUser={user} nominate={this.nominate.bind(this)} vote={this.vote.bind(this)} />
       case Round.states.MISSION:
-        return <MissionPhase round={currentRound} currentUser={user} submit={this.submit.bind(this)} />
+        return <MissionPhase round={currentRound} currentUser={user} missionSubmit={this.missionSubmit.bind(this)} />
       case Round.states.COMPLETE:
         return "complete";
       default:
@@ -72,32 +74,19 @@ class RoundPlayContainer extends React.Component {
     const { currentLeader, roundNumber, missionInfo: { operativeCount, requiredFailCount } } = currentRound
     return (
       <div>
-        <h2>Round {roundNumber}</h2>
-        <div style={{ margin: '5px', fontStyle: 'italic' }}>
-          {operativeCount} operatives
-          {requiredFailCount > 1 ? `; ${requiredFailCount} fails required` : ""}
+        <div style={{ marginBottom: 15 }}>
+          <div style={{ fontSize: 24, fontWeight: 'bold' }}>Round {roundNumber}</div>
+          <div style={{ margin: '5px', fontStyle: 'italic' }}>
+            {operativeCount} operatives
+            {requiredFailCount > 1 ? `; ${requiredFailCount} fails required` : ""}
+          </div>
         </div>
-        <CurrentLeaderDisplay user={user} currentLeader={currentLeader} />
         <div style={{ margin: '5px' }}>
           { this.renderCurrentRoundPhase() }
         </div>
       </div>
     );
   }
-}
-
-const CurrentLeaderDisplay = (props) => {
-  const { user, currentLeader } = props;
-  if (!currentLeader) { return (<div></div>); }
-  return (
-    <div>
-      {
-        user.id === currentLeader.id
-        ? <span>You are the round leader.</span>
-        : <span>{currentLeader.name} is the round leader.</span>
-      }
-    </div>
-  );
 }
 
 const mapStateToProps = (state) => {

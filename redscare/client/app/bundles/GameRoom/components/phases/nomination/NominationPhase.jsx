@@ -37,12 +37,16 @@ class NominationPhase extends React.Component {
     const { currentNomination } = this.props.round
     if (!currentNomination) {
       return (
-        <h3>Setting up first nomination...</h3>
+        <div style={{ fontSize: 20, fontWeight: 'bold' }}>
+          Setting up first nomination...
+        </div>
       );
     }
     return (
       <div>
-        <h3>Nomination {currentNomination.nominationNumber}</h3>
+        <div style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 5 }}>
+          Nomination {currentNomination.nominationNumber}
+        </div>
         { this.renderSubPhase() }
       </div>
     );
