@@ -22,7 +22,7 @@ class VotingSubPhase extends React.Component {
   render() {
     return (
       <div>
-        { this.currentUserHasVoted() ? null : <CastVoteSection castVote={this.props.vote} /> }
+        <CastVoteSection castVote={this.props.vote} hasVoted={this.currentUserHasVoted()}/>
         <PlayerVotingInfo nomination={this.props.nomination} />
       </div>
     );
@@ -31,14 +31,17 @@ class VotingSubPhase extends React.Component {
 
 class CastVoteSection extends React.Component {
   static PropTypes = {
-    castVote: PropTypes.func.isRequired
+    castVote: PropTypes.func.isRequired,
+    hasVoted: PropTypes.bool.isRequired
   }
 
   render() {
+    const { castVote, hasVoted } = this.props
     return (
       <div style={{ margin: 10 }}>
-        <button onClick={this.props.castVote.bind(this, true)}>Upvote</button>
-        <button onClick={this.props.castVote.bind(this, false)}>Downvote</button>
+        <div style={{ marginBottom: 5 }}>{ !hasVoted ? "Place your vote." : "Thank you for voting!" }</div>
+        <button onClick={castVote.bind(this, true)} disabled={hasVoted}>Upvote</button>
+        <button onClick={castVote.bind(this, false)} disabled={hasVoted}>Downvote</button>
       </div>
     );
   }

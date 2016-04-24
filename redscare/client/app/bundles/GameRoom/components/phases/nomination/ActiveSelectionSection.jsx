@@ -28,9 +28,7 @@ class ActiveSelectionSection extends React.Component {
 
   nominate(player) {
     if (this.remainingNominations() === 0) { return; }
-    if (window.confirm(`Nominate ${player.name}? This will be final.`)) {
-      this.props.nominate(player.id);
-    }
+    this.props.nominate(player.id);
   }
 
   renderPlayer(p) {
