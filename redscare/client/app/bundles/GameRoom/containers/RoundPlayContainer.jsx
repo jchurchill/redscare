@@ -51,12 +51,22 @@ class RoundPlayContainer extends React.Component {
   }
 
   renderCurrentRoundPhase() {
-    const { game: { currentRound }, user } = this.props
+    const { game: { currentRound, currentUserIsEvil }, user } = this.props
     switch (currentRound.state) {
       case Round.states.NOMINATION:
-        return <NominationPhase round={currentRound} currentUser={user} nominate={this.nominate.bind(this)} vote={this.vote.bind(this)} />
+        return <NominationPhase
+          round={currentRound}
+          currentUser={user}
+          nominate={this.nominate.bind(this)}
+          vote={this.vote.bind(this)}
+          />
       case Round.states.MISSION:
-        return <MissionPhase round={currentRound} currentUser={user} missionSubmit={this.missionSubmit.bind(this)} />
+        return <MissionPhase
+          round={currentRound}
+          currentUser={user}
+          missionSubmit={this.missionSubmit.bind(this)}
+          currentUserIsEvil={currentUserIsEvil}
+          />
       case Round.states.COMPLETE:
         return "complete";
       default:

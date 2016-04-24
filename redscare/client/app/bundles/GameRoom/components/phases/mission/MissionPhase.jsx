@@ -7,6 +7,7 @@ class MissionPhase extends React.Component {
   static PropTypes = {
     round: PropTypes.instanceOf(Round).isRequired,
     currentUser: PropTypes.instanceOf(User).isRequired,
+    currentUserIsEvil: PropTypes.bool.isRequired,
     missionSubmit: PropTypes.func.isRequired,
   }
 
@@ -21,10 +22,10 @@ class MissionPhase extends React.Component {
 
   render() {
     const { round: { operatives }, missionSubmit } = this.props;
-    const userOperative = this.currentUserOperative();
+    const operative = this.currentUserOperative();
     return (
       <div>
-        { userOperative ? <OperativeSubmissionOptions operative={userOperative} missionSubmit={missionSubmit} /> : null }
+        { operative ? <OperativeSubmissionOptions {...{ operative, missionSubmit, canFail: currentUserIsEvil }} /> : null }
         <PlayerSubmissionInfo operatives={operatives} />
       </div>
     );
@@ -32,12 +33,12 @@ class MissionPhase extends React.Component {
 }
 
 const OperativeSubmissionOptions = props => {
-  const { operative: { submitted }, missionSubmit } = props;
+  const { operative: { submitted }, missionSubmit, canFail } = props;
   return (
     <div style={{ margin: 10 }}>
       <div style={{ marginBottom: 5 }}>{ !submitted ? "Place your submission." : "Thank you for submitting!" }</div>
       <button onClick={missionSubmit.bind(this, true)} disabled={submitted}>Pass</button>
-      <button onClick={missionSubmit.bind(this, false)} disabled={submitted}>Fail</button>
+      <button onClick={missionSubmit.bind(this, false)} disabled={submitted || !canFail}>Fail</button>
     </div>
   );
 }
