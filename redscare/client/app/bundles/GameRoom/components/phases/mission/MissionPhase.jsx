@@ -21,7 +21,7 @@ class MissionPhase extends React.Component {
   }
 
   render() {
-    const { round: { operatives }, missionSubmit } = this.props;
+    const { round: { operatives }, missionSubmit, currentUserIsEvil } = this.props;
     const operative = this.currentUserOperative();
     return (
       <div>

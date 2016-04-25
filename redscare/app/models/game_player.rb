@@ -37,8 +37,23 @@ class GamePlayer < ActiveRecord::Base
     GameRules.is_role_good(role)
   end
 
-  def as_state
-    # Include the list of players, but not their secret role
-    as_json({ include: :user, only: [:id, :user] })
+  def is_evil # for json
+    is_evil?
   end
+
+  def as_state
+    if game.assassination?
+      # Include who is good and who is evil, and if evil, their exact role
+      only = [:id, :user, :is_evil]
+      only << :role if is_evil?
+      return as_json({ include: :user, only: only, methods: [:is_evil] })
+    elsif game.complete? or game.cancelled?
+      # Include full role information
+      return as_json({ include: :user, only: [:id, :user, :role] })
+    else
+      # Include the list of players, but not their secret role
+      return as_json({ include: :user, only: [:id, :user] })
+    end
+  end
+    
 end

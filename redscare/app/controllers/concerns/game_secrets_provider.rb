@@ -10,6 +10,7 @@ module GameSecretsProvider
   end
 
   private 
+    # Get the information known about other players, specific to an individual role
     def self.role_specific_info (game_player, all_players)
       if game_player.role.nil?
         # Role not yet assigned; no role info

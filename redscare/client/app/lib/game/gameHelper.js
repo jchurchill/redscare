@@ -126,4 +126,17 @@ export default class Game {
     const { role, role_info } = this._secrets;
     return { role, roleInfo: role_info };
   }
+
+  get assassinationRoleInfo() {
+    return memoize("assassinationRoleInfo", this,
+      () => {
+        if (this.state !== Game.states.ASSASSINATION) { return; }
+        return { 
+          evils: this._game.players.filter(pl => pl.is_evil) 
+            .map(pl => ({ player: this.getPlayerById(pl.user.id), role: pl.role })),
+          goods: this._game.players.filter(pl => !pl.is_evil)
+            .map(pl => ({ player: this.getPlayerById(pl.user.id) }))
+        };
+      });
+  }
 };

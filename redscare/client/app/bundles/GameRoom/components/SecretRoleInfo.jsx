@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import PlayerList from '../components/PlayerList';
 import Game from 'lib/game/gameHelper';
+import { getRoleTitle } from 'lib/game/gameRules';
 import PlayerProvider from 'lib/game/playerProvider';
 
 export default class SecretRoleInfo extends React.Component {
@@ -134,14 +135,12 @@ export default class SecretRoleInfo extends React.Component {
     switch (role) {
       case Game.roles.GOOD_NORMAL:
         return {
-          name: "a normal good guy",
           description: "You don't know much about anyone else. The only person you can really trust is yourself!",
           style: { backgroundColor: 'lightcyan' },
           renderOtherInfo: this.renderGoodNormal.bind(this)
         };
       case Game.roles.EVIL_NORMAL:
         return {
-          name: "a normal evil guy",
           description: specialRules.includesRogueEvil
             ? "You know who your fellow evil teammates are, other than the rogue evil."
             : "You know who your fellow evil teammates are.",
@@ -150,7 +149,6 @@ export default class SecretRoleInfo extends React.Component {
         };
       case Game.roles.SEER:
         return {
-          name: "the seer",
           description: (specialRules.includesEvilMaster 
             ? "You can see everyone that is evil, other than the evil master."
             : "You can see everyone that is evil.")
@@ -160,35 +158,30 @@ export default class SecretRoleInfo extends React.Component {
         };
       case Game.roles.SEER_KNOWER:
         return {
-          name: "the seer-knower",
           description: "You can see the seer (who is good) and the false seer (who is evil), but don't know who is who.",
           style: { backgroundColor: 'lightcyan' },
           renderOtherInfo: this.renderSeerKnower.bind(this)
         };
       case Game.roles.FALSE_SEER:
         return {
-          name: "the false seer",
           description: "The seer-knower has seen you and the seer, but doesn't know who is false (and evil) and who is real (and good).",
           style: { backgroundColor: 'lightpink' },
           renderOtherInfo: this.renderFalseSeer.bind(this)
         };
       case Game.roles.ROGUE_EVIL:
         return {
-          name: "the rogue evil",
           description: "You're evil, but don't know who else is... and they don't know that you are either.",
           style: { backgroundColor: 'lightpink' },
           renderOtherInfo: this.renderRogueEvil.bind(this)
         };
       case Game.roles.ASSASSIN:
         return {
-          name: "the assassin",
           description: "If good wins, take one guess at who the seer is, and steal back the win if you are correct.",
           style: { backgroundColor: 'lightpink' },
           renderOtherInfo: this.renderAssassin.bind(this)
         };
       case Game.roles.EVIL_MASTER:
         return {
-          name: "the evil master",
           description: "You are the one evil character that the seer cannot see.",
           style: { backgroundColor: 'lightpink' },
           renderOtherInfo: this.renderAssassin.bind(this)
@@ -198,6 +191,11 @@ export default class SecretRoleInfo extends React.Component {
     }
   }
 
+  getRoleTitle() {
+    const { roleSecrets: { role } } = this.props;
+    return getRoleTitle(role);
+  }
+
   render() {
     const { name, description, style, renderOtherInfo } = this.getRoleRenderInfo();
     const { show } = this.state;
@@ -205,7 +203,7 @@ export default class SecretRoleInfo extends React.Component {
       return (
         <div style={{ margin: '5px', padding: '5px', border: '1px solid black', ...style }}>
           <div>You are...</div>
-          <h3>{name}</h3>
+          <h3>{this.getRoleTitle()}</h3>
           <div style={{ marginBottom: '10px' }}>{description}</div>
           {renderOtherInfo()}
           <a href="#" onClick={this.toggleShow.bind(this)}>

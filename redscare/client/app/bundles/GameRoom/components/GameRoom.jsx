@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import PlayersJoiningContainer from '../containers/PlayersJoiningContainer';
 import RoundPlayContainer from '../containers/RoundPlayContainer';
+import AssassinationContainer from '../containers/AssassinationContainer';
 import GameStateDisplay from './GameStateDisplay';
 import SecretRoleInfo from '../components/SecretRoleInfo';
 import Game from 'lib/game/gameHelper';
@@ -21,8 +22,14 @@ class GameRoom extends React.Component {
         return <PlayersJoiningContainer />
       case Game.states.ROUNDS_IN_PROGRESS:
         return <RoundPlayContainer />
+      case Game.states.ASSASSINATION:
+        return <AssassinationContainer />
+      case Game.states.COMPLETE:
+        return <div>This game is over.</div>
+      case Game.states.CANCELLED:
+        return <div>This game has been cancelled.</div>
       default:
-        return <div>{`View for game state '${state}' not yet implemented`}</div>
+        throw { message: `unrecognized game state ${state}` };
     }
   }
 

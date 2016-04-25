@@ -77,7 +77,7 @@ class GameRoomContainer extends React.Component {
       <div style={{ textAlign: 'center' /* center everything! */ }}>
         <GameRoom game={game}/>
         <div>
-          <a href={links.games}>Back to games</a>
+            <a href={links.games}>Back to games</a>
         </div>
         {this.renderConnectionInfo()}
       </div>

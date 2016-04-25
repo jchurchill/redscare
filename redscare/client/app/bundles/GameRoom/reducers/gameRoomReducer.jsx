@@ -58,6 +58,9 @@ function gameReducer(state, action) {
     case actionTypes.SUBMIT:
       return { ...state, rounds: state.rounds.map(r => roundReducer(r, action)) };
 
+    case actionTypes.SELECT_ASSASSIN_TARGET:
+      return { ...state, assassinated_player_id: action.targetUserId }
+
     default:
       return state;
   }

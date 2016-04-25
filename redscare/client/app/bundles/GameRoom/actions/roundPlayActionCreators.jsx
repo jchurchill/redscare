@@ -28,3 +28,10 @@ export function missionSubmit(roundId, currentUserId) {
     currentUserId
   };
 }
+
+export function selectAssassinTarget(targetUserId) {
+  return {
+    type: actionTypes.SELECT_ASSASSIN_TARGET,
+    targetUserId
+  };
+}

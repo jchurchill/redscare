@@ -46,9 +46,9 @@ class GameRoomWebsocketController < WebsocketRails::BaseController
   end
 
   def select_assassin_target
-    dispatch :mission_submit, {
+    dispatch :select_assassin_target, {
       selecting_user_id: current_user.id,
-      target_user_id: event_data[:user_id]
+      target_user_id: event_data[:target_user_id]
     }
   end
 
