@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
-import PlayersJoiningContainer from '../containers/PlayersJoiningContainer';
-import RoundPlayContainer from '../containers/RoundPlayContainer';
-import AssassinationContainer from '../containers/AssassinationContainer';
+import PlayersJoining from './PlayersJoining';
+import RoundPlay from './RoundPlay';
+import Assassination from './Assassination';
 import ConnectionStatusDisplay from './ConnectionStatusDisplay';
 import GameStateDisplay from './GameStateDisplay';
-import SecretRoleInfo from '../components/SecretRoleInfo';
+import SecretRoleInfo from './SecretRoleInfo';
 import Game from 'lib/game/gameHelper';
 import User from 'lib/game/userHelper';
 
@@ -24,11 +24,11 @@ class GameRoom extends React.Component {
     const { game, user, actions } = this.props;
     switch (state) {
       case Game.states.CREATED:
-        return <PlayersJoiningContainer game={game} user={user} actions={actions} />
+        return <PlayersJoining game={game} user={user} actions={actions} />
       case Game.states.ROUNDS_IN_PROGRESS:
-        return <RoundPlayContainer game={game} user={user} actions={actions} />
+        return <RoundPlay game={game} user={user} actions={actions} />
       case Game.states.ASSASSINATION:
-        return <AssassinationContainer game={game} user={user} actions={actions} />
+        return <Assassination game={game} user={user} actions={actions} />
       case Game.states.COMPLETE:
         return <div>This game is over.</div>
       case Game.states.CANCELLED:

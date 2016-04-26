@@ -4,7 +4,7 @@ import Game from 'lib/game/gameHelper';
 import { getRoleTitle } from 'lib/game/gameRules';
 import User from 'lib/game/userHelper';
 
-class AssassinationContainer extends React.Component {
+class Assassination extends React.Component {
   static propTypes = {
     game: PropTypes.instanceOf(Game).isRequired,
     user: PropTypes.instanceOf(User).isRequired,
@@ -82,4 +82,4 @@ const PlayerRole = props => {
   );
 }
 
-export default AssassinationContainer;
+export default Assassination;

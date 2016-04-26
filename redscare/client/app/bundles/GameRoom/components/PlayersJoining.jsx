@@ -3,7 +3,7 @@ import PlayerList from '../components/PlayerList';
 import Game from 'lib/game/gameHelper';
 import User from 'lib/game/userHelper';
 
-class PlayersJoiningContainer extends React.Component {
+class PlayersJoining extends React.Component {
   static propTypes = {
     game: PropTypes.instanceOf(Game).isRequired,
     user: PropTypes.instanceOf(User).isRequired,
@@ -97,4 +97,4 @@ class PlayersJoiningContainer extends React.Component {
   }
 }
 
-export default PlayersJoiningContainer;
+export default PlayersJoining;

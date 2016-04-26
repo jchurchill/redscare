@@ -7,7 +7,7 @@ import Game from 'lib/game/gameHelper';
 import Round from 'lib/game/roundHelper';
 import User from 'lib/game/userHelper';
 
-class RoundPlayContainer extends React.Component {
+class RoundPlay extends React.Component {
   static propTypes = {
     game: PropTypes.instanceOf(Game).isRequired,
     user: PropTypes.instanceOf(User).isRequired,
@@ -81,4 +81,4 @@ class RoundPlayContainer extends React.Component {
   }
 }
 
-export default RoundPlayContainer;
+export default RoundPlay;
