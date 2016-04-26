@@ -55,7 +55,7 @@ function gameReducer(state, action) {
 
     case actionTypes.NOMINATE:
     case actionTypes.VOTE:
-    case actionTypes.SUBMIT:
+    case actionTypes.MISSION_SUBMIT:
       return { ...state, rounds: state.rounds.map(r => roundReducer(r, action)) };
 
     case actionTypes.SELECT_ASSASSIN_TARGET:
@@ -85,7 +85,7 @@ function roundReducer(state, action) {
     case actionTypes.VOTE:
       return { ...state, nominations: state.nominations.map(n => nominationReducer(n, action)) };
 
-    case actionTypes.SUBMIT:
+    case actionTypes.MISSION_SUBMIT:
       return state.id === action.roundId
         ? { ...state, operatives: state.operatives.map(op => operativeReducer(op, action)) }
         : state;
@@ -134,7 +134,7 @@ function votesReducer(state, action) {
 
 function operativeReducer(state, action) {
   switch(action.type) {
-    case actionTypes.SUBMIT:
+    case actionTypes.MISSION_SUBMIT:
       return state.operative_id === action.currentUserId
         ? { ...state, submitted: true }
         : state;

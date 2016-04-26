@@ -1,7 +1,4 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as roundPlayActionCreators from '../actions/roundPlayActionCreators';
 
 import NominationPhase from '../components/phases/nomination/NominationPhase'
 import MissionPhase from '../components/phases/mission/MissionPhase'
@@ -9,7 +6,6 @@ import MissionPhase from '../components/phases/mission/MissionPhase'
 import Game from 'lib/game/gameHelper';
 import Round from 'lib/game/roundHelper';
 import User from 'lib/game/userHelper';
-import websocket from 'lib/websocket/websocket';
 
 class RoundPlayContainer extends React.Component {
   static propTypes = {
@@ -21,33 +17,19 @@ class RoundPlayContainer extends React.Component {
     }).isRequired
   }
 
-  constructor(props, context) {
-    super(props, context);
-
-    // Bind websocket events once in the constructor.
-    // We need props for the game_id to know which channel to listen to.
-    this._gameClient = websocket.gameClientFactory(props.game.id);
-  }
-
   nominate(nomineeUserId) {
-    const { game: { currentRound: { currentNomination } } } = this.props;
-    this.props.actions.nominate(currentNomination.id, nomineeUserId);
-    this._gameClient.trigger("game_room.nominate", {
-      nomination_id: currentNomination.id,
-      user_id: nomineeUserId,
-    });
+    const { actions, game: { currentRound: { currentNomination } } } = this.props;
+    actions.nominate(currentNomination.id, nomineeUserId);
   }
 
   vote(upvote) {
-    const { game: { currentRound: { currentNomination } }, user } = this.props;
-    this.props.actions.vote(currentNomination.id, user.id, upvote);
-    this._gameClient.trigger("game_room.vote", { upvote: upvote });
+    const { actions, game: { currentRound: { currentNomination } }, user } = this.props;
+    actions.vote(currentNomination.id, user.id, upvote);
   }
 
   missionSubmit(pass) {
-    const { game: { currentRound: { id: roundId } }, user: { id: userId } } = this.props;
-    this.props.actions.missionSubmit(roundId, userId);
-    this._gameClient.trigger("game_room.mission_submit", { pass });
+    const { actions, game: { currentRound }, user } = this.props;
+    actions.missionSubmit(currentRound.id, user.id, pass);
   }
 
   renderCurrentRoundPhase() {
@@ -99,16 +81,4 @@ class RoundPlayContainer extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { game, secrets, user } = state.gameRoomStore;
-  return {
-    game: new Game(game, secrets),
-    user: new User(user)
-  };
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return { actions: bindActionCreators(roundPlayActionCreators, dispatch) };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RoundPlayContainer);
+export default RoundPlayContainer;

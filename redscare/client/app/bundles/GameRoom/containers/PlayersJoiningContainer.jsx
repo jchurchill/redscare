@@ -1,25 +1,21 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as playerWaitingRoomActionCreators from '../actions/playerWaitingRoomActionCreators';
-import websocket from 'lib/websocket/websocket';
 import PlayerList from '../components/PlayerList';
 import Game from 'lib/game/gameHelper';
 import User from 'lib/game/userHelper';
 
 class PlayersJoiningContainer extends React.Component {
   static propTypes = {
-      game: PropTypes.instanceOf(Game).isRequired,
-      user: PropTypes.instanceOf(User).isRequired
+    game: PropTypes.instanceOf(Game).isRequired,
+    user: PropTypes.instanceOf(User).isRequired,
+    actions: PropTypes.shape({
+      joinRoom: PropTypes.func.isRequired,
+      leaveRoom: PropTypes.func.isRequired,
+      startGame: PropTypes.func.isRequired
+    }).isRequired
   };
 
-  constructor(props, context) {
-    super(props, context);
-
-    // Bind websocket events once in the constructor.
-    // We need props for the game_id to know which channel to listen to.
-    this._gameClient = websocket.gameClientFactory(props.game.id);
-
+  constructor(props) {
+    super(props);
     // When a game is started, we wait for the server to respond
     // that it has initialized the game. While waiting, display ui cue
     this.state = { waitingForGameInit: false };
@@ -28,20 +24,17 @@ class PlayersJoiningContainer extends React.Component {
   joinGame() {
     const { user, actions } = this.props;
     actions.joinRoom(user);
-    this._gameClient.trigger("game_room.join_room", { user_id: user.id });
   }
 
   leaveGame() {
     const { user, actions } = this.props;
     actions.leaveRoom(user);
-    this._gameClient.trigger("game_room.leave_room", { user_id: user.id });
   }
 
   startGame() {
     const { actions } = this.props;
     actions.startGame();
     this.setState({ waitingForGameInit: true });
-    this._gameClient.trigger("game_room.start_game");
   }
 
   canJoin() {
@@ -104,17 +97,4 @@ class PlayersJoiningContainer extends React.Component {
   }
 }
 
-
-const mapStateToProps = (state) => {
-  const { game, secrets, user } = state.gameRoomStore;
-  return {
-    game: new Game(game, secrets),
-    user: new User(user)
-  };
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return { actions: bindActionCreators(playerWaitingRoomActionCreators, dispatch) };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlayersJoiningContainer);
+export default PlayersJoiningContainer;

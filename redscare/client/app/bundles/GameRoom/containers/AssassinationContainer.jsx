@@ -1,12 +1,8 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as roundPlayActionCreators from '../actions/roundPlayActionCreators';
 
 import Game from 'lib/game/gameHelper';
 import { getRoleTitle } from 'lib/game/gameRules';
 import User from 'lib/game/userHelper';
-import websocket from 'lib/websocket/websocket';
 
 class AssassinationContainer extends React.Component {
   static propTypes = {
@@ -17,19 +13,8 @@ class AssassinationContainer extends React.Component {
     }).isRequired
   }
 
-  constructor(props, context) {
-    super(props, context);
-
-    // Bind websocket events once in the constructor.
-    // We need props for the game_id to know which channel to listen to.
-    this._gameClient = websocket.gameClientFactory(props.game.id);
-  }
-
   selectAssassinTarget(targetUserId) {
     this.props.actions.selectAssassinTarget(targetUserId);
-    this._gameClient.trigger("game_room.select_assassin_target", {
-      target_user_id: targetUserId
-    });
   }
 
   getAssassinPlayer() {
@@ -97,16 +82,4 @@ const PlayerRole = props => {
   );
 }
 
-const mapStateToProps = (state) => {
-  const { game, secrets, user } = state.gameRoomStore;
-  return {
-    game: new Game(game, secrets),
-    user: new User(user)
-  };
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return { actions: bindActionCreators(roundPlayActionCreators, dispatch) };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AssassinationContainer);
+export default AssassinationContainer;

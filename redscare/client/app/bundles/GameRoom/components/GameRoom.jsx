@@ -2,34 +2,37 @@ import React, { PropTypes } from 'react';
 import PlayersJoiningContainer from '../containers/PlayersJoiningContainer';
 import RoundPlayContainer from '../containers/RoundPlayContainer';
 import AssassinationContainer from '../containers/AssassinationContainer';
+import ConnectionStatusDisplay from './ConnectionStatusDisplay';
 import GameStateDisplay from './GameStateDisplay';
 import SecretRoleInfo from '../components/SecretRoleInfo';
 import Game from 'lib/game/gameHelper';
+import User from 'lib/game/userHelper';
 
 class GameRoom extends React.Component {
   static propTypes = {
-    game: PropTypes.instanceOf(Game).isRequired
+    actions: PropTypes.object.isRequired,
+    connectionState: PropTypes.string.isRequired,
+    game: PropTypes.instanceOf(Game).isRequired,
+    user: PropTypes.instanceOf(User).isRequired,
+    links: PropTypes.shape({
+      games: PropTypes.string.isRequired,
+      host: PropTypes.string.isRequired
+    }).isRequired
   };
 
-  constructor(props, context) {
-    super(props, context);
-    console.log(props.game);
-  }
-
   renderGameView(state) {
+    const { game, user, actions } = this.props;
     switch (state) {
       case Game.states.CREATED:
-        return <PlayersJoiningContainer />
+        return <PlayersJoiningContainer game={game} user={user} actions={actions} />
       case Game.states.ROUNDS_IN_PROGRESS:
-        return <RoundPlayContainer />
+        return <RoundPlayContainer game={game} user={user} actions={actions} />
       case Game.states.ASSASSINATION:
-        return <AssassinationContainer />
+        return <AssassinationContainer game={game} user={user} actions={actions} />
       case Game.states.COMPLETE:
         return <div>This game is over.</div>
       case Game.states.CANCELLED:
         return <div>This game has been cancelled.</div>
-      default:
-        throw { message: `unrecognized game state ${state}` };
     }
   }
 
@@ -53,7 +56,7 @@ class GameRoom extends React.Component {
   }
 
   render() {
-    const { game } = this.props
+    const { game, links, connectionState } = this.props
     const specialRules = game.specialRules
     const roleSelections = [
       { text: "Seer & Assassin", enabled: specialRules.includesSeer },
@@ -62,7 +65,7 @@ class GameRoom extends React.Component {
       { text: "Evil master", enabled: specialRules.includesEvilMaster },
     ]
     return (
-      <div>
+      <div style={{ textAlign: 'center' /* center everything! */ }}>
         <h1>{name}</h1>
         <div style={{fontStyle:"italic"}}>{game.playerCount} players - {game.evilRoleCount} evil</div>
         <div style={{ marginTop: '20px' }}>
@@ -80,6 +83,10 @@ class GameRoom extends React.Component {
         <hr/>
         <GameStateDisplay game={game} />
         <hr/>
+        <div>
+          <a href={links.games}>Back to games</a>
+        </div>
+        <ConnectionStatusDisplay connectionState={connectionState} />
       </div>
     );
   }

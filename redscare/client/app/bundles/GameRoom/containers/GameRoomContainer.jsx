@@ -1,31 +1,32 @@
+// React / redux
 import React, { PropTypes } from 'react';
-import GameRoom from '../components/GameRoom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as gameRoomActionCreators from '../actions/gameRoomActionCreators';
-import listenForStateUpdates from './gameRoomEventListener.js';
-import { connectionStates } from '../constants/gameRoomConstants';
+
+// Components
+import GameRoom from '../components/GameRoom';
+
+// Other libraries / helpers
 import Game from 'lib/game/gameHelper';
-import websocket from 'lib/websocket/websocket'
+import User from 'lib/game/userHelper';
+import websocket from 'lib/websocket/websocket';
+import { connectionStates, serverEvents, eventNamespace } from '../constants/gameRoomConstants';
 
 class GameRoomContainer extends React.Component {
   static propTypes = {
-    actions: PropTypes.shape({
-      updateConnectionStatus: PropTypes.func.isRequired,
-      stateUpdated: PropTypes.func.isRequired,
-    }).isRequired,
+    actions: PropTypes.object.isRequired,
     connectionState: PropTypes.string.isRequired,
     game: PropTypes.instanceOf(Game).isRequired,
+    user: PropTypes.instanceOf(User).isRequired,
     links: PropTypes.shape({
       games: PropTypes.string.isRequired,
       host: PropTypes.string.isRequired
     }).isRequired
   };
 
-  constructor(props, context) {
-    super(props, context);
-
-    const { links: { host }, game: { id: gameId }, actions: { stateUpdated } } = props
+  componentDidMount() {
+    const { links: { host }, game: { id: gameId }, actions: { stateUpdated } } = this.props
 
     // Initialize the websocket as this root component is spinning up
     websocket.initialize({
@@ -34,8 +35,10 @@ class GameRoomContainer extends React.Component {
       onClose: this.onWebsocketClose.bind(this),
       onError: this.onWebsocketError.bind(this)
     })
+
     // Listen to all server events that update the state of the game room (e.g., other players taking actions)
-    listenForStateUpdates(websocket.gameClientFactory(gameId), stateUpdated);
+    this._gameClient = websocket.gameClientFactory(gameId);
+    serverEvents.forEach(event => this._gameClient.bind(`${eventNamespace}.${event}`, stateUpdated));
   }
 
   onWebsocketOpen(data, ws) {
@@ -56,47 +59,61 @@ class GameRoomContainer extends React.Component {
     updateConnectionStatus(connectionStates.DISCONNECTED);
   }
 
-  renderConnectionInfo() {
-    const { connectionState } = this.props
-    const { text, color } = {
-        [connectionStates.CONNECTING]: { text: "Connecting to server...", color: 'white' },
-        [connectionStates.CONNECTED]: { text: "Connected to server!", color: 'lightcyan' },
-        [connectionStates.DISCONNECTED]: { text: "Not connected to server.", color: 'lightpink' },
-      }[connectionState];
-
-    return (
-      <div style={{ marginTop: '10px', padding: '5px', backgroundColor: color }}>
-        {text}
-      </div>
-    )
+  getActions() {
+    const { actions } = this.props;
+    const trigger = (event, data) => this._gameClient.trigger(`${eventNamespace}.${event}`, data)
+    return {
+      joinRoom: (user) => {
+        actions.joinRoom(user);
+        trigger('join_room', { user_id: user.id })
+      },
+      leaveRoom: (user) => {
+        actions.leaveRoom(user);
+        trigger('leave_room', { user_id: user.id })
+      },
+      startGame: () => {
+        actions.startGame();
+        trigger('start_game');
+      },
+      nominate: (nominationId, nomineeUserId) => {
+        actions.nominate(nominationId, nomineeUserId);
+        trigger('nominate', { nomination_id: nominationId, user_id: nomineeUserId })
+      },
+      vote: (nominationId, userId, upvote) => {
+        actions.vote(nominationId, userId, upvote);
+        trigger('vote', { upvote: upvote });
+      },
+      missionSubmit: (roundId, userId, pass) => {
+        actions.missionSubmit(roundId, userId);
+        trigger('mission_submit', { pass });
+      },
+      selectAssassinTarget: (targetUserId) => {
+        actions.selectAssassinTarget(targetUserId);
+        trigger('select_assassin_target', { target_user_id: targetUserId });
+      }
+    }
   }
 
   render() {
-    const { game, links } = this.props
-    return (
-      <div style={{ textAlign: 'center' /* center everything! */ }}>
-        <GameRoom game={game}/>
-        <div>
-            <a href={links.games}>Back to games</a>
-        </div>
-        {this.renderConnectionInfo()}
-      </div>
-    );
+    const { game, user, links, connectionState } = this.props
+    const actions = this.getActions()
+    return <GameRoom {...{ game, user, links, actions, connectionState }} />
   }
 }
 
 const mapStateToProps = (state) => {
-  const { connectionState, game, secrets } = state.gameRoomStore;
-  return { connectionState, game: new Game(game, secrets) };
+  const { connectionState, game, secrets, user } = state.gameRoomStore;
+  return {
+    connectionState,
+    game: new Game(game, secrets),
+    user: new User(user)
+  };
 }
 
 const mapDispatchToProps = (dispatch) => {
-  // Add a prop called "actions" which is an object containing the action
-  // dispatchers for action creators defined in gameRoomActionCreators 
-  return { actions: bindActionCreators(gameRoomActionCreators, dispatch) };
+  return {
+    actions: bindActionCreators(gameRoomActionCreators, dispatch)
+  };
 }
 
-// Make the store API available to this compnent.
-// Specifically, provide it with props from store state, 
-// and provide it with props based on the store dispatch
 export default connect(mapStateToProps, mapDispatchToProps)(GameRoomContainer);
