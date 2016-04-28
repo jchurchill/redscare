@@ -1,0 +1,44 @@
+$success-bg-color: #DDEEFF;
+$success-text-color: rgba(10, 60, 150, 0.8);
+
+$fail-bg-color: #FFA8A8;
+$fail-text-color: rgba(150, 10, 10, 0.8);
+
+@mixin inset-text($text-color, $bg-color) {
+  color: $text-color;
+  text-shadow: 1px 4px 6px $bg-color, 0 0 0 #000, 1px 4px 6px $bg-color;
+  line-height: 1em;
+}
+
+.round {
+  padding: 10px;
+  border-bottom: 1px solid white;
+}
+
+.roundNumber {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 6em;
+  margin-left: 10px;
+}
+
+.success {
+  background-color: $success-bg-color;
+  
+  .roundNumber {
+    @include inset-text($success-text-color, $success-bg-color);
+  }
+}
+
+.fail {
+  background-color: $fail-bg-color;
+
+  .roundNumber {
+    @include inset-text($fail-text-color, $fail-bg-color);
+  }
+}
+
+div.inline {
+  display: inline-block;
+  vertical-align: middle;
+}

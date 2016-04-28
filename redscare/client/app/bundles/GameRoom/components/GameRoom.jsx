@@ -4,6 +4,7 @@ import RoundPlay from './RoundPlay';
 import Assassination from './Assassination';
 import ConnectionStatusDisplay from './ConnectionStatusDisplay';
 import GameStateDisplay from './GameStateDisplay';
+import GameStateDisplay2 from './GameStateDisplay2';
 import SecretRoleInfo from './SecretRoleInfo';
 import Game from 'lib/game/gameHelper';
 import User from 'lib/game/userHelper';
@@ -82,6 +83,8 @@ class GameRoom extends React.Component {
         {this.renderGameView(game.state)}
         <hr/>
         <GameStateDisplay game={game} />
+        <hr/>
+        <GameStateDisplay2 game={game} />
         <hr/>
         <div>
           <a href={links.games}>Back to games</a>
