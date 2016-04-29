@@ -13,7 +13,10 @@ export default class User {
   }
 
   get name() {
-    // This is all we have right now, need to get better login
+    return this._user.username;
+  }
+
+  get email() {
     return this._user.email;
   }
 };

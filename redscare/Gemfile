@@ -18,7 +18,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 # JC user authentication gem
 # https://github.com/plataformatec/devise
-gem 'devise'
+gem 'devise', '4.0.1'
 
 # JC websockets gem
 # http://websocket-rails.github.io/

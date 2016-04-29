@@ -11,6 +11,7 @@ class GamesController < ApplicationController
       :chatPath => chat_path,
       :devPanelPath => devpanel_path,
       :newGamePath => new_game_path,
+      :signOutPath => destroy_user_session_path,
       :unstartedGames => unstarted_games.map { |g| to_game_info g },
       :yourGames => your_games.map { |g| to_game_info g },
     }
