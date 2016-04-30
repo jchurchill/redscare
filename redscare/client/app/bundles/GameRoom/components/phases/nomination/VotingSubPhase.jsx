@@ -1,5 +1,10 @@
 import React, { PropTypes } from 'react';
 
+import cx from 'classnames';
+import css from './VotingSubPhase.scss'
+
+import PlayerIcon from '../../PlayerIcon.jsx'
+
 import Nomination from 'lib/game/nominationHelper';
 import User from 'lib/game/userHelper';
 
@@ -71,22 +76,17 @@ const PlayerVotingInfo = props => {
 
 const PlayerVote = props => {
   const { player, isNominated, isLeader, hasVoted, upvote, voteVisible } = props;
-  const style = { padding: 5, margin: '0 2px', display: 'inline-block' };
+  const classes = [css.playerVote];
 
-  // Bold when leader
-  if (isLeader) { style.fontWeight = 'bold'; }
-
-  // Underlined when nominated
-  if (isNominated) { style.borderBottom = '3px solid #444444'; }
-
-  // colored based on vote (gray while still secret)
+  if (isLeader) { classes.push(css.leader) }
+  if (isNominated) { classes.push(css.nominated) }
   if (hasVoted) {
-    if (!voteVisible) { style.backgroundColor = 'lightgray'; }
-    else if (upvote === true) { style.backgroundColor = 'lightgreen'; }
-    else if (upvote === false) { style.backgroundColor = 'lightpink'; }  
+    if (!voteVisible) { classes.push(css.voted) }
+    else if (upvote === true) { classes.push(css.upvoted) }
+    else if (upvote === false) { classes.push(css.downvoted) }  
   }
 
-  return (<div style={style}>{player.name}</div>);
+  return (<div className={cx(classes)}><PlayerIcon player={player}/></div>);
 }
 
 export default VotingSubPhase;

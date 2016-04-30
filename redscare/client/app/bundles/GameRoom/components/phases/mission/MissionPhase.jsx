@@ -1,5 +1,10 @@
 import React, { PropTypes } from 'react';
 
+import cx from 'classnames';
+import css from './MissionPhase.scss';
+
+import PlayerIcon from '../../PlayerIcon.jsx'
+
 import Round from 'lib/game/roundHelper';
 import User from 'lib/game/userHelper';
 
@@ -54,14 +59,12 @@ const PlayerSubmissionInfo = props => {
 
 const PlayerSubmission = props => {
   const { player, submitted } = props;
-  const style = { padding: 5, margin: '0 2px', display: 'inline-block' };
+  const classes = [css.playerSubmission];
 
   // colored based on whether they submitted
-  if (submitted) {
-    style.backgroundColor = 'lightgray'
-  }
+  if (submitted) { classes.push(css.submitted) }
 
-  return (<div style={style}>{player.name}</div>);
+  return (<div className={cx(classes)}><PlayerIcon player={player} /></div>);
 }
 
 export default MissionPhase;

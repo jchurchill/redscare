@@ -23,7 +23,9 @@ export default class User {
   }
 
   get color() {
-    const to256Hex = r => Math.floor(r*256).toString(16);
+    // make the color sufficiently light with a lower bound of 20%
+    const lowerBound = 0.2;
+    const to256Hex = r => Math.floor((lowerBound + (1 - lowerBound) * r) * 256).toString(16);
     // consistent random gen based on userId
     const random = seed(this.id),
       r = to256Hex(random()),

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
-import NominationPhase from '../components/phases/nomination/NominationPhase'
-import MissionPhase from '../components/phases/mission/MissionPhase'
+import NominationPhase from '../components/phases/nomination/NominationPhase.jsx'
+import MissionPhase from '../components/phases/mission/MissionPhase.jsx'
 
 import Game from 'lib/game/gameHelper';
 import Round from 'lib/game/roundHelper';

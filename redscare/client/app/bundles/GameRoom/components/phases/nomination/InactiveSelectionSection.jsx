@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
-import css from '../../PlayerList.scss'
+import cx from 'classnames';
+import css from './SelectionSection.scss'
+
+import PlayerIcon from '../../PlayerIcon'
 
 import Nomination from 'lib/game/nominationHelper';
 import User from 'lib/game/userHelper';
@@ -27,11 +29,8 @@ class InactiveSelectionSection extends React.Component {
 
   renderPlayer(p) {
     const isPlayerNominated = this.isPlayerNominated(p.id);
-    const className = classNames(
-      css.player,
-      isPlayerNominated ? css.nominatedPlayer : ''
-    );
-    return (<div key={p.id} className={className}>{p.name}</div>);
+    const additionalClass = isPlayerNominated ? css.nominated : '';
+    return (<div key={p.id} className={cx(css.potentialNominee, additionalClass)}><PlayerIcon player={p}/></div>);
   }
 
   render() {

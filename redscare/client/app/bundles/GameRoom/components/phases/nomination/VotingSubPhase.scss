@@ -1,0 +1,25 @@
+.playerVote {
+  padding: 5px;
+  margin: 0 2px;
+  display: inline-block;
+  transition: background-color 0.5s ease-out;
+
+  &.voted {
+    background-color: silver;
+  }
+  &.upvoted {
+    background-color: lightgreen;
+  }
+  &.downvoted {
+    background-color: lightgray;
+    color: gray;
+  }
+
+  &.nominated {
+    border-bottom: 3px solid #444444;
+  }
+
+  &.leader {
+    font-weight: bold;
+  }
+}

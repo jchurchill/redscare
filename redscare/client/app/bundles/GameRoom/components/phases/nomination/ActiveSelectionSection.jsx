@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
-import css from '../../PlayerList.scss'
+import cx from 'classnames';
+import css from './SelectionSection.scss'
+
+import PlayerIcon from '../../PlayerIcon'
 
 import Nomination from 'lib/game/nominationHelper';
 import User from 'lib/game/userHelper';
@@ -34,15 +36,15 @@ class ActiveSelectionSection extends React.Component {
   renderPlayer(p) {
     const isPlayerNominated = this.isPlayerNominated(p.id);
     const remainingNominations = this.remainingNominations();
-    const className = classNames(
-      css.player,
-      isPlayerNominated
-        ? css.nominatedPlayer
-        : (remainingNominations > 0 ? css.potentialNominatedPlayer : '')
-    );
+    const additionalClass = isPlayerNominated ? css.nominated : '';
     const disabled = isPlayerNominated || remainingNominations === 0;
-    const onClick = isPlayerNominated ? () => {} : this.nominate.bind(this, p)
-    return (<button key={p.id} className={className} onClick={onClick} disabled={disabled}>{p.name}</button>);
+    const buttonText = isPlayerNominated ? "Selected" : "Nominate"
+    return (
+      <div key={p.id} className={cx(css.potentialNominee, additionalClass)}>
+        <PlayerIcon player={p} />
+        <button onClick={this.nominate.bind(this, p)} disabled={disabled}>{buttonText}</button>
+      </div>
+    );
   }
 
   render() {

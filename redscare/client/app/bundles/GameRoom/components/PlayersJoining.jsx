@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import PlayerList from '../components/PlayerList';
+import PlayerIcon from '../components/PlayerIcon';
 import Game from 'lib/game/gameHelper';
 import User from 'lib/game/userHelper';
 
@@ -70,7 +70,7 @@ class PlayersJoining extends React.Component {
       <div>
         <h2>Waiting for players</h2>
         <h3>Currently in game:</h3>
-        <PlayerList players={game.players} />
+        { game.players.map(p => <PlayerIcon key={p.id} player={p} />) }
         <div style={{ margin: '30px' }}>
           { this.canJoin() ? <button onClick={this.joinGame.bind(this)}>Join</button> : '' }
           { this.canLeave() ? <button onClick={this.leaveGame.bind(this)}>Leave</button> : '' }

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import PlayerList from '../components/PlayerList';
+import PlayerIcon from '../components/PlayerIcon';
 import Game from 'lib/game/gameHelper';
 import { getRoleTitle } from 'lib/game/gameRules';
 import PlayerProvider from 'lib/game/playerProvider';
@@ -42,7 +42,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your fellow evil players:</div>
-        <PlayerList players={knownEvilPlayers} />
+        { knownEvilPlayers.map(p => <PlayerIcon key={p.id} player={p} />) }
         {includesRogueEvil ? <div style={{ fontStyle: 'italic' }}>Note: does not include the rogue evil</div> : "" }
       </div>
     );
@@ -58,7 +58,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your evil enemies:</div>
-        <PlayerList players={knownEvilPlayers} />
+        { knownEvilPlayers.map(p => <PlayerIcon key={p.id} player={p} />) }
         {includesEvilMaster ? <div style={{ fontStyle: 'italic' }}>Note: does not include the evil master</div> : "" }
       </div>
     );
@@ -73,7 +73,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>The potential seers:</div>
-        <PlayerList players={possibleSeerPlayers} />
+        { possibleSeerPlayers.map(p => <PlayerIcon key={p.id} player={p} />) }
       </div>
     );
   }
@@ -88,7 +88,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your fellow evil players:</div>
-        <PlayerList players={knownEvilPlayers} />
+        { knownEvilPlayers.map(p => <PlayerIcon key={p.id} player={p} />) }
         {includesRogueEvil ? <div style={{ fontStyle: 'italic' }}>Note: does not include the rogue evil</div> : "" }
       </div>
     ); 
@@ -108,7 +108,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your fellow evil players:</div>
-        <PlayerList players={knownEvilPlayers} />
+        { knownEvilPlayers.map(p => <PlayerIcon key={p.id} player={p} />) }
         {includesRogueEvil ? <div style={{ fontStyle: 'italic' }}>Note: does not include the rogue evil</div> : "" }
       </div>
     );
@@ -124,7 +124,7 @@ export default class SecretRoleInfo extends React.Component {
     return (
       <div>
         <div>Your fellow evil players:</div>
-        <PlayerList players={knownEvilPlayers} />
+        { knownEvilPlayers.map(p => <PlayerIcon key={p.id} player={p} />) }
         {includesRogueEvil ? <div style={{ fontStyle: 'italic' }}>Note: does not include the rogue evil</div> : "" }
       </div>
     );
