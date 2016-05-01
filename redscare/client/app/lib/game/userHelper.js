@@ -23,14 +23,16 @@ export default class User {
   }
 
   get color() {
-    // make the color extremely light with a lower bound of 90%
-    const lowerBound = 0.9;
-    const to256InRange = r => Math.floor((lowerBound + (1 - lowerBound) * r) * 256);
-    // consistent random gen based on userId
-    const random = seed(this.id),
-      r = to256InRange(random()),
-      g = to256InRange(random()),
-      b = to256InRange(random());
-    return `rgb(${r},${g},${b})`;
+    // white looks better for now - reconsider later.
+    // // make the color extremely light with a lower bound of 90%
+    // const lowerBound = 0.9;
+    // const to256InRange = r => Math.floor((lowerBound + (1 - lowerBound) * r) * 256);
+    // // consistent random gen based on userId
+    // const random = seed(this.id),
+    //   r = to256InRange(random()),
+    //   g = to256InRange(random()),
+    //   b = to256InRange(random());
+    // return `rgb(${r},${g},${b})`;
+    return '#fff';
   }
 };
