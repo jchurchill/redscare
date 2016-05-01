@@ -28,9 +28,11 @@ class InactiveSelectionSection extends React.Component {
   }
 
   renderPlayer(p) {
-    const isPlayerNominated = this.isPlayerNominated(p.id);
-    const additionalClass = isPlayerNominated ? css.nominated : '';
-    return (<div key={p.id} className={cx(css.potentialNominee, additionalClass)}><PlayerIcon player={p}/></div>);
+    return (
+      <div className={this.isPlayerNominated(p.id) ? css.selected : null}>
+        <PlayerIcon player={p}/>
+      </div>
+    );
   }
 
   render() {
@@ -39,7 +41,13 @@ class InactiveSelectionSection extends React.Component {
     return (
       <div>
         <div>{ stillNominating ? `${leader.name} is nominating.` : "Nomination complete." }</div>
-        <div>{ players.map(p => this.renderPlayer(p)) }</div>
+        <div>
+          { players.map(p =>
+            <div key={p.id} className={cx(css.inline, css.participant)}>
+              { this.renderPlayer(p) }
+            </div>
+          ) }
+        </div>
       </div>
     );
   }
