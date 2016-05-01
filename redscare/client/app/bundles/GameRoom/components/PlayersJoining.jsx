@@ -70,7 +70,7 @@ class PlayersJoining extends React.Component {
       <div>
         <h2>Waiting for players</h2>
         <h3>Currently in game:</h3>
-        { game.players.map(p => <PlayerIcon key={p.id} player={p} />) }
+        { game.players.map(p => <div style={{ display:"inline-block" }}><PlayerIcon key={p.id} player={p} /></div>) }
         <div style={{ margin: '30px' }}>
           { this.canJoin() ? <button onClick={this.joinGame.bind(this)}>Join</button> : '' }
           { this.canLeave() ? <button onClick={this.leaveGame.bind(this)}>Leave</button> : '' }
