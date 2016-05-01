@@ -10,6 +10,10 @@ $fail-text-color: rgba(150, 10, 10, 0.8);
   line-height: 1em;
 }
 
+div.inline {
+  display: inline-block;
+}
+
 .round {
   padding: 10px;
   border-bottom: 1px solid white;
@@ -20,6 +24,7 @@ $fail-text-color: rgba(150, 10, 10, 0.8);
   font-weight: bold;
   font-size: 6em;
   margin-left: 10px;
+  vertical-align: top;
 }
 
 .success {
@@ -38,7 +43,47 @@ $fail-text-color: rgba(150, 10, 10, 0.8);
   }
 }
 
-div.inline {
-  display: inline-block;
-  vertical-align: middle;
+.nomination {
+  padding: 10px 0;
+
+  &.rejected {
+    border-top: 1px solid rgba(0,0,0,0.15);
+  }
+}
+
+.nominationTitle {
+  position: absolute;
+  font-family: Helvetica;
+  top: 3px;
+  font-size: small;
+  font-style: italic;
+}
+
+.nominationNumber {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 2em;
+  margin: 0 20px;
+}
+
+.nominationParticipant {
+  border: 3px solid transparent;
+  vertical-align: bottom;
+  padding: 5px;
+  margin: 3px;
+
+  &.nominee {
+    border: 3px ridge rgba(200,200,200,0.7);
+  }
+  &.upvote {
+    .icon {
+      background-color: green;
+    }
+  }
+}
+
+.leader {
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: line-through;
 }

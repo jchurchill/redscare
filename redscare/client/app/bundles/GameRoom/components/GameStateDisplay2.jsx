@@ -8,16 +8,19 @@ class GameStateDisplay extends React.Component {
     game: PropTypes.instanceOf(Game).isRequired
   };
 
-  getRounds() {
+  getCompletedRounds() {
     const { game: { rounds } } = this.props;
-    // Order rounds descending by round number
-    return rounds.sort((r1, r2) => r2.roundNumber - r1.roundNumber);
+    return rounds
+      // only completed rounds
+      .filter(r => r.outcome !== null)
+      // Order rounds descending by round number
+      .sort((r1, r2) => r2.roundNumber - r1.roundNumber);
   }
 
   render() {
-    const rounds = this.getRounds();
+    const rounds = this.getCompletedRounds();
     return (
-      <div style={{ textAlign: 'left' }}> {/* TODO: remove style tag */}
+      <div>
         { rounds.map(round => <RoundStateDisplay key={round.roundNumber} round={round} />) }
       </div>
     );

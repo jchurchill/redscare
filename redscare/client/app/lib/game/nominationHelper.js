@@ -61,6 +61,21 @@ class Nomination {
       ));
   }
 
+  get participants() {
+    return memoize("voters", this,
+      () => this.playerProvider.players.map(
+        p => {
+          const vote = this.votes.find(v => v.userId === p.id);
+          return {
+            player: p,
+            isLeader: this.leader.id === p.id,
+            isNominee: this.nominees.some(n => n.id === p.id),
+            hasVoted: vote !== null,
+            upvote: vote ? vote.upvote : undefined
+          };
+        }));
+  }
+
   get requiredNomineeCount() {
     return this._round.missionInfo.operativeCount;
   }
