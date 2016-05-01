@@ -1,8 +1,8 @@
 class CreateRoundOperatives < ActiveRecord::Migration
   def change
     create_table :round_operatives do |t|
-      t.references :round, null: false, index: true, foreign_key: true
-      t.references :operative, null: false, references: :users, foreign_key: true
+      t.references :round, null: false, index: true
+      t.references :operative, null: false, references: :users
       t.column :pass, :boolean, null: true
       t.timestamps null: false
     end
