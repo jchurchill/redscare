@@ -14,7 +14,7 @@
     "rails-server": "echo 'visit http://localhost:3000/hello_world' && foreman start -f Procfile.dev"
   },
   "repository": {
-    "type": "git",
+    "type": "git"
   },
   "author": "jchurchill",
   "dependencies": {}
