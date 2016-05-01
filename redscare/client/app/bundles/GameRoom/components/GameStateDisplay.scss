@@ -6,8 +6,6 @@
   border-radius: 3px;
   font-size: larger;
 
-  @include noselect();
-
   &.unstarted {
     color: silver;
   }

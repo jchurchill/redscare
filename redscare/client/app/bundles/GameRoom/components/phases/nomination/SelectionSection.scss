@@ -1,12 +1,27 @@
-.potentialNominee {
-  display: inline-block;
-  transition: background-color 0.5s ease-out;
+.participant {
+  transition: border 1s ease-out;
+  border: 3px solid transparent;
 
-  &.nominated {
+  .selected {
+    background-color: green;
+    border: 3px ridge gray;
+  }
+
+  .selectable {
+    &:hover {
+      background-color: lightgreen;
+    }
+  }
+
+  .disabled {
+    background-color: black;
+  }
+
+  .nominate {
     background-color: lightgreen;
-
-    button {
-      font-weight: bold;
+    padding: 10px 2px;
+    &:hover {
+      background-color: green;
     }
   }
 }
