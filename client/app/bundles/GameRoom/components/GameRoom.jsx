@@ -66,7 +66,7 @@ class GameRoom extends React.Component {
     ]
     return (
       <div style={{ textAlign: 'center' /* center everything! */ }}>
-        <h1>{name}</h1>
+        <h1>{game.name}</h1>
         <div style={{fontStyle:"italic"}}>{game.playerCount} players - {game.evilRoleCount} evil</div>
         <div style={{ marginTop: '20px' }}>
           <div style={{ display: 'inline-block', marginRight: '5px', fontWeight: 'bold' }}>Special roles:</div>

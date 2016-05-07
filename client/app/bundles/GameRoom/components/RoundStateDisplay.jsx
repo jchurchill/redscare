@@ -67,7 +67,7 @@ class RoundStateDisplay extends React.Component {
             </div>
             <div style={{ verticalAlign: 'middle', width: '100%', position: 'relative' }}>
               <div className={css.nominationLabel}>Nominations</div>
-              <NominationStateDisplay nomination={currentNomination} />
+              { currentNomination != null ? <NominationStateDisplay nomination={currentNomination} /> : null }
             </div>
             <Collapse isOpened={expanded} keepCollapsedContent={true}>
               { previousNominations.some(() => true)

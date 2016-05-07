@@ -12,7 +12,7 @@ class GameStateDisplay extends React.Component {
     const { game: { rounds } } = this.props;
     return rounds
       // only completed rounds
-      .filter(r => r.outcome !== null)
+      //.filter(r => r.outcome !== null)
       // Order rounds descending by round number
       .sort((r1, r2) => r2.roundNumber - r1.roundNumber);
   }
